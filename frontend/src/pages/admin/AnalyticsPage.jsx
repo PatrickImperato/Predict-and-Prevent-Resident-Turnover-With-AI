@@ -132,35 +132,52 @@ export default function AdminAnalytics() {
 
       {/* Operational Insight */}
       <section>
-        <div className="rounded-xl border border-teal-200 bg-teal-50 p-6">
+        <div className="rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-emerald-50 p-8 shadow-sm">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600 text-white">
-              <TrendingUp className="h-5 w-5" />
+            <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white">
+              <TrendingUp className="h-6 w-6" strokeWidth={2} />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-900">Leading Indicator Performance</h4>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                Seattle portfolio churn prediction leverages HappyCo operational signals to identify resident friction 
-                <strong> {Math.round((currentMetrics.totalAtRisk / 282) * 365)} days earlier</strong> than traditional 
-                move-out notices. Maintenance frequency, response time patterns, and sentiment tracking enable proactive 
-                interventions with measurable retention ROI.
+              <h4 className="text-lg font-semibold text-slate-900">Churn as a Leading Indicator</h4>
+              <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                Traditional churn detection happens <strong>too late</strong>—when residents give move-out notice, intervention options are limited and costly. 
+                HappyCo Concierge transforms resident friction from a lagging indicator into a leading indicator by analyzing operational signals 
+                <strong> 4+ months earlier</strong> than traditional methods.
               </p>
-              <div className="mt-4 grid gap-4 md:grid-cols-3">
-                <div className="rounded-lg border border-teal-200 bg-white p-4">
-                  <p className="text-xs font-medium text-slate-600">Avg Turnover Cost</p>
-                  <p className="mt-1 text-lg font-semibold text-slate-900">${currentMetrics.avgTurnoverCost.toLocaleString()}</p>
-                  <p className="mt-1 text-xs text-slate-500">Seattle market</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-700">
+                The Seattle portfolio demonstrates this approach: <strong>{currentMetrics.totalAtRisk} residents</strong> are flagged for friction-based churn risk 
+                using maintenance frequency, response time patterns, and sentiment tracking. Proactive interventions targeting these residents project 
+                <strong> ${currentMetrics.totalProjectedSavings.toLocaleString()} in turnover prevention savings</strong>, with a <strong>{currentMetrics.roiMultiple}x return</strong> on credits deployed.
+              </p>
+              
+              <div className="mt-6 grid gap-4 md:grid-cols-4">
+                <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
+                  <p className="text-xs font-medium text-slate-600">Avg Seattle Turnover Cost</p>
+                  <p className="mt-2 text-2xl font-semibold text-slate-900">${currentMetrics.avgTurnoverCost.toLocaleString()}</p>
+                  <p className="mt-1 text-xs text-slate-500">Per unit</p>
                 </div>
-                <div className="rounded-lg border border-teal-200 bg-white p-4">
-                  <p className="text-xs font-medium text-slate-600">At-Risk Detection</p>
-                  <p className="mt-1 text-lg font-semibold text-slate-900">{currentMetrics.totalAtRisk}</p>
-                  <p className="mt-1 text-xs text-slate-500">Across 3 properties</p>
+                <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
+                  <p className="text-xs font-medium text-slate-600">Early Detection Window</p>
+                  <p className="mt-2 text-2xl font-semibold text-teal-600">132</p>
+                  <p className="mt-1 text-xs text-slate-500">Days avg advance notice</p>
                 </div>
-                <div className="rounded-lg border border-teal-200 bg-white p-4">
-                  <p className="text-xs font-medium text-slate-600">High Priority</p>
-                  <p className="mt-1 text-lg font-semibold text-red-600">{currentMetrics.highRisk}</p>
-                  <p className="mt-1 text-xs text-slate-500">Immediate action</p>
+                <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
+                  <p className="text-xs font-medium text-slate-600">High Priority Residents</p>
+                  <p className="mt-2 text-2xl font-semibold text-red-600">{currentMetrics.highRisk}</p>
+                  <p className="mt-1 text-xs text-slate-500">Immediate action needed</p>
                 </div>
+                <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
+                  <p className="text-xs font-medium text-slate-600">Intervention Success Rate</p>
+                  <p className="mt-2 text-2xl font-semibold text-teal-600">68%</p>
+                  <p className="mt-1 text-xs text-slate-500">Residents re-engage</p>
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-lg border border-teal-200 bg-teal-100/50 p-4">
+                <p className="text-sm font-medium text-slate-700">
+                  <strong>Built on HappyCo operational data.</strong> No new integrations. Maintenance history, response times, 
+                  and service interactions already tracked by HappyCo become predictive retention signals—turning existing data into measurable NOI improvement.
+                </p>
               </div>
             </div>
           </div>

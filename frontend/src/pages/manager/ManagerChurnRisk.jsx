@@ -7,10 +7,18 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AT_RISK_RESIDENTS_WITH_SCORES, PROPERTIES } from "@/lib/demoData";
+import { interventionHistory } from "@/lib/interventionHistory";
 
 export default function ManagerChurnRisk() {
   const [expandedResidentId, setExpandedResidentId] = useState(null);
-  const [appliedInterventions, setAppliedInterventions] = useState(new Set());
+  const [deployedInterventions, setDeployedInterventions] = useState(() => {
+    // Initialize from sessionStorage
+    const deployed = new Set();
+    interventionHistory.getAll().forEach(entry => {
+      deployed.add(entry.residentId);
+    });
+    return deployed;
+  });
   
   // Filter residents by risk level
   const highRiskResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 80);
@@ -27,12 +35,39 @@ export default function ManagerChurnRisk() {
   };
   
   const handleDeployIntervention = (resident) => {
-    // Mock intervention deployment
-    setAppliedInterventions(prev => new Set([...prev, resident.id]));
+    const property = getProperty(resident.propertyId);
     
-    toast.success("Intervention deployed", {
-      description: `${resident.recommendedIntervention.label} intervention with $${resident.recommendedIntervention.creditOffer} credit sent to ${resident.name}.`
+    // Add to intervention history
+    const deployment = interventionHistory.add({
+      residentId: resident.id,
+      residentName: resident.name,
+      propertyId: resident.propertyId,
+      propertyName: property?.name || 'Unknown Property',
+      unit: resident.unit,
+      tier: resident.recommendedIntervention.tier,
+      tierLabel: resident.recommendedIntervention.label,
+      creditAmount: resident.recommendedIntervention.creditOffer,
+      riskScore: resident.riskScore,
+      topDriver: resident.topDriver.name,
+      expectedSavings: resident.projectedROI.expectedSavings,
+      expectedRevenue: resident.projectedROI.expectedRevenue,
+      netROI: resident.projectedROI.netROI,
+      roiMultiple: resident.projectedROI.roiMultiple
     });
+    
+    if (deployment) {
+      // Update UI state
+      setDeployedInterventions(prev => new Set([...prev, resident.id]));
+      
+      // Show success toast
+      toast.success("Intervention Deployed", {
+        description: `${resident.recommendedIntervention.label} intervention ($${resident.recommendedIntervention.creditOffer} credit) sent to ${resident.name}. Projected ROI: $${resident.projectedROI.netROI.toLocaleString()} (${resident.projectedROI.roiMultiple}x).`
+      });
+    } else {
+      toast.error("Deployment Failed", {
+        description: "Unable to deploy intervention. Please try again."
+      });
+    }
   };
   
   const getRiskBadgeColor = (score) => {
@@ -99,7 +134,7 @@ export default function ManagerChurnRisk() {
           <div className="space-y-4">
             {highRiskResidents.map((resident) => {
               const isExpanded = expandedResidentId === resident.id;
-              const isApplied = appliedInterventions.has(resident.id);
+              const isDeployed = deployedInterventions.has(resident.id);
               const property = getProperty(resident.propertyId);
               
               return (
@@ -241,13 +276,13 @@ export default function ManagerChurnRisk() {
                         className="mt-4 h-9 w-full rounded-lg" 
                         size="sm"
                         onClick={() => handleDeployIntervention(resident)}
-                        disabled={isApplied}
+                        disabled={isDeployed}
                         data-testid={`deploy-intervention-${resident.id}`}
                       >
-                        {isApplied ? (
+                        {isDeployed ? (
                           <>
                             <CheckCircle2 className="mr-2 h-4 w-4" />
-                            Applied
+                            Deployed
                           </>
                         ) : (
                           "Deploy Intervention"
@@ -268,7 +303,7 @@ export default function ManagerChurnRisk() {
           <h3 className="mb-4 text-lg font-semibold text-slate-900">Medium Risk Residents</h3>
           <div className="space-y-4">
             {mediumRiskResidents.map((resident) => {
-              const isApplied = appliedInterventions.has(resident.id);
+              const isDeployed = deployedInterventions.has(resident.id);
               const property = getProperty(resident.propertyId);
               
               return (
@@ -293,9 +328,9 @@ export default function ManagerChurnRisk() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleDeployIntervention(resident)}
-                        disabled={isApplied}
+                        disabled={isDeployed}
                       >
-                        {isApplied ? "Applied" : "Deploy"}
+                        {isDeployed ? "Deployed" : "Deploy"}
                       </Button>
                     </div>
                   </div>

@@ -252,8 +252,34 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Retention Intelligence Insight */}
+        {/* Platform Impact & Intelligence */}
         <div className="space-y-5">
+          {/* Platform Impact */}
+          <div className="rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-emerald-50 p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white">
+                <DollarSign className="h-5 w-5" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-slate-900">Platform Business Impact</h4>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                  HappyCo Concierge turns operational friction into measurable NOI improvement. Current Seattle portfolio shows <strong>${currentMetrics.netRetentionROI.toLocaleString()} net retention ROI</strong> with <strong>{currentMetrics.roiMultiple}x return multiple</strong> on credits deployed.
+                </p>
+                <div className="mt-4 grid gap-3 grid-cols-2">
+                  <div className="rounded-lg border border-teal-200 bg-white p-3">
+                    <p className="text-xs font-medium text-slate-600">Turnover Savings</p>
+                    <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedSavings / 1000).toFixed(0)}k</p>
+                  </div>
+                  <div className="rounded-lg border border-teal-200 bg-white p-3">
+                    <p className="text-xs font-medium text-slate-600">Service Revenue</p>
+                    <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedRevenue / 1000).toFixed(1)}k</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Leading Indicator Intelligence */}
           <div className="rounded-xl border border-teal-200 bg-teal-50 p-6">
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600 text-white">
@@ -263,13 +289,13 @@ export default function DashboardPage() {
                 <h4 className="font-semibold text-slate-900">Leading Indicator Intelligence</h4>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">
                   HappyCo operational signals predict resident friction <strong>4+ months earlier</strong> than 
-                  traditional move-out notices. Current portfolio shows {currentMetrics.totalAtRisk} at-risk residents 
-                  with ${currentMetrics.totalProjectedSavings.toLocaleString()} projected retention savings.
+                  traditional move-out notices. Maintenance frequency, response time patterns, and sentiment tracking enable proactive interventions with measurable retention ROI.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Churn Model Weights */}
           <div className="saas-card">
             <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Churn Model Weights</h3>
             <div className="space-y-3">

@@ -1,15 +1,26 @@
-import { AlertCircle, TrendingUp, DollarSign, Users, ArrowRight } from "lucide-react";
+import { AlertCircle, TrendingUp, DollarSign, Users, ArrowRight, X, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AT_RISK_RESIDENTS_WITH_SCORES, computePortfolioAnalytics, PROPERTIES } from "@/lib/demoData";
+import { interventionHistory } from "@/lib/interventionHistory";
 
 export default function ManagerDashboard() {
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Show onboarding if no interventions deployed yet
+    return interventionHistory.getCount() === 0;
+  });
+  
   // Compute portfolio metrics
   const analytics = computePortfolioAnalytics();
   const currentMetrics = analytics.current;
+  
+  // Get deployed interventions
+  const deployedCount = interventionHistory.getCount();
+  const deployedCredits = interventionHistory.getTotalCredits();
   
   // Sort residents by highest ROI impact (projected savings)
   const opportunitiesByROI = [...AT_RISK_RESIDENTS_WITH_SCORES].sort((a, b) => 
@@ -48,6 +59,81 @@ export default function ManagerDashboard() {
           Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact across your properties.
         </p>
       </section>
+
+      {/* Manager Onboarding Panel */}
+      <AnimatePresence>
+        {showOnboarding && (
+          <motion.section
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.24 }}
+          >
+            <div className="rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 to-emerald-50 p-6 shadow-sm">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white">
+                    <Lightbulb className="h-6 w-6" strokeWidth={2} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-semibold text-slate-900">Getting Started with Retention Intelligence</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                      Welcome to your retention operations workspace. Here's how to use HappyCo Concierge to reduce churn and increase portfolio NOI:
+                    </p>
+                    
+                    <div className="mt-4 grid gap-3 md:grid-cols-2">
+                      <div className="rounded-lg border border-teal-200 bg-white p-4">
+                        <p className="text-sm font-semibold text-slate-900">1. Review Highest-ROI Residents</p>
+                        <p className="mt-1 text-sm text-slate-700">
+                          Opportunities below are sorted by projected net ROI. Start with residents showing the highest financial impact.
+                        </p>
+                      </div>
+                      
+                      <div className="rounded-lg border border-teal-200 bg-white p-4">
+                        <p className="text-sm font-semibold text-slate-900">2. Understand Friction Drivers</p>
+                        <p className="mt-1 text-sm text-slate-700">
+                          Each card shows top drivers (maintenance frequency, response time, sentiment) with point contributions to risk score.
+                        </p>
+                      </div>
+                      
+                      <div className="rounded-lg border border-teal-200 bg-white p-4">
+                        <p className="text-sm font-semibold text-slate-900">3. Deploy Right Intervention Tier</p>
+                        <p className="mt-1 text-sm text-slate-700">
+                          System recommends Light Touch ($200), Standard ($350), or High Priority ($500) based on risk threshold and friction patterns.
+                        </p>
+                      </div>
+                      
+                      <div className="rounded-lg border border-teal-200 bg-white p-4">
+                        <p className="text-sm font-semibold text-slate-900">4. Measure Retention ROI</p>
+                        <p className="mt-1 text-sm text-slate-700">
+                          Track expected savings (turnover prevention), service revenue, and net ROI for each intervention before deploying.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4">
+                      <Button asChild size="sm" className="h-9 rounded-lg">
+                        <Link to="/app/manager/churn-risk">
+                          View Full Risk Queue
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => setShowOnboarding(false)}
+                  className="flex-shrink-0 rounded-lg p-2 text-slate-600 transition-colors hover:bg-teal-100 hover:text-slate-900"
+                  aria-label="Dismiss onboarding"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
 
       {/* Retention Opportunities Section */}
       <section>
