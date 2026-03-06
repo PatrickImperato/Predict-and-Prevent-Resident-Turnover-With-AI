@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
+import { useCountUp } from "@/hooks/useCountUp";
 
 // Property-specific data with CUSTOMIZED SCORING WEIGHTS
 const PROPERTIES = {
@@ -168,6 +169,11 @@ export default function LandingPage() {
   });
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Count-up animations for hero metrics
+  const [roiRef, roiValue] = useCountUp(82550, 1100, '', '$');
+  const [atRiskRef, atRiskValue] = useCountUp(35, 900);
+  const [multipleRef, multipleValue] = useCountUp(6.55, 1000, 'x');
+
   // ROI calculation - Simplified with Internal Assumptions
   const RETENTION_LIFT = 0.41; // 41% - internal assumption
   const TURNOVER_COST = 3200; // $3,200 - internal assumption
@@ -297,8 +303,8 @@ export default function LandingPage() {
                     <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-white">$4,083</p>
-                    <p className="mt-1.5 text-[12px] sm:text-[13px] font-medium text-white/50">Avg. turnover cost</p>
+                    <p ref={atRiskRef} className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-white">{atRiskValue}</p>
+                    <p className="mt-1.5 text-[12px] sm:text-[13px] font-medium text-white/50">At-risk residents</p>
                   </div>
                 </div>
               </div>
@@ -309,8 +315,8 @@ export default function LandingPage() {
                     <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-white">9.6%</p>
-                    <p className="mt-1.5 text-[12px] sm:text-[13px] font-medium text-white/50">Annual turnover rate</p>
+                    <p ref={multipleRef} className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-white">{multipleValue}</p>
+                    <p className="mt-1.5 text-[12px] sm:text-[13px] font-medium text-white/50">ROI multiple</p>
                   </div>
                 </div>
               </div>
@@ -321,7 +327,7 @@ export default function LandingPage() {
                     <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
+                    <p ref={roiRef} className="font-[var(--font-heading)] text-2xl sm:text-[28px] font-semibold leading-none tracking-tight text-primary">{roiValue}</p>
                     <p className="mt-1.5 text-[12px] sm:text-[13px] font-medium text-primary/70">Net retention ROI</p>
                   </div>
                 </div>
@@ -330,6 +336,15 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Time Travel Media Notice */}
+      <div className="bg-zinc-50 py-3">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-zinc-400 leading-relaxed">
+            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+          </p>
+        </div>
+      </div>
 
       {/* Below the fold */}
       <main className="bg-zinc-50">
@@ -346,6 +361,16 @@ export default function LandingPage() {
               <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Track friction drivers across maintenance, engagement, and payment patterns to predict churn risk
               </p>
+            </div>
+
+            {/* Building Image - Premium Context */}
+            <div className="mt-8 mb-8 rounded-xl overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-900/30 to-slate-900/5 z-10"></div>
+              <img
+                src="https://images.unsplash.com/photo-1765696300096-82b2425ec6e2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTN8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBhcGFydG1lbnQlMjBidWlsZGluZyUyMGV4dGVyaW9yJTIwYXJjaGl0ZWN0dXJlJTIwY2xlYW58ZW58MHx8fHwxNzcyODM5ODgxfDA&ixlib=rb-4.1.0&q=85"
+                alt="Multifamily property"
+                className="w-full h-48 sm:h-64 object-cover"
+              />
             </div>
 
             {/* Tabs */}
@@ -610,6 +635,15 @@ export default function LandingPage() {
               <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Deploy tiered credit offers matched to friction drivers with full resident experience
               </p>
+            </div>
+
+            {/* Service Professional Image - Human Side */}
+            <div className="mt-8 mb-8 rounded-xl overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1712600045782-e19cf5b4a196?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwyfHxhcGFydG1lbnQlMjBidWlsZGluZyUyMG1haW50ZW5hbmNlJTIwc2VydmljZSUyMHByb2Zlc3Npb25hbCUyMGludGVyYWN0aW9ufGVufDB8fHx8MTc3MjgzOTg3NXww&ixlib=rb-4.1.0&q=85"
+                alt="Property service interaction"
+                className="w-full h-48 sm:h-56 object-cover"
+              />
             </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
