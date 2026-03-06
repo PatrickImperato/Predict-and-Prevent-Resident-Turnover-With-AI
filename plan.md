@@ -4,10 +4,19 @@
 - Rebuild **HappyCo Concierge** as a clean, diagnosable prospect-facing demo platform with **strict environment separation**.
 - Match the **current preview experience** (layout, labels/copy, core behavior) wherever feasible, with cleaner internals and safer architecture.
 - Environments use **explicit config only**: `APP_ENV=preview|production` (no hostname guessing; no silent DB fallback).
+- **One preview database only** + **one production database only** (same schema, isolated data).
 - Preview has **demo mode**; production starts with the **same seeded demo dataset** but in its **own production DB**.
 - Auth approach for V1: **seed demo/admin accounts first**, keep current admin login behavior as close as possible, refine parity later.
 - Roll out to a **test domain (placeholder for now: `<TBD_TEST_DOMAIN>`)** before any cutover to `happyco.talapartners.com`.
-- Planning-first constraint (Phase 1): **no app code**, **no database code**, **no deployment commands**.
+- Built-in diagnostics from day one:
+  - Diagnostics UI and API are first-class features.
+  - **Diagnostics shows full DB name to authenticated admins** (confirmed).
+- Seed operations controls (confirmed):
+  - **Preview reset is restricted to super-admin only**.
+  - **Production bootstrap is a deployment-time protected step only** (not a normal admin-triggered action / endpoint).
+- Planning/blueprint constraint:
+  - Phase 1 and Phase 2 produced **planning + architecture artifacts only**—**no full app code**, **no DB code**, **no deployment commands**.
+  - Implementation begins in Phase 3.
 
 **Reference findings (crawled):**
 - Landing page messaging centers on retention intelligence / churn prevention, with KPI-style stats and portfolio ROI framing.
@@ -40,7 +49,7 @@
 | Admin | Admin shell (`/app/admin/*`) | Left nav + topbar (property switcher, env badge, user) |
 | Admin Pages | Dashboard, Properties, Providers, Tenants, Analytics, Settings, Diagnostics | Parity-first; id-based routing for detail pages |
 | Diagnostics | `/app/admin/diagnostics` + API endpoints | Must show env/host/db/user/role + collection counts |
-| Seed/Ops | Preview reset + prod bootstrap visibility | Restricted; no accidental cross-env |
+| Seed/Ops | Preview reset + prod bootstrap | Reset restricted to super-admin; production bootstrap is deployment-time only |
 
 #### B) Data Inventory
 | Collection | Purpose (V1) | Env rules |
@@ -82,26 +91,44 @@
 - Hard rules:
   - No hostname-based env detection.
   - No automatic fallback to another DB.
-  - Startup diagnostics must fail fast if APP_ENV/DB vars missing.
+  - Startup must fail fast if APP_ENV/DB vars missing or invalid.
 - Domains:
   - Test domain: **`<TBD_TEST_DOMAIN>`** (production verification target).
   - Live domain cutover only after approval.
 - Verification checklist (pre-cutover): env badge correct, DB name correct, collection counts match expected, admin routes never 403 incorrectly.
 
-### Phase 2 — Architecture foundation + Core POC (prove the “hard part” before full build) ⏳ NOT STARTED
-**Core workflow to prove:** strict env-to-DB binding + diagnostics visibility + seed reset/bootstrapping safety.
+### Phase 2 — Environment & Diagnostics Architecture Blueprint (no code) ✅ COMPLETED
+**Purpose (tight scope):** Define the architecture that guarantees:
+1) explicit APP_ENV detection, 2) exactly one preview DB, 3) exactly one production DB,
+4) fail-fast invalid configuration handling, 5) diagnostics endpoints available from day one,
+plus hard cross-environment guardrails.
 
-User stories:
-1. As an admin, I can open Diagnostics and immediately see APP_ENV, host, DB name, and collection counts.
-2. As a developer, the app refuses to boot if APP_ENV is invalid/missing (no silent fallback).
-3. As QA, preview reset reseeds demoA deterministically without touching production.
-4. As QA, production bootstrap seeds the same dataset into production DB only.
-5. As an admin, I can verify routes use id-based navigation consistently.
+**Confirmed Phase 2 control decisions:**
+- Diagnostics UI shows **full DB name** to authenticated admins.
+- Preview reset is **super-admin only**.
+- Production bootstrap is **deployment-time protected only** (no normal admin-triggered action).
+
+**Delivered Phase 2 blueprint outputs (architecture only; no implementation code):**
+- **Environment variable structure**: explicit `APP_ENV=preview|production` contract + required variables per env.
+- **DB connection selection rules**: strictly bind exactly one DB per APP_ENV; no hostname inference; no fallbacks.
+- **Fail-fast guardrails**: startup validation matrix for APP_ENV and DB settings; abort on invalid/missing config.
+- **Diagnostics API blueprint**: runtime/session/collections/seed metadata endpoints available from day one.
+- **Diagnostics admin page layout**: admin-first diagnostics IA to surface env/db/user and counts with copy-to-clipboard.
+- **Preview reset protections**: super-admin gate + explicit confirmation + audit trail; only allowed when APP_ENV=preview.
+- **Production bootstrap protections**: deployment-time only, idempotent bootstrap expectations + audit trail.
+- **Cross-env prevention rules**: explicit, enforceable rules preventing preview/prod cross access and surfacing violations in diagnostics.
+
+**Phase 2 user stories (prove the “hard part” before full build):**
+1. As an admin, I can open Diagnostics and immediately see APP_ENV, host, **DB name**, and collection counts.
+2. As a developer, the app refuses to boot if APP_ENV or DB configuration is missing/invalid (no silent fallback).
+3. As QA, preview reset cannot be executed unless the user is a super-admin *and* APP_ENV is preview.
+4. As stakeholders, we can verify production bootstrap is only performed at deploy time (not from an admin UI).
+5. As an admin, I can see audit evidence (seed/bootstrap/settings changes) in diagnostics.
 
 ### Phase 3 — Backend/data layer MVP ⏳ NOT STARTED
 - Auth/session baseline (seeded accounts first); role gating for admin routes.
 - Read APIs to support dashboard KPIs, lists, and detail pages.
-- Write APIs for provider management + settings + seed utilities (restricted).
+- Write APIs for provider management + settings + (preview-only) seed reset utilities (restricted).
 
 User stories:
 1. As admin, I can log in and maintain a session across admin pages.
@@ -124,14 +151,14 @@ User stories:
 
 ### Phase 5 — Diagnostics/auth hardening + ops workflows ⏳ NOT STARTED
 - Tighten admin authorization across routes (no 403 surprises).
-- Add diagnostics endpoints + UI: env/host/db/user/role/build + counts + last seed run.
-- Preview seed reset UX with confirmation.
+- Expand diagnostics endpoints + UI: env/host/db/user/role/build + counts + last seed run.
+- Preview seed reset UX with confirmation (super-admin only).
 
 User stories:
 1. As admin, I never see “403” due to inconsistent auth on a valid session.
 2. As admin, I can export/copy diagnostics values for support.
 3. As admin, I can confirm last seed time and datasetId.
-4. As QA, I can reset preview safely with an explicit confirmation.
+4. As super-admin, I can reset preview safely with explicit confirmation.
 5. As operator, I can understand credit vs revenue semantics from labels.
 
 ### Phase 6 — Testing/polish ⏳ NOT STARTED
@@ -157,6 +184,7 @@ User stories:
 5. As stakeholder, I can approve go-live based on a checklist.
 
 ## 3) Next Actions
+- Begin Phase 3 implementation by building the validated environment config loader + diagnostics endpoints first (per Phase 2 blueprint).
 - Capture remaining parity specifics that are behind auth (admin pages) via screenshots or an approved admin walkthrough.
 - Lock the minimal V1 API surface needed for dashboard + lists + settings + diagnostics.
 - Define stable IDs for the 3 properties + Alex Chen to keep routing deterministic.
