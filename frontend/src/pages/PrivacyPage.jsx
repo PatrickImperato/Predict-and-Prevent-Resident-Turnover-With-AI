@@ -9,20 +9,20 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-background" data-testid="privacy-page-root">
       {/* Header */}
       <header className="border-b border-border/40 bg-background">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 lg:px-8">
-          <div className="flex items-center gap-2">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 sm:px-6 py-4 lg:px-8">
+          <Link to="/" className="flex items-center gap-2 transition-opacity hover:opacity-80" data-testid="privacy-brand-link">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Sparkles className="h-4 w-4" strokeWidth={2.5} />
             </div>
             <p className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-foreground">
               HappyCo Concierge
             </p>
-          </div>
+          </Link>
           <div className="flex items-center gap-3">
             <Button asChild variant="ghost" size="sm" className="h-8 text-sm">
               <Link to="/">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Overview
+                Overview
               </Link>
             </Button>
             <Button asChild size="sm" className="h-8 text-sm">

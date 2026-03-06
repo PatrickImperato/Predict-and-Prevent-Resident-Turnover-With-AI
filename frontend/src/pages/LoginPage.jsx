@@ -93,17 +93,17 @@ export default function LoginPage() {
     <div className="h-screen overflow-hidden bg-background" data-testid="login-page-root">
       {/* Top Navigation */}
       <header className="absolute top-0 z-50 w-full bg-background/90 backdrop-blur-sm border-b border-border/40">
-        <div className="flex h-16 items-center px-6 lg:px-8">
+        <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
           <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
-            {/* Left: Logo */}
-            <div className="flex items-center gap-2.5">
+            {/* Left: Logo - Linked */}
+            <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80" data-testid="login-brand-link">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
               </div>
               <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-foreground">
                 HappyCo Concierge
               </p>
-            </div>
+            </Link>
 
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
