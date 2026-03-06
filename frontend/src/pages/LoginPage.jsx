@@ -92,9 +92,9 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="login-page-root">
-      <div className="grid min-h-screen lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)]">
+      <div className="grid min-h-screen lg:grid-cols-[minmax(0,540px)_minmax(0,1fr)]">
         {/* Left Side: Login Form */}
-        <div className="flex items-center justify-center bg-background px-8 py-16 lg:px-14">
+        <div className="flex items-center justify-center bg-background px-8 py-16 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -102,18 +102,18 @@ export default function LoginPage() {
             className="w-full max-w-md"
           >
             <div className="mb-10">
-              <div className="mb-8 flex items-center gap-2">
+              <div className="mb-8 flex items-center gap-2.5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Sparkles className="h-4 w-4" strokeWidth={2.5} />
+                  <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
                 </div>
-                <p className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-foreground">
+                <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-foreground">
                   HappyCo Concierge
                 </p>
               </div>
               <h1 className="font-[var(--font-heading)] text-4xl font-semibold tracking-[-0.02em] text-foreground">
                 Welcome back
               </h1>
-              <p className="mt-2.5 text-base text-muted-foreground">
+              <p className="mt-2 text-base text-muted-foreground">
                 Sign in to access the platform
               </p>
             </div>
@@ -156,7 +156,7 @@ export default function LoginPage() {
               </div>
 
               <Button
-                className="h-11 w-full bg-primary text-sm font-medium shadow-sm hover:bg-primary/90"
+                className="h-11 w-full bg-primary text-sm font-medium shadow-none hover:bg-primary/90"
                 data-testid="login-submit-button"
                 disabled={submitting}
                 type="submit"
@@ -175,10 +175,10 @@ export default function LoginPage() {
               src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
               alt="City skyline"
               className="h-full w-full object-cover"
-              style={{ filter: 'contrast(1.1) brightness(0.65)' }}
+              style={{ filter: 'contrast(1.1) brightness(0.68)' }}
             />
             <div className="absolute inset-0 bg-slate-900/96"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/85 to-slate-800/90"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/88 via-slate-900/85 to-slate-800/88"></div>
           </div>
 
           <div className="relative flex h-full flex-col justify-between p-12 xl:p-14">
@@ -191,23 +191,23 @@ export default function LoginPage() {
               <Badge className="mb-5 border-primary/15 bg-primary/8 text-primary" variant="secondary">
                 Demo Access
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[42px]">
+              <h2 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[40px]">
                 AI Concierge Platform for Multifamily Operations
               </h2>
               
               {/* Summary Metrics */}
-              <div className="mt-9 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/12 bg-white/6 p-4 backdrop-blur-md">
-                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">35</p>
-                  <p className="mt-1.5 text-sm font-medium text-white/55">At-risk residents</p>
+              <div className="mt-8 grid gap-3.5 sm:grid-cols-3">
+                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3.5 backdrop-blur-[8px]">
+                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">35</p>
+                  <p className="mt-1.5 text-[13px] font-medium text-white/50">At-risk residents</p>
                 </div>
-                <div className="rounded-xl border border-primary/25 bg-primary/8 p-4 backdrop-blur-md">
-                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-primary">$82,550</p>
-                  <p className="mt-1.5 text-sm font-medium text-primary/75">Net retention ROI</p>
+                <div className="rounded-xl border border-primary/20 bg-primary/6 p-3.5 backdrop-blur-[8px]">
+                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
+                  <p className="mt-1.5 text-[13px] font-medium text-primary/70">Net retention ROI</p>
                 </div>
-                <div className="rounded-xl border border-white/12 bg-white/6 p-4 backdrop-blur-md">
-                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">6.55x</p>
-                  <p className="mt-1.5 text-sm font-medium text-white/55">ROI multiple</p>
+                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3.5 backdrop-blur-[8px]">
+                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">6.55x</p>
+                  <p className="mt-1.5 text-[13px] font-medium text-white/50">ROI multiple</p>
                 </div>
               </div>
             </motion.div>
@@ -218,10 +218,10 @@ export default function LoginPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
             >
-              <p className="mb-4 text-base font-medium text-white/75">
+              <p className="mb-3.5 text-[15px] font-medium text-white/70">
                 Select a demo account to auto fill credentials and explore the product experience.
               </p>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {DEMO_ROLES.map((role, index) => {
                   const Icon = role.icon;
                   return (
@@ -231,22 +231,22 @@ export default function LoginPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: 0.5 + index * 0.08 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="group w-full rounded-xl border border-white/12 bg-white/6 p-4 text-left backdrop-blur-md transition-colors hover:border-white/20 hover:bg-white/8 active:scale-[0.98]"
+                      className="group w-full rounded-xl border border-white/10 bg-white/[0.04] p-3.5 text-left backdrop-blur-[8px] transition-colors hover:border-white/15 hover:bg-white/[0.06] active:scale-[0.98]"
                       data-testid={`demo-role-card-${role.id}`}
                     >
-                      <div className="flex items-center gap-3.5">
-                        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/8 text-white/75 transition-colors group-hover:bg-primary/15 group-hover:text-primary">
-                          <Icon className="h-5 w-5" strokeWidth={2.5} />
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/6 text-white/70 transition-colors group-hover:bg-primary/12 group-hover:text-primary">
+                          <Icon className="h-[18px] w-[18px]" strokeWidth={2.5} />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-base font-semibold text-white">{role.title}</p>
-                          <p className="mt-1 text-sm text-white/55">{role.description}</p>
-                          <div className="mt-2.5 flex flex-wrap gap-x-5 gap-y-1 text-xs">
-                            <p className="text-white/45">
-                              <span className="text-white/35">Email:</span> {role.email}
+                          <p className="text-[15px] font-semibold text-white">{role.title}</p>
+                          <p className="mt-0.5 text-[13px] text-white/50">{role.description}</p>
+                          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[12px]">
+                            <p className="text-white/40">
+                              <span className="text-white/30">Email:</span> {role.email}
                             </p>
-                            <p className="text-white/45">
-                              <span className="text-white/35">Pass:</span> {role.password}
+                            <p className="text-white/40">
+                              <span className="text-white/30">Pass:</span> {role.password}
                             </p>
                           </div>
                         </div>
