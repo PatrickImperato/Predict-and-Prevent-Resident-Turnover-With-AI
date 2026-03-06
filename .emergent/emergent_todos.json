@@ -1,42 +1,38 @@
 [
   {
-    "content": "Refine Landing Page - simplify hero, tighten copy, cleaner sections",
+    "content": "Update demoData.js with realistic business assumptions and Seattle economics",
     "status": "in_progress"
   },
   {
-    "content": "Update subtitle everywhere to 'Predict resident churn early'",
+    "content": "Recalculate portfolio metrics to match realistic ratios",
     "status": "pending"
   },
   {
-    "content": "Polish Admin Dashboard - executive control center feel",
+    "content": "Simplify Landing Page hero (headline + subhead)",
     "status": "pending"
   },
   {
-    "content": "Polish Admin Analytics - cleaner insights, better chart framing",
+    "content": "Apply Linear-inspired UI polish (spacing, borders, teal usage)",
     "status": "pending"
   },
   {
-    "content": "Upgrade Manager Dashboard - tighter onboarding, intervention history",
+    "content": "Improve metric card hierarchy across all pages",
     "status": "pending"
   },
   {
-    "content": "Upgrade Manager Churn Risk - clearer ROI explanations",
+    "content": "Fix any broken or unrealistic metrics in UI",
     "status": "pending"
   },
   {
-    "content": "Improve Resident Concierge - provider visibility, booking clarity",
+    "content": "Verify Seattle consistency (properties, providers, pricing)",
     "status": "pending"
   },
   {
-    "content": "Visual refinement - Linear-inspired polish across all pages",
+    "content": "Full QA pass on all 6 main routes",
     "status": "pending"
   },
   {
-    "content": "Full consistency verification - all 6 routes",
-    "status": "pending"
-  },
-  {
-    "content": "Generate final productization report",
+    "content": "Generate final realism and polish report",
     "status": "pending"
   }
 ]
