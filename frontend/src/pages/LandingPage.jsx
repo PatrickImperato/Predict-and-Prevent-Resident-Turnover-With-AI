@@ -129,6 +129,7 @@ export default function LandingPage() {
   const [detectionProperty, setDetectionProperty] = useState("riverside");
   const [portfolioView, setPortfolioView] = useState("single");
   const [roiSliders, setRoiSliders] = useState({ units: 250, riskPct: 14, creditCost: 185 });
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // ROI calculation
   const atRiskUnits = Math.round(roiSliders.units * (roiSliders.riskPct / 100));
@@ -142,8 +143,17 @@ export default function LandingPage() {
   const selectedScenario = FRICTION_SCENARIOS[insightTab];
   const selectedProperty = PROPERTIES[detectionProperty];
 
+  // Sticky header scroll detection
+  useState(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-zinc-50" data-testid="landing-page-root">
+    <div className="min-h-screen bg-zinc-50" data-testid="landing-page-root" style={{ scrollPaddingTop: '64px' }}>
       {/* Hero Section */}
       <section className="relative min-h-[720px] lg:min-h-[740px] overflow-hidden" data-testid="landing-hero-section">
         <div className="absolute inset-0">
@@ -157,12 +167,16 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
         </div>
 
-        {/* Header */}
+        {/* STICKY Header */}
         <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 z-50 w-full"
+          className={`fixed top-0 z-50 w-full transition-all duration-200 ${
+            isScrolled 
+              ? 'bg-slate-900/80 backdrop-blur-lg border-b border-white/10 shadow-lg'
+              : 'bg-transparent'
+          }`}
         >
           <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
             <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
@@ -196,8 +210,8 @@ export default function LandingPage() {
         </motion.header>
 
         {/* Hero Content */}
-        <div className="relative h-full flex flex-col">
-          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-20 pb-32 sm:px-6 lg:px-8 lg:pt-24 lg:pb-40">
+        <div className="relative h-full flex flex-col justify-between" style={{ minHeight: '720px' }}>
+          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-20 sm:px-6 lg:px-8 lg:pt-24">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -216,10 +230,10 @@ export default function LandingPage() {
                 Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
               </p>
 
-              <div className="mt-7 flex flex-wrap items-center gap-2.5">
+              <div className="mt-7 flex flex-wrap items-center gap-2.5 mb-24 lg:mb-28">
                 <Button asChild size="lg" className="h-11 rounded-full bg-primary px-5 text-[15px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-hero-cta">
                   <Link to="/login">
-                    View Demo
+                    Explore Platform
                     <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2.5} />
                   </Link>
                 </Button>
@@ -230,12 +244,12 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Proof Cards - MORE SPACE FROM CTA */}
+          {/* Proof Cards - SIGNIFICANTLY MORE SPACE FROM CTA */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="absolute bottom-12 left-0 right-0 px-4 sm:px-6 lg:px-8"
+            className="pb-12 px-4 sm:px-6 lg:px-8"
           >
             <div className="mx-auto grid max-w-[1400px] gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
               <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
@@ -527,7 +541,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Concierge Section - PREMIUM UPGRADE */}
+        {/* Concierge Section - CORRECTED ORDER + PREMIUM UPGRADE */}
         <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="concierge">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -543,7 +557,7 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
-              {/* Channels - PREMIUM */}
+              {/* Channels - CORRECTED ORDER: SMS → Mobile App → Browser Backup */}
               <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
@@ -552,26 +566,29 @@ export default function LandingPage() {
                   <h3 className="text-sm font-semibold text-zinc-900">Delivery Channels</h3>
                 </div>
                 <div className="space-y-3">
+                  {/* 1. SMS - PRIMARY */}
                   <div className="flex items-center justify-between rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
                     <div className="flex items-center gap-3">
                       <CheckCircle2 className="h-4 w-4 text-primary" />
-                      <span className="text-sm font-semibold text-zinc-900">Resident mobile app</span>
+                      <span className="text-sm font-semibold text-zinc-900">SMS delivery</span>
                     </div>
                     <Badge className="border-primary/20 bg-primary/10 text-primary text-xs" variant="secondary">Primary</Badge>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-zinc-500" />
-                      <span className="text-sm font-medium text-zinc-900">Email notification</span>
-                    </div>
-                    <CheckCircle2 className="h-4 w-4 text-zinc-400" />
-                  </div>
+                  {/* 2. Mobile App - COMING SOON */}
                   <div className="flex items-center justify-between rounded-lg border border-dashed border-zinc-300 bg-white px-4 py-3">
                     <div className="flex items-center gap-3">
                       <MessageSquare className="h-4 w-4 text-zinc-400" />
-                      <span className="text-sm font-medium text-zinc-500">SMS delivery</span>
+                      <span className="text-sm font-medium text-zinc-500">Resident mobile app</span>
                     </div>
                     <span className="text-xs text-zinc-500">Coming soon</span>
+                  </div>
+                  {/* 3. Browser Backup - ENABLED */}
+                  <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-zinc-500" />
+                      <span className="text-sm font-medium text-zinc-900">Browser notification</span>
+                    </div>
+                    <CheckCircle2 className="h-4 w-4 text-zinc-400" />
                   </div>
                 </div>
               </div>
@@ -738,7 +755,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ROI Section - BETTER FIT */}
+        {/* ROI Section - ENLARGED HEADING */}
         <section className="scroll-mt-16 relative overflow-hidden py-16 sm:py-20 lg:py-24" id="roi">
           <div className="absolute inset-0 bg-slate-900"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-900/40 to-slate-900/20"></div>
@@ -748,7 +765,7 @@ export default function LandingPage() {
               <Badge className="mb-3 border-primary/20 bg-primary/10 text-[12px] text-primary font-medium" variant="secondary">
                 ROI Calculator
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight text-white">
                 Model your retention economics
               </h2>
               <p className="mx-auto mt-2 max-w-2xl text-sm text-white/70">
@@ -870,7 +887,7 @@ export default function LandingPage() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="h-11 rounded-full px-6 text-[15px] shadow-none" data-testid="landing-final-cta">
                 <Link to="/login">
-                  View Demo
+                  Explore Platform
                   <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2} />
                 </Link>
               </Button>
