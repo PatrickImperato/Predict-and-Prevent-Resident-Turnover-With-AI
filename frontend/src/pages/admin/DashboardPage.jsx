@@ -45,23 +45,23 @@ export default function DashboardPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
-      className="space-y-8" 
+      className="space-y-6" 
       data-testid="dashboard-page-root"
     >
-      <section className="rounded-3xl border border-border/80 bg-card/85 p-8 shadow-[var(--shadow-soft)]">
+      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <Badge className="w-fit bg-primary/10 text-primary" data-testid="dashboard-flagship-badge" variant="secondary">
+            <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" data-testid="dashboard-flagship-badge" variant="secondary">
               Seeded flagship read model
             </Badge>
-            <h2 className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground" data-testid="dashboard-page-title">
+            <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900" data-testid="dashboard-page-title">
               Portfolio dashboard powered by coherent backend data.
             </h2>
-            <p className="mt-3 max-w-3xl text-sm leading-7 text-muted-foreground">
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
               The Metropolitan at Riverside now anchors the demo with unit-level structure, resident friction history, AI concierge interventions, and linked revenue effects.
             </p>
           </div>
-          <Button asChild className="rounded-xl" data-testid="dashboard-open-flagship-property-button">
+          <Button asChild className="h-10 rounded-lg shadow-sm" data-testid="dashboard-open-flagship-property-button">
             <Link to="/app/admin/properties/a4f7603e-dda0-4c44-b382-e159f8c773be">
               Open flagship property
               <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.75} />
@@ -78,23 +78,19 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.24, delay: 0.04 + index * 0.06, ease: "easeOut" }}
           >
-            <Card className="happyco-card" data-testid={`dashboard-summary-card-${card.key}`}>
-              <CardContent className="p-6">
-                <p className="text-sm font-medium text-muted-foreground">{card.label}</p>
-                <p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{card.value}</p>
-                {card.detail ? <p className="mt-2 text-sm text-muted-foreground">{card.detail}</p> : null}
-              </CardContent>
-            </Card>
+            <div className="saas-metric-card" data-testid={`dashboard-summary-card-${card.key}`}>
+              <p className="metric-label mb-3">{card.label}</p>
+              <p className="metric-value">{card.value}</p>
+              {card.detail ? <p className="metric-detail mt-2">{card.detail}</p> : null}
+            </div>
           </motion.div>
         ))}
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <Card className="happyco-card" data-testid="dashboard-flagged-residents-card">
-          <CardHeader>
-            <CardTitle className="text-xl tracking-[-0.02em]">Top flagged residents</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+        <div className="saas-card" data-testid="dashboard-flagged-residents-card">
+          <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Top flagged residents</h3>
+          <div className="space-y-3">
             {dashboard.flagged_residents.map((resident, index) => (
               <motion.div
                 key={resident.resident_id}
@@ -103,105 +99,97 @@ export default function DashboardPage() {
                 transition={{ duration: 0.22, delay: 0.3 + index * 0.05 }}
               >
                 <Link
-                  className="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/35 p-5 transition-all hover:bg-muted/60 hover:shadow-md active:scale-[0.99]"
+                  className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 transition-all hover:border-slate-300 hover:bg-white hover:shadow-sm active:scale-[0.99]"
                   data-testid={`dashboard-flagged-resident-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                   to={`/app/admin/properties/${resident.property_id}`}
                 >
-                <div>
-                  <p className="font-medium text-foreground">{resident.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {resident.property_name} • Unit {resident.unit_number}
-                  </p>
-                  <p className="mt-1 text-xs uppercase tracking-[0.08em] text-muted-foreground">Primary driver: {resident.primary_driver}</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{resident.score}</p>
-                  <p className="text-xs text-muted-foreground">+{resident.score_change} this period</p>
-                </div>
-              </Link>
+                  <div>
+                    <p className="font-medium text-slate-900">{resident.name}</p>
+                    <p className="text-sm text-slate-600">
+                      {resident.property_name} • Unit {resident.unit_number}
+                    </p>
+                    <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">Primary: {resident.primary_driver}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-2xl font-semibold tracking-tight text-slate-900">{resident.score}</p>
+                    <p className="text-xs text-slate-500">+{resident.score_change}</p>
+                  </div>
+                </Link>
               </motion.div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card className="happyco-card" data-testid="dashboard-flagship-summary-card">
-          <CardHeader>
-            <CardTitle className="text-xl tracking-[-0.02em]">Flagship property snapshot</CardTitle>
-          </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-2">
+        <div className="saas-card" data-testid="dashboard-flagship-summary-card">
+          <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Flagship property snapshot</h3>
+          <div className="grid gap-3 sm:grid-cols-2">
             {dashboard.flagship_cards.map((card) => (
-              <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" data-testid={`dashboard-flagship-card-${card.key}`} key={card.key}>
-                <p className="text-sm text-muted-foreground">{card.label}</p>
-                <p className="mt-2 font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{card.value}</p>
-                {card.detail ? <p className="mt-1 text-sm text-muted-foreground">{card.detail}</p> : null}
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`dashboard-flagship-card-${card.key}`} key={card.key}>
+                <p className="text-xs font-medium text-slate-600">{card.label}</p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{card.value}</p>
+                {card.detail ? <p className="mt-1 text-xs text-slate-500">{card.detail}</p> : null}
               </div>
             ))}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
-        <Card className="happyco-card" data-testid="dashboard-properties-table-card">
-          <CardHeader>
-            <CardTitle className="text-xl tracking-[-0.02em]">Portfolio property context</CardTitle>
-          </CardHeader>
-          <CardContent className="rounded-2xl border border-border/80">
+        <div className="saas-card" data-testid="dashboard-properties-table-card">
+          <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Portfolio property context</h3>
+          <div className="overflow-hidden rounded-lg border border-slate-200">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>Property</TableHead>
-                  <TableHead className="text-right">Occupancy</TableHead>
-                  <TableHead className="text-right">At risk</TableHead>
-                  <TableHead className="text-right">Gross revenue</TableHead>
+                <TableRow className="border-slate-200 bg-slate-50">
+                  <TableHead className="text-xs font-semibold text-slate-700">Property</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-slate-700">Occupancy</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-slate-700">At risk</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-slate-700">Gross revenue</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {dashboard.portfolio_properties.map((property) => (
-                  <TableRow key={property.property_id}>
+                  <TableRow key={property.property_id} className="border-slate-200 hover:bg-slate-50">
                     <TableCell>
-                      <Link className="font-medium text-foreground hover:text-primary" data-testid={`dashboard-property-link-${property.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} to={`/app/admin/properties/${property.property_id}`}>
+                      <Link className="font-medium text-slate-900 hover:text-teal-600" data-testid={`dashboard-property-link-${property.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} to={`/app/admin/properties/${property.property_id}`}>
                         {property.name}
                       </Link>
                     </TableCell>
-                    <TableCell className="text-right text-foreground">{property.occupancy_rate}%</TableCell>
-                    <TableCell className="text-right text-foreground">{property.at_risk_residents}</TableCell>
-                    <TableCell className="text-right text-foreground">${property.gross_revenue.toLocaleString()}</TableCell>
+                    <TableCell className="text-right text-slate-700">{property.occupancy_rate}%</TableCell>
+                    <TableCell className="text-right text-slate-700">{property.at_risk_residents}</TableCell>
+                    <TableCell className="text-right font-medium text-slate-900">${property.gross_revenue.toLocaleString()}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <div className="grid gap-5">
-          <Card className="happyco-card" data-testid="dashboard-churn-weights-card">
-            <CardHeader>
-              <CardTitle className="text-xl tracking-[-0.02em]">Churn model weights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
+          <div className="saas-card" data-testid="dashboard-churn-weights-card">
+            <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Churn model weights</h3>
+            <div className="space-y-3">
               {dashboard.churn_weights.map((weight) => (
-                <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" data-testid={`dashboard-weight-${weight.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={weight.label}>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`dashboard-weight-${weight.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={weight.label}>
                   <div className="flex items-center justify-between">
-                    <p className="font-medium text-foreground">{weight.label}</p>
-                    <p className="text-sm font-semibold text-primary">{weight.weight}%</p>
+                    <p className="font-medium text-slate-900">{weight.label}</p>
+                    <p className="text-sm font-semibold text-teal-600">{weight.weight}%</p>
                   </div>
-                  <p className="mt-2 text-sm text-muted-foreground">{weight.description}</p>
+                  <p className="mt-2 text-sm text-slate-600">{weight.description}</p>
                 </div>
               ))}
-            </CardContent>
-          </Card>
-          <Card className="happyco-card" data-testid="dashboard-ai-highlights-card">
-            <CardHeader>
-              <CardTitle className="text-xl tracking-[-0.02em]">AI concierge highlights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
+            </div>
+          </div>
+          <div className="saas-card" data-testid="dashboard-ai-highlights-card">
+            <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">AI concierge highlights</h3>
+            <div className="space-y-3">
               {dashboard.ai_concierge_highlights.map((highlight, index) => (
-                <div className="rounded-2xl border border-border/80 bg-muted/35 p-4 text-sm leading-7 text-muted-foreground" data-testid={`dashboard-ai-highlight-${index + 1}`} key={highlight}>
+                <div className="rounded-lg border border-teal-200 bg-teal-50 p-4 text-sm leading-relaxed text-slate-700" data-testid={`dashboard-ai-highlight-${index + 1}`} key={highlight}>
                   {highlight}
                 </div>
               ))}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </section>
     </motion.div>

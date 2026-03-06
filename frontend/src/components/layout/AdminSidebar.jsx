@@ -27,22 +27,22 @@ export const AdminSidebar = () => {
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="surface-noise border-b border-border/80 bg-card/72 px-5 py-6 backdrop-blur xl:w-[280px] xl:border-b-0 xl:border-r"
+      className="admin-sidebar-dark px-5 py-6 xl:w-[260px]"
       data-testid="admin-sidebar"
     >
       <div className="flex items-center gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/12 text-primary" data-testid="admin-sidebar-brand-mark">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600/10 text-teal-400" data-testid="admin-sidebar-brand-mark">
           <Activity className="h-5 w-5" strokeWidth={1.75} />
         </div>
         <div>
-          <p className="font-[var(--font-heading)] text-base font-semibold tracking-[-0.02em] text-foreground">
+          <p className="font-[var(--font-heading)] text-sm font-semibold tracking-tight text-white">
             HappyCo Concierge
           </p>
-          <p className="text-xs text-muted-foreground">Admin workspace</p>
+          <p className="text-xs text-slate-400">Admin workspace</p>
         </div>
       </div>
 
-      <nav className="mt-8 grid gap-2" data-testid="admin-sidebar-nav">
+      <nav className="mt-8 space-y-1" data-testid="admin-sidebar-nav">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           return (
@@ -54,12 +54,9 @@ export const AdminSidebar = () => {
             >
               <NavLink
                 className={({ isActive }) =>
-                  [
-                    "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
-                    isActive
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-muted-foreground hover:bg-muted/70 hover:text-foreground hover:shadow-sm",
-                  ].join(" ")
+                  isActive
+                    ? "admin-nav-item admin-nav-item-active"
+                    : "admin-nav-item admin-nav-item-inactive"
                 }
                 data-testid={`sidebar-nav-${item.label.toLowerCase()}-link`}
                 to={item.path}

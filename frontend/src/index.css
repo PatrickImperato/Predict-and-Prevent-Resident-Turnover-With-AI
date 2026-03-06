@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,65 +6,70 @@
 
 @layer base {
   :root {
-    --font-heading: "Space Grotesk", sans-serif;
-    --font-body: "Work Sans", sans-serif;
+    --font-heading: "Inter", system-ui, sans-serif;
+    --font-body: "Inter", system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", monospace;
 
-    --background: 210 33% 98%;
-    --foreground: 222 22% 14%;
+    /* Premium SaaS Color System */
+    --background: 218 24% 97%;
+    --foreground: 222 47% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222 22% 14%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 22% 14%;
-    --primary: 185 78% 28%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 173 80% 40%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 35 62% 92%;
-    --secondary-foreground: 222 22% 14%;
-    --muted: 210 24% 95%;
-    --muted-foreground: 215 16% 42%;
-    --accent: 35 66% 88%;
-    --accent-foreground: 222 22% 14%;
-    --destructive: 350 80% 52%;
+    --secondary: 214 32% 97%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 215 20% 88%;
-    --input: 215 20% 88%;
-    --ring: 185 78% 28%;
-    --chart-1: 185 78% 28%;
-    --chart-2: 35 80% 52%;
-    --chart-3: 215 16% 42%;
-    --chart-4: 189 45% 46%;
-    --chart-5: 350 80% 52%;
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 173 80% 40%;
+    --chart-1: 173 80% 40%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 221 83% 53%;
+    --chart-5: 0 84% 60%;
     --radius: 0.75rem;
-    --shadow-soft: 0 1px 1px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.08);
-    --shadow-hard: 0 1px 1px rgba(16, 24, 40, 0.06), 0 16px 40px rgba(16, 24, 40, 0.12);
-    --surface-noise-opacity: 0.05;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   }
 
   .dark {
-    --background: 215 27% 10%;
-    --foreground: 210 33% 96%;
-    --card: 215 24% 14%;
-    --card-foreground: 210 33% 96%;
-    --popover: 215 24% 14%;
-    --popover-foreground: 210 33% 96%;
-    --primary: 185 70% 42%;
-    --primary-foreground: 210 40% 8%;
-    --secondary: 215 19% 18%;
-    --secondary-foreground: 210 33% 96%;
-    --muted: 215 19% 18%;
-    --muted-foreground: 214 15% 68%;
-    --accent: 35 39% 24%;
-    --accent-foreground: 210 33% 96%;
-    --destructive: 350 72% 50%;
-    --destructive-foreground: 210 33% 96%;
-    --border: 215 19% 24%;
-    --input: 215 19% 24%;
-    --ring: 185 70% 42%;
-    --chart-1: 185 70% 42%;
-    --chart-2: 35 73% 55%;
-    --chart-3: 214 15% 68%;
-    --chart-4: 189 51% 51%;
-    --chart-5: 350 72% 60%;
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 173 80% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 20%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 20%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --border: 217 33% 24%;
+    --input: 217 33% 24%;
+    --ring: 173 80% 40%;
+    --chart-1: 173 80% 40%;
+    --chart-2: 142 76% 36%;
+    --chart-3: 38 92% 50%;
+    --chart-4: 221 83% 53%;
+    --chart-5: 0 84% 60%;
   }
 
   * {
@@ -78,9 +83,10 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body);
-    background-image:
-      radial-gradient(circle at top left, rgba(13, 148, 136, 0.08), transparent 28%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+    font-feature-settings: "cv11", "ss01";
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -150,20 +156,61 @@
   }
 
   .happyco-card {
-    @apply rounded-xl border bg-card text-card-foreground;
-    box-shadow: var(--shadow-soft);
-  }
-
-  .happyco-card-hover {
-    @apply transition-shadow transition-colors;
+    @apply rounded-xl border border-slate-200 bg-white text-card-foreground;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 160ms cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .happyco-card-hover:hover {
-    box-shadow: var(--shadow-hard);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .saas-card {
+    @apply rounded-xl border border-slate-200 bg-white p-6;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 160ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  
+  .saas-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .saas-metric-card {
+    @apply rounded-xl border border-slate-200 bg-white p-6;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .saas-metric-card .metric-value {
+    @apply font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-slate-900;
+  }
+  
+  .saas-metric-card .metric-label {
+    @apply text-sm font-medium text-slate-600;
+  }
+  
+  .saas-metric-card .metric-detail {
+    @apply text-xs text-slate-500;
   }
 
   .teal-mist {
-    background: radial-gradient(600px circle at 20% 10%, rgba(13, 148, 136, 0.1), transparent 55%),
-      radial-gradient(500px circle at 85% 15%, rgba(245, 158, 11, 0.1), transparent 60%);
+    background: radial-gradient(600px circle at 20% 10%, rgba(20, 184, 166, 0.08), transparent 55%),
+      radial-gradient(500px circle at 85% 15%, rgba(245, 158, 11, 0.08), transparent 60%);
+  }
+  
+  .admin-sidebar-dark {
+    @apply bg-slate-900 text-slate-100;
+    border-right: 1px solid rgba(148, 163, 184, 0.1);
+  }
+  
+  .admin-nav-item {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all;
+  }
+  
+  .admin-nav-item-active {
+    @apply bg-teal-600/10 text-teal-400;
+  }
+  
+  .admin-nav-item-inactive {
+    @apply text-slate-400 hover:bg-slate-800 hover:text-slate-200;
   }
 }
