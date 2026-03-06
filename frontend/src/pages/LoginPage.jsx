@@ -3,13 +3,12 @@ import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, Users, DollarSign } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
-import { PublicFooter } from "@/components/public/PublicFooter";
 import { useAuth } from "@/context/AuthContext";
 
 const DEMO_ROLES = [
@@ -92,6 +91,42 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen overflow-hidden bg-background" data-testid="login-page-root">
+      {/* Top Navigation - MATCHES LANDING PAGE EXACTLY */}
+      <header className="absolute top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b border-border/40">
+        <div className="flex h-16 items-center justify-between px-6 lg:px-8">
+          <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
+            {/* Left: Logo */}
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
+              </div>
+              <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-foreground">
+                HappyCo Concierge
+              </p>
+            </div>
+
+            {/* Center: Nav Items in Pill */}
+            <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-1 rounded-full border border-border/60 bg-muted/30 px-1.5 py-1.5 backdrop-blur-[3px] md:flex">
+              <a href="/#insight" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Insight</a>
+              <a href="/#detection" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Detection</a>
+              <a href="/#concierge" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Concierge</a>
+              <a href="/#portfolio" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Portfolio</a>
+              <a href="/#roi" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">ROI</a>
+            </nav>
+
+            {/* Right: Actions */}
+            <div className="flex items-center gap-3">
+              <Link to="/legal" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Legal
+              </Link>
+              <Button asChild size="sm" className="h-8 rounded-full bg-primary px-4 text-[13px] font-medium shadow-none hover:bg-primary/90">
+                <Link to="/login">Sign In</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
       <div className="grid h-screen lg:grid-cols-[minmax(0,540px)_minmax(0,1fr)]">
         {/* Left Side: Login Form */}
         <div className="flex items-center justify-center bg-background px-8 py-12 lg:px-12">
@@ -102,14 +137,6 @@ export default function LoginPage() {
             className="w-full max-w-md"
           >
             <div className="mb-8">
-              <div className="mb-7 flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
-                </div>
-                <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-foreground">
-                  HappyCo Concierge
-                </p>
-              </div>
               <h1 className="font-[var(--font-heading)] text-4xl font-semibold tracking-[-0.02em] text-foreground">
                 Welcome back
               </h1>
@@ -172,24 +199,23 @@ export default function LoginPage() {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
+              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHx0ZWFsfDE3NzI3NzExODZ8MA&ixlib=rb-4.1.0&q=85"
               alt="City skyline"
               className="h-full w-full object-cover"
-              style={{ filter: 'contrast(1.1) brightness(0.68)' }}
+              style={{ filter: 'contrast(1.15) brightness(0.65)' }}
             />
-            <div className="absolute inset-0 bg-slate-900/96"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/88 via-slate-900/85 to-slate-800/88"></div>
+            <div className="absolute inset-0 bg-slate-900/97"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
           </div>
 
-          <div className="relative flex h-full flex-col justify-between p-10 xl:p-12">
+          <div className="relative flex h-full flex-col justify-between p-10 pt-24 xl:p-12 xl:pt-28">
             {/* Top: Platform Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
-              className="pt-4"
             >
-              <Badge className="mb-4 border-primary/15 bg-primary/8 text-primary" variant="secondary">
+              <Badge className="mb-4 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary" variant="secondary">
                 Demo Access
               </Badge>
               <h2 className="font-[var(--font-heading)] text-[38px] font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[40px]">
@@ -198,22 +224,22 @@ export default function LoginPage() {
               
               {/* Summary Metrics */}
               <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3.5 backdrop-blur-[4px]">
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 backdrop-blur-[3px]">
                   <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">35</p>
                   <p className="mt-1.5 text-[13px] font-medium text-white/50">At-risk residents</p>
                 </div>
-                <div className="rounded-xl border border-primary/15 bg-primary/[0.05] p-3.5 backdrop-blur-[4px]">
+                <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-3.5 backdrop-blur-[3px]">
                   <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
                   <p className="mt-1.5 text-[13px] font-medium text-primary/70">Net retention ROI</p>
                 </div>
-                <div className="rounded-xl border border-white/8 bg-white/[0.03] p-3.5 backdrop-blur-[4px]">
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 backdrop-blur-[3px]">
                   <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">6.55x</p>
                   <p className="mt-1.5 text-[13px] font-medium text-white/50">ROI multiple</p>
                 </div>
               </div>
             </motion.div>
 
-            {/* Bottom: Demo Role Cards */}
+            {/* Bottom: Demo Role Cards - CLEANER STYLING */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -233,11 +259,11 @@ export default function LoginPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: 0.5 + index * 0.08 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="group w-full rounded-xl border border-white/8 bg-white/[0.03] p-3.5 text-left backdrop-blur-[3px] transition-all duration-200 hover:border-white/12 hover:bg-white/[0.045] active:scale-[0.99]"
+                      className="group w-full rounded-xl border border-white/6 bg-white/[0.02] p-3.5 text-left backdrop-blur-[2px] transition-all duration-150 hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.99]"
                       data-testid={`demo-role-card-${role.id}`}
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/5 text-white/70 transition-colors group-hover:bg-primary/10 group-hover:text-primary">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 transition-colors group-hover:bg-primary/8 group-hover:text-primary">
                           <Icon className="h-[18px] w-[18px]" strokeWidth={2.5} />
                         </div>
                         <div className="min-w-0 flex-1">

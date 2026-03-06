@@ -15,100 +15,104 @@ export default function LandingPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHx0ZWFsfDE3NzI3NzExODZ8MA&ixlib=rb-4.1.0&q=85"
             alt="City skyline"
             className="h-full w-full object-cover"
-            style={{ filter: 'contrast(1.1) brightness(0.7)' }}
+            style={{ filter: 'contrast(1.15) brightness(0.65)' }}
           />
-          <div className="absolute inset-0 bg-slate-900/96"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/85 to-slate-800/90"></div>
+          <div className="absolute inset-0 bg-slate-900/97"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
         </div>
 
-        {/* Top Navigation */}
-        <motion.div
+        {/* Top Navigation - EXACT REFERENCE MATCH */}
+        <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 z-50 w-full px-6 pt-3 lg:px-8"
+          className="absolute top-0 z-50 w-full"
         >
-          <div className="mx-auto flex max-w-[1400px] items-center justify-between">
-            {/* Left: Logo */}
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 text-primary" data-testid="landing-brand-mark">
-                <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
+          <div className="flex h-16 items-center justify-between px-6 lg:px-8">
+            <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
+              {/* Left: Logo */}
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 text-primary" data-testid="landing-brand-mark">
+                  <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                </div>
+                <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-white">
+                  HappyCo Concierge
+                </p>
               </div>
-              <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-white">
-                HappyCo Concierge
-              </p>
-            </div>
 
-            {/* Center: Nav Items in Pill */}
-            <nav className="hidden items-center gap-0.5 rounded-full border border-white/6 bg-white/[0.025] px-0.5 py-0.5 backdrop-blur-[4px] md:flex">
-              <a href="#insight" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Insight</a>
-              <a href="#detection" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Detection</a>
-              <a href="#concierge" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Concierge</a>
-              <a href="#portfolio" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Portfolio</a>
-              <a href="#roi" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">ROI</a>
-            </nav>
+              {/* Center: Nav Items in Pill */}
+              <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-1 rounded-full border border-white/6 bg-white/[0.02] px-1.5 py-1.5 backdrop-blur-[3px] md:flex">
+                <a href="#insight" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/5 hover:text-white">Insight</a>
+                <a href="#detection" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/5 hover:text-white">Detection</a>
+                <a href="#concierge" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/5 hover:text-white">Concierge</a>
+                <a href="#portfolio" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/5 hover:text-white">Portfolio</a>
+                <a href="#roi" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/5 hover:text-white">ROI</a>
+              </nav>
 
-            {/* Right: Actions */}
-            <div className="flex items-center gap-3">
-              <Link to="/legal" className="text-sm font-medium text-white/40 transition-colors hover:text-white/60">
-                Legal
-              </Link>
-              <Button asChild size="sm" className="h-8 rounded-full bg-primary px-4 text-sm font-medium shadow-sm hover:bg-primary/90" data-testid="landing-sign-in-nav">
-                <Link to="/login">Sign In</Link>
-              </Button>
+              {/* Right: Actions */}
+              <div className="flex items-center gap-3">
+                <Link to="/legal" className="text-sm font-medium text-white/40 transition-colors hover:text-white/60">
+                  Legal
+                </Link>
+                <Button asChild size="sm" className="h-8 rounded-full bg-primary px-4 text-[13px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-sign-in-nav">
+                  <Link to="/login">Sign In</Link>
+                </Button>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </motion.header>
 
         {/* Hero Content */}
-        <div className="relative mx-auto max-w-[1400px] px-6 pb-16 pt-24 lg:px-8 lg:pb-20 lg:pt-28">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="max-w-2xl"
-          >
-            <Badge
-              className="mb-4 border-primary/15 bg-primary/8 text-primary hover:bg-primary/8"
-              variant="secondary"
-              data-testid="landing-hero-badge"
+        <div className="relative h-full flex flex-col">
+          <div className="flex-1 mx-auto w-full max-w-[1400px] px-6 pt-24 pb-32 lg:px-8 lg:pt-28 lg:pb-36">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="max-w-[720px]"
             >
-              Retention Intelligence Platform
-            </Badge>
+              <Badge
+                className="mb-5 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary hover:bg-primary/8"
+                variant="secondary"
+                data-testid="landing-hero-badge"
+              >
+                Retention Intelligence Platform
+              </Badge>
 
-            <h1 className="font-[var(--font-heading)] text-5xl font-semibold leading-[1.1] tracking-[-0.03em] text-white lg:text-[56px]" data-testid="landing-hero-title">
-              Predict and Prevent <span className="text-primary">Resident Churn</span>
-            </h1>
+              <h1 className="font-[var(--font-heading)] text-5xl font-semibold leading-[1.1] tracking-[-0.03em] text-white lg:text-[56px]" data-testid="landing-hero-title">
+                Predict and Prevent <span className="text-primary">Resident Churn</span>
+              </h1>
 
-            <p className="mt-4 max-w-[520px] text-[17px] leading-relaxed text-white/65">
-              Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
-            </p>
+              <p className="mt-5 max-w-[520px] text-[17px] leading-[1.6] text-white/65">
+                Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
+              </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-2.5">
-              <Button asChild size="lg" className="h-11 rounded-full bg-primary px-6 text-[15px] font-medium shadow-sm hover:bg-primary/90" data-testid="landing-hero-cta">
-                <Link to="/login">
-                  View Demo
-                  <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2.5} />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="h-11 rounded-full border-white/10 bg-white/[0.03] px-6 text-[15px] font-medium text-white backdrop-blur-sm hover:bg-white/[0.06]" data-testid="landing-hero-secondary-cta">
-                <Link to="/login">Sign In</Link>
-              </Button>
-            </div>
-          </motion.div>
+              <div className="mt-7 flex flex-wrap items-center gap-3">
+                <Button asChild size="lg" className="h-11 rounded-full bg-primary px-6 text-[15px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-hero-cta">
+                  <Link to="/login">
+                    View Demo
+                    <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2.5} />
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="h-11 rounded-full border-white/8 bg-white/[0.02] px-6 text-[15px] font-medium text-white backdrop-blur-sm hover:bg-white/[0.04] hover:border-white/12" data-testid="landing-hero-secondary-cta">
+                  <Link to="/login">Sign In</Link>
+                </Button>
+              </div>
+            </motion.div>
+          </div>
 
-          {/* Proof Metric Cards */}
+          {/* Proof Metric Cards - ANCHORED TO BOTTOM */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="absolute bottom-16 left-6 right-6 lg:bottom-20 lg:left-8 lg:right-8"
+            className="absolute bottom-12 left-0 right-0 px-6 lg:px-8"
           >
             <div className="mx-auto grid max-w-[1400px] gap-4 md:grid-cols-3">
-              <div className="rounded-xl border border-white/8 bg-white/[0.03] p-4 backdrop-blur-[4px]">
+              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/70">
                     <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -120,7 +124,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-white/8 bg-white/[0.03] p-4 backdrop-blur-[4px]">
+              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/70">
                     <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -132,7 +136,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-primary/15 bg-primary/[0.05] p-4 backdrop-blur-[4px]">
+              <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -264,7 +268,7 @@ export default function LandingPage() {
               Explore admin dashboards, manager workflows, and resident interfaces with Seattle portfolio demo data
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <Button asChild size="lg" className="h-10 px-5 text-sm shadow-sm" data-testid="landing-cta-primary">
+              <Button asChild size="lg" className="h-10 px-5 text-sm shadow-none" data-testid="landing-cta-primary">
                 <Link to="/login">
                   View Demo
                   <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2} />
