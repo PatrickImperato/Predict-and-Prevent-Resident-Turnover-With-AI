@@ -6,7 +6,14 @@
 - Environments use **explicit config only**: `APP_ENV=preview|production` (no hostname guessing; no silent DB fallback).
 - **One preview database only** + **one production database only** (same schema, isolated data).
 - Preview has **demo mode**; production starts with the **same seeded demo dataset** but in its **own production DB**.
-- Auth approach for V1: **seed demo/admin accounts first**, keep current admin login behavior as close as possible, refine parity later.
+- Auth approach for V1:
+  - Seed demo/admin accounts first; keep current admin login behavior as close as possible; refine parity later.
+  - **Session approach:** **secure cookie session** (confirmed).
+- Routing requirements:
+  - Keep admin route base **`/app/admin/*` exactly** (confirmed).
+  - Use **id-based routing** for detail pages.
+- Audience/scope:
+  - Resident/manager auth exists, but **UI focus stays admin-first** for V1 (confirmed).
 - Roll out to a **test domain (placeholder for now: `<TBD_TEST_DOMAIN>`)** before any cutover to `happyco.talapartners.com`.
 - Built-in diagnostics from day one:
   - Diagnostics UI and API are first-class features.
@@ -14,9 +21,10 @@
 - Seed operations controls (confirmed):
   - **Preview reset is restricted to super-admin only**.
   - **Production bootstrap is a deployment-time protected step only** (not a normal admin-triggered action / endpoint).
+  - **Seed services execution model:** built into backend as **restricted internal services** (confirmed).
 - Planning/blueprint constraint:
-  - Phase 1 and Phase 2 produced **planning + architecture artifacts only**—**no full app code**, **no DB code**, **no deployment commands**.
-  - Implementation begins in Phase 3.
+  - Phase 1–3 are architecture/plans first.
+  - **No full app code**, **no DB code**, **no deployment commands** in blueprint phases.
 
 **Reference findings (crawled):**
 - Landing page messaging centers on retention intelligence / churn prevention, with KPI-style stats and portfolio ROI framing.
@@ -125,43 +133,72 @@ plus hard cross-environment guardrails.
 4. As stakeholders, we can verify production bootstrap is only performed at deploy time (not from an admin UI).
 5. As an admin, I can see audit evidence (seed/bootstrap/settings changes) in diagnostics.
 
-### Phase 3 — Backend/data layer MVP ⏳ NOT STARTED
-- Auth/session baseline (seeded accounts first); role gating for admin routes.
-- Read APIs to support dashboard KPIs, lists, and detail pages.
-- Write APIs for provider management + settings + (preview-only) seed reset utilities (restricted).
+### Phase 3 — Implementation Architecture Blueprint (no full code) ✅ COMPLETED
+**Purpose:** Define *how* V1 will be implemented (module boundaries, contracts, middleware, and UI structure) while preserving the Phase 2 guardrails.
+
+**Confirmed Phase 3 implementation decisions:**
+- **Auth/session:** secure cookie session.
+- **Admin route base:** keep `/app/admin/*` exactly.
+- **Resident/manager:** auth exists, but UI focus stays admin-first.
+- **Seed execution model:** seed services live inside backend as restricted internal services.
+
+**Delivered Phase 3 blueprint outputs (architecture only; no full implementation code):**
+- Backend module structure
+- Diagnostics endpoint contracts (request/response shapes)
+- Auth + role middleware design
+- Seed service architecture for dataset `demoA`
+- Preview reset workflow design (super-admin only)
+- Production bootstrap workflow design (deployment-time only)
+- Frontend route map
+- Frontend component structure
+- Admin layout shell structure
+- Diagnostics admin page component structure
+
+**Exit criteria for Phase 3 (now satisfied):**
+- Clear folder/module boundaries on backend and frontend.
+- Explicit endpoint inventory for V1 (especially diagnostics/auth).
+- A security model that prevents preview/prod cross access by construction.
+- Seed/reset/bootstrap flows fully specified with gates, auditing, and diagnostics visibility.
+
+### Phase 4 — Backend MVP implementation (env config + auth + diagnostics + core read APIs) ⏳ NOT STARTED
+**Implementation starts here.**
+- Implement validated environment config loader + single-DB binding.
+- Implement secure cookie session auth.
+- Implement diagnostics endpoints and minimal diagnostics admin UI.
+- Implement core read APIs for dashboard, properties, tenants, providers, analytics, settings.
 
 User stories:
 1. As admin, I can log in and maintain a session across admin pages.
-2. As admin, I can list properties/providers/residents with stable IDs.
-3. As admin, I can edit a provider and see changes reflected immediately.
-4. As admin, I can adjust global settings and see analytics update.
-5. As admin, audit events record sensitive actions (seed reset/settings changes).
+2. As admin, I can open Diagnostics and verify environment + DB binding.
+3. As admin, I can list properties/providers/residents with stable IDs.
+4. As admin, I can view dashboard KPIs with gross vs credits separate.
+5. As admin, audit events record sensitive actions (settings changes, preview reset attempts).
 
-### Phase 4 — Frontend parity MVP (match preview UI structure) ⏳ NOT STARTED
-- Public landing + login (demo cards; preview-only demo mode / toggle as specified).
-- Admin shell layout (sidebar/topbar) per design guidelines; pages scaffolded.
-- Dashboard KPIs + charts (recharts) + tables.
+### Phase 5 — Frontend parity implementation (admin-first) ⏳ NOT STARTED
+- Implement public landing and login parity.
+- Implement admin shell layout per design guidelines.
+- Implement admin pages: Dashboard, Properties, Providers, Tenants, Analytics, Settings, Diagnostics.
 
 User stories:
 1. As a prospect, I can view the landing page and understand churn/ROI value quickly.
 2. As a demo user, I can click a demo card to autofill login and sign in.
-3. As admin, I can navigate between Dashboard/Properties/Providers/Tenants/Analytics/Settings/Diagnostics.
-4. As admin, I can switch properties and see page content update.
+3. As admin, I can navigate between all admin pages without broken links.
+4. As admin, property switching updates views consistently.
 5. As admin, KPIs show gross vs credits distinctly.
 
-### Phase 5 — Diagnostics/auth hardening + ops workflows ⏳ NOT STARTED
+### Phase 6 — Hardening: auth consistency + diagnostics depth + seed/reset UX ⏳ NOT STARTED
 - Tighten admin authorization across routes (no 403 surprises).
-- Expand diagnostics endpoints + UI: env/host/db/user/role/build + counts + last seed run.
-- Preview seed reset UX with confirmation (super-admin only).
+- Expand diagnostics endpoints and warnings (missing datasetId, collection drift).
+- Implement preview reset UX with explicit confirmation (super-admin only).
 
 User stories:
 1. As admin, I never see “403” due to inconsistent auth on a valid session.
 2. As admin, I can export/copy diagnostics values for support.
 3. As admin, I can confirm last seed time and datasetId.
 4. As super-admin, I can reset preview safely with explicit confirmation.
-5. As operator, I can understand credit vs revenue semantics from labels.
+5. As stakeholder, diagnostics clearly shows which DB is bound and why.
 
-### Phase 6 — Testing/polish ⏳ NOT STARTED
+### Phase 7 — Testing/polish ⏳ NOT STARTED
 - Parity sweep: labels/copy/layout; `data-testid` coverage; empty/loading states.
 - Reconciliation tests for KPI math and analytics totals.
 
@@ -172,7 +209,7 @@ User stories:
 4. As QA, data-testid exists on all key controls/values.
 5. As admin, empty states are understandable and actionable.
 
-### Phase 7 — Deployment verification + cutover ⏳ NOT STARTED
+### Phase 8 — Deployment verification + cutover ⏳ NOT STARTED
 - Deploy production to `<TBD_TEST_DOMAIN>`; verify env binding + diagnostics.
 - Only after approval, swap to `happyco.talapartners.com`.
 
@@ -184,12 +221,13 @@ User stories:
 5. As stakeholder, I can approve go-live based on a checklist.
 
 ## 3) Next Actions
-- Begin Phase 3 implementation by building the validated environment config loader + diagnostics endpoints first (per Phase 2 blueprint).
-- Capture remaining parity specifics that are behind auth (admin pages) via screenshots or an approved admin walkthrough.
-- Lock the minimal V1 API surface needed for dashboard + lists + settings + diagnostics.
+- Begin **Phase 4** implementation in this order:
+  1) environment config + fail-fast validation, 2) secure cookie session auth, 3) diagnostics endpoints, 4) diagnostics admin page.
+- Capture remaining parity specifics behind auth (admin pages) via screenshots or an approved admin walkthrough.
+- Lock minimal V1 endpoint list for dashboard + lists + settings + diagnostics.
 - Define stable IDs for the 3 properties + Alex Chen to keep routing deterministic.
-- Draft the diagnostics checklist and seed reconciliation targets (gross/credits/net).
-- Decide the exact test domain value before Phase 7.
+- Draft diagnostics checklist and seed reconciliation targets (gross/credits/net).
+- Decide the exact test domain value before Phase 8.
 
 ## 4) Success Criteria
 - Environment separation is provable: diagnostics + hard failures prevent mixing.
