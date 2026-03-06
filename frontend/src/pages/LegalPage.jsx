@@ -26,7 +26,7 @@ export default function LegalPage() {
                 Overview
               </Link>
             </Button>
-            <Button asChild size="sm" className="h-8 text-sm">
+            <Button asChild size="sm" className="h-9 rounded-full bg-primary px-5 text-[14px] font-medium shadow-none hover:bg-primary/90">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>
@@ -53,7 +53,7 @@ export default function LegalPage() {
                 <p className="mt-1 text-sm text-muted-foreground">Last updated: March 2026</p>
               </div>
             </div>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-[16px] text-muted-foreground leading-relaxed">
               This Legal Notice governs access to and use of this demonstration platform and all associated materials. By accessing this platform, the Recipient agrees to be bound by the terms set forth herein.
             </p>
           </div>
@@ -252,9 +252,9 @@ export default function LegalPage() {
             </section>
           </div>
 
-          {/* Footer Notice */}
-          <div className="mt-12 pt-8 border-t border-border/60">
-            <p className="text-center text-xs text-muted-foreground/70">
+          {/* Integrated IP Notice */}
+          <div className="mt-12 pt-8 border-t border-border/40">
+            <p className="text-center text-xs text-muted-foreground/50 leading-relaxed">
               © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
             </p>
           </div>

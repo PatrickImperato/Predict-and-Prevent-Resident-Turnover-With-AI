@@ -113,6 +113,9 @@ export default function LoginPage() {
               <Link to="/legal" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Legal
               </Link>
+              <Button asChild size="sm" className="h-9 rounded-full bg-primary px-5 text-[14px] font-medium shadow-none hover:bg-primary/90">
+                <Link to="/login">Sign In</Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -131,19 +134,19 @@ export default function LoginPage() {
               <h1 className="font-[var(--font-heading)] text-4xl font-semibold tracking-[-0.02em] text-foreground">
                 Welcome back
               </h1>
-              <p className="mt-2 text-base text-muted-foreground">
+              <p className="mt-3 text-[16px] text-muted-foreground">
                 Sign in to access the platform
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-foreground">
+                <Label htmlFor="email" className="text-[14px] font-medium text-foreground">
                   Email
                 </Label>
                 <Input
                   autoComplete="email"
-                  className="h-11"
+                  className="h-11 text-[15px]"
                   data-testid="login-email-input"
                   disabled={submitting}
                   id="email"
@@ -156,12 +159,12 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium text-foreground">
+                <Label htmlFor="password" className="text-[14px] font-medium text-foreground">
                   Password
                 </Label>
                 <Input
                   autoComplete="current-password"
-                  className="h-11"
+                  className="h-11 text-[15px]"
                   data-testid="login-password-input"
                   disabled={submitting}
                   id="password"
@@ -174,7 +177,7 @@ export default function LoginPage() {
               </div>
 
               <Button
-                className="h-11 w-full bg-primary text-sm font-medium shadow-none hover:bg-primary/90"
+                className="h-12 w-full bg-primary text-[15px] font-medium shadow-none hover:bg-primary/90"
                 data-testid="login-submit-button"
                 disabled={submitting}
                 type="submit"
@@ -209,23 +212,23 @@ export default function LoginPage() {
               <Badge className="mb-4 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary" variant="secondary">
                 Demo Access
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-[38px] font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[40px]">
+              <h2 className="font-[var(--font-heading)] text-[38px] font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[42px]">
                 AI Concierge Platform for Multifamily Operations
               </h2>
               
               {/* Summary Metrics */}
               <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">35</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-white/50">At-risk residents</p>
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
+                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-white">$3,800</p>
+                  <p className="mt-2 text-[14px] font-medium text-white/50">Avg. turnover cost</p>
                 </div>
-                <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-3.5 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-primary/70">Net retention ROI</p>
+                <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-4 backdrop-blur-[3px]">
+                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-primary">10–15%</p>
+                  <p className="mt-2 text-[14px] font-medium text-primary/70">Annual turnover rate</p>
                 </div>
-                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">6.55x</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-white/50">ROI multiple</p>
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
+                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-white">$496K</p>
+                  <p className="mt-2 text-[14px] font-medium text-white/50">Portfolio ROI example</p>
                 </div>
               </div>
             </motion.div>
@@ -250,7 +253,7 @@ export default function LoginPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: 0.5 + index * 0.08 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="group w-full rounded-xl border border-white/6 bg-white/[0.02] p-3.5 text-left backdrop-blur-[2px] transition-all duration-150 hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.99]"
+                      className="group w-full rounded-xl border border-white/6 bg-white/[0.02] p-4 text-left backdrop-blur-[2px] transition-all duration-150 hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.99]"
                       data-testid={`demo-role-card-${role.id}`}
                     >
                       <div className="flex items-center gap-3">
@@ -259,7 +262,7 @@ export default function LoginPage() {
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="text-[15px] font-semibold text-white">{role.title}</p>
-                          <p className="mt-0.5 text-[13px] text-white/50">{role.description}</p>
+                          <p className="mt-0.5 text-[14px] text-white/50">{role.description}</p>
                           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[12px]">
                             <p className="text-white/40">
                               <span className="text-white/30">Email:</span> {role.email}
@@ -279,10 +282,10 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Intellectual Property Footer */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 bg-background py-3">
+      {/* Integrated IP Notice - Natural Footer Placement */}
+      <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm py-3">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-muted-foreground/70">
+          <p className="text-center text-xs text-muted-foreground/50 leading-relaxed">
             © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
           </p>
         </div>
