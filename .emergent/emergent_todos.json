@@ -1,14 +1,1 @@
-[
-  {
-    "content": "Implement expanded coherent demoA seed model and backend read APIs for dashboard and properties",
-    "status": "completed"
-  },
-  {
-    "content": "Implement dashboard, properties list, property detail, legal page, and visible public legal/privacy/cookie links",
-    "status": "completed"
-  },
-  {
-    "content": "Test reconciliation, auth-gated admin routes, and frontend/backend integration for seeded metrics",
-    "status": "in_progress"
-  }
-]
+[]
