@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, AlertCircle, Target, MessageSquare, Gift, CheckCircle2, Building2, TrendingDown, Wrench, CreditCard, Mail, Calendar, BarChart2 } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, AlertCircle, Target, MessageSquare, Gift, CheckCircle2, Building2, TrendingDown, Wrench, CreditCard, Mail, Calendar, BarChart2, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
 
-// Property-specific data - RICH DIFFERENTIATION
+// Property-specific data with CUSTOMIZED SCORING WEIGHTS
 const PROPERTIES = {
   riverside: {
     id: 'riverside',
@@ -28,7 +28,15 @@ const PROPERTIES = {
     retainedCount: 22,
     trend: '+18% vs target',
     renewalRisk: 'Concentrated in high-maintenance units',
-    profile: 'Largest operational burden, high service friction'
+    profile: 'Highest operational burden, strong recovery upside from maintenance improvements',
+    insight: 'High maintenance friction drives churn risk—intervention focused on service quality improvements shows strongest ROI potential',
+    // CUSTOMIZED WEIGHTS for Riverside
+    scoringWeights: {
+      maintenance: 42,
+      engagement: 28,
+      payment: 18,
+      tenure: 12
+    }
   },
   parkview: {
     id: 'parkview',
@@ -48,7 +56,15 @@ const PROPERTIES = {
     retainedCount: 15,
     trend: '+24% vs target',
     renewalRisk: 'Distributed across building',
-    profile: 'Mid-sized, moderate friction, healthier retention mix'
+    profile: 'Healthier engagement profile, moderate friction, best retention performance',
+    insight: 'Engagement-driven model reflects strong community participation—preventive outreach yields highest retention rate in portfolio',
+    // CUSTOMIZED WEIGHTS for Parkview
+    scoringWeights: {
+      engagement: 38,
+      maintenance: 25,
+      tenure: 22,
+      payment: 15
+    }
   },
   summit: {
     id: 'summit',
@@ -68,11 +84,19 @@ const PROPERTIES = {
     retainedCount: 28,
     trend: '+12% vs target',
     renewalRisk: 'Payment sensitivity, high dispersion',
-    profile: 'Largest unit count, payment and service dual pressure'
+    profile: 'Largest scale with dual pressure from payment risk and service volume',
+    insight: 'Payment patterns and maintenance volume both elevated—combined intervention addressing financial support and service quality required',
+    // CUSTOMIZED WEIGHTS for Summit
+    scoringWeights: {
+      payment: 36,
+      maintenance: 32,
+      engagement: 20,
+      tenure: 12
+    }
   }
 };
 
-// Friction tab scenarios - MEANINGFUL DIFFERENCES
+// Friction tab scenarios
 const FRICTION_SCENARIOS = {
   maintenance: {
     id: 'maintenance',
@@ -244,7 +268,7 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Proof Cards - SIGNIFICANTLY MORE SPACE FROM CTA */}
+          {/* Proof Cards */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -292,7 +316,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Below the fold - BETTER CONTRAST */}
+      {/* Below the fold */}
       <main className="bg-zinc-50">
         {/* Insight Section - INTERACTIVE SCENARIOS */}
         <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="insight">
@@ -412,7 +436,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Detection Section - PREMIUM QUALITY */}
+        {/* Detection Section - CUSTOM WEIGHTS PER PROPERTY */}
         <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="detection">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -446,46 +470,53 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-8 grid gap-4 lg:grid-cols-2">
-              {/* Scoring Model */}
+              {/* Scoring Model - CUSTOMIZED PER PROPERTY */}
               <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-                <h3 className="mb-5 text-sm font-semibold text-zinc-900">Scoring Model</h3>
+                <h3 className="mb-5 text-sm font-semibold text-zinc-900">Scoring Model · {selectedProperty.name}</h3>
                 <div className="space-y-4">
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs">
                       <span className="font-medium text-zinc-700">Maintenance friction</span>
-                      <span className="font-semibold text-zinc-900">35%</span>
+                      <span className="font-semibold text-zinc-900">{selectedProperty.scoringWeights.maintenance}%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-zinc-100">
-                      <div className="h-full w-[35%] rounded-full bg-red-500"></div>
+                      <div className="h-full rounded-full bg-red-500" style={{ width: `${selectedProperty.scoringWeights.maintenance}%` }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs">
                       <span className="font-medium text-zinc-700">Engagement signals</span>
-                      <span className="font-semibold text-zinc-900">25%</span>
+                      <span className="font-semibold text-zinc-900">{selectedProperty.scoringWeights.engagement}%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-zinc-100">
-                      <div className="h-full w-[25%] rounded-full bg-orange-500"></div>
+                      <div className="h-full rounded-full bg-orange-500" style={{ width: `${selectedProperty.scoringWeights.engagement}%` }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs">
                       <span className="font-medium text-zinc-700">Payment patterns</span>
-                      <span className="font-semibold text-zinc-900">20%</span>
+                      <span className="font-semibold text-zinc-900">{selectedProperty.scoringWeights.payment}%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-zinc-100">
-                      <div className="h-full w-[20%] rounded-full bg-amber-500"></div>
+                      <div className="h-full rounded-full bg-amber-500" style={{ width: `${selectedProperty.scoringWeights.payment}%` }}></div>
                     </div>
                   </div>
                   <div>
                     <div className="mb-2 flex items-center justify-between text-xs">
                       <span className="font-medium text-zinc-700">Tenure & history</span>
-                      <span className="font-semibold text-zinc-900">20%</span>
+                      <span className="font-semibold text-zinc-900">{selectedProperty.scoringWeights.tenure}%</span>
                     </div>
                     <div className="h-2 w-full rounded-full bg-zinc-100">
-                      <div className="h-full w-[20%] rounded-full bg-blue-500"></div>
+                      <div className="h-full rounded-full bg-blue-500" style={{ width: `${selectedProperty.scoringWeights.tenure}%` }}></div>
                     </div>
                   </div>
+                </div>
+                
+                {/* Model Insight */}
+                <div className="mt-5 rounded-lg border border-primary/20 bg-primary/5 p-3">
+                  <p className="text-xs text-zinc-700 leading-relaxed">
+                    <span className="font-semibold text-primary">Model insight:</span> {selectedProperty.insight}
+                  </p>
                 </div>
               </div>
 
@@ -541,7 +572,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Concierge Section - CORRECTED ORDER + PREMIUM UPGRADE */}
+        {/* Concierge Section - UPGRADED RIGHT PANEL */}
         <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="concierge">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -557,7 +588,7 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
-              {/* Channels - CORRECTED ORDER: SMS → Mobile App → Browser Backup */}
+              {/* Left Panel: Channels */}
               <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
@@ -582,7 +613,7 @@ export default function LandingPage() {
                     </div>
                     <span className="text-xs text-zinc-500">Coming soon</span>
                   </div>
-                  {/* 3. Browser Backup - ENABLED */}
+                  {/* 3. Browser Backup */}
                   <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
                     <div className="flex items-center gap-3">
                       <Mail className="h-4 w-4 text-zinc-500" />
@@ -593,7 +624,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Intervention Flow - STRUCTURED */}
+              {/* Right Panel: Intervention Flow - PREMIUM UPGRADE */}
               <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
@@ -601,41 +632,54 @@ export default function LandingPage() {
                   </div>
                   <h3 className="text-sm font-semibold text-zinc-900">Intervention Flow</h3>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-xs font-bold text-red-700">1</div>
+                <div className="space-y-5">
+                  {/* Step 1 */}
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-sm font-bold text-red-700">1</div>
                     <div className="flex-1 pt-1">
-                      <p className="text-sm font-semibold text-zinc-900">Risk detected</p>
-                      <p className="text-xs text-zinc-600">Score threshold triggered</p>
+                      <p className="text-[15px] font-semibold text-zinc-900 leading-snug">Risk detected</p>
+                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">Score threshold triggered</p>
                     </div>
-                    <AlertCircle className="h-4 w-4 text-red-600 mt-1" />
+                    <AlertCircle className="h-5 w-5 text-red-600 mt-1.5 flex-shrink-0" />
                   </div>
-                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">2</div>
+                  
+                  {/* Connector */}
+                  <div className="ml-5 h-6 w-0.5 bg-gradient-to-b from-zinc-200 to-zinc-100"></div>
+                  
+                  {/* Step 2 */}
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700">2</div>
                     <div className="flex-1 pt-1">
-                      <p className="text-sm font-semibold text-zinc-900">Credit allocated</p>
-                      <p className="text-xs text-zinc-600">Tiered by risk level ($75-$250)</p>
+                      <p className="text-[15px] font-semibold text-zinc-900 leading-snug">Credit allocated</p>
+                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">$10–$55 per service; free service for very high risk</p>
                     </div>
-                    <CreditCard className="h-4 w-4 text-amber-600 mt-1" />
+                    <CreditCard className="h-5 w-5 text-amber-600 mt-1.5 flex-shrink-0" />
                   </div>
-                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">3</div>
+                  
+                  {/* Connector */}
+                  <div className="ml-5 h-6 w-0.5 bg-gradient-to-b from-zinc-100 to-zinc-200"></div>
+                  
+                  {/* Step 3 */}
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">3</div>
                     <div className="flex-1 pt-1">
-                      <p className="text-sm font-semibold text-zinc-900">Resident engagement</p>
-                      <p className="text-xs text-zinc-600">Book service or redeem credit</p>
+                      <p className="text-[15px] font-semibold text-zinc-900 leading-snug">Resident engagement</p>
+                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">Book service or redeem credit</p>
                     </div>
-                    <Calendar className="h-4 w-4 text-blue-600 mt-1" />
+                    <Calendar className="h-5 w-5 text-blue-600 mt-1.5 flex-shrink-0" />
                   </div>
-                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">4</div>
+                  
+                  {/* Connector */}
+                  <div className="ml-5 h-6 w-0.5 bg-gradient-to-b from-zinc-200 to-zinc-100"></div>
+                  
+                  {/* Step 4 */}
+                  <div className="flex items-start gap-4">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">4</div>
                     <div className="flex-1 pt-1">
-                      <p className="text-sm font-semibold text-zinc-900">Risk reduced</p>
-                      <p className="text-xs text-zinc-600">Retention probability increased</p>
+                      <p className="text-[15px] font-semibold text-zinc-900 leading-snug">Risk reduced</p>
+                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">Retention probability increased</p>
                     </div>
-                    <TrendingUp className="h-4 w-4 text-primary mt-1" />
+                    <TrendingUp className="h-5 w-5 text-primary mt-1.5 flex-shrink-0" />
                   </div>
                 </div>
               </div>
@@ -643,7 +687,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Portfolio Section - ANALYTICAL UPGRADE */}
+        {/* Portfolio Section - MORE INSIGHT */}
         <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="portfolio">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
@@ -688,118 +732,146 @@ export default function LandingPage() {
 
             {portfolioView === 'single' ? (
               <div className="mt-8">
-                <p className="mb-5 text-center text-sm font-medium text-zinc-700">{PROPERTIES.riverside.name} Performance</p>
+                {/* Metric Explanations */}
+                <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-zinc-900 mb-2">Understanding Riverside Towers Performance</p>
+                      <p className="text-[13px] text-zinc-700 leading-relaxed">{PROPERTIES.riverside.profile}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="mb-5 text-center text-sm font-medium text-zinc-700">{PROPERTIES.riverside.name} · 12-Month Results</p>
                 <div className="grid gap-4 sm:grid-cols-3 mb-6">
                   <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                     <p className="text-xs text-zinc-600 font-medium">Net retention ROI</p>
                     <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-primary">${PROPERTIES.riverside.roi.toLocaleString()}</p>
                     <p className="mt-1 text-xs font-medium text-primary">{PROPERTIES.riverside.trend}</p>
+                    <p className="mt-2 text-xs text-zinc-500 leading-relaxed">Total value recovered by preventing resident turnover</p>
                   </div>
                   <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                     <p className="text-xs text-zinc-600 font-medium">Retained residents</p>
                     <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-zinc-900">{PROPERTIES.riverside.retainedCount}</p>
                     <p className="mt-1 text-xs text-zinc-600">{PROPERTIES.riverside.retentionRate}% retention rate</p>
+                    <p className="mt-2 text-xs text-zinc-500 leading-relaxed">At-risk residents successfully retained through intervention</p>
                   </div>
                   <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                     <p className="text-xs text-zinc-600 font-medium">ROI multiple</p>
                     <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-zinc-900">{PROPERTIES.riverside.roiMultiple}</p>
                     <p className="mt-1 text-xs text-primary">{PROPERTIES.riverside.trend}</p>
+                    <p className="mt-2 text-xs text-zinc-500 leading-relaxed">Return per dollar spent on intervention credits</p>
                   </div>
-                </div>
-                <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                  <p className="text-sm font-semibold text-zinc-900 mb-3">Property Profile</p>
-                  <p className="text-sm text-zinc-600 leading-relaxed">{PROPERTIES.riverside.profile}</p>
                 </div>
               </div>
             ) : (
-              <div className="mt-8 space-y-4">
-                {Object.values(PROPERTIES).map((prop) => (
-                  <div key={prop.id} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
-                    <div className="flex flex-col gap-4">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex items-start gap-3">
-                          <Building2 className="h-5 w-5 flex-shrink-0 text-zinc-500 mt-0.5" />
-                          <div>
-                            <p className="text-sm font-semibold text-zinc-900">{prop.name}</p>
-                            <p className="text-xs text-zinc-600 mt-0.5">{prop.units} units · {prop.retentionRate}% retention</p>
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-6">
-                          <div className="text-right">
-                            <p className="text-xs text-zinc-600 font-medium">At risk</p>
-                            <p className="mt-0.5 text-sm font-semibold text-red-700">{prop.atRisk}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-xs text-zinc-600 font-medium">ROI</p>
-                            <p className="mt-0.5 text-sm font-semibold text-primary">${prop.roi.toLocaleString()}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-xs text-zinc-600 font-medium">Multiple</p>
-                            <p className="mt-0.5 text-sm font-semibold text-zinc-900">{prop.roiMultiple}</p>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Bar comparison */}
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-zinc-600 font-medium w-20">Retention:</span>
-                        <div className="flex-1 h-2 bg-zinc-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-primary rounded-full" style={{ width: `${prop.retentionRate}%` }}></div>
-                        </div>
-                        <span className="text-xs font-semibold text-zinc-900 w-12 text-right">{prop.retentionRate}%</span>
-                      </div>
+              <div className="mt-8">
+                {/* Comparison Insight */}
+                <div className="mb-6 rounded-xl border border-primary/20 bg-primary/5 p-5">
+                  <div className="flex items-start gap-3">
+                    <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-zinc-900 mb-2">Portfolio Comparison</p>
+                      <p className="text-[13px] text-zinc-700 leading-relaxed">
+                        <strong>Riverside Towers</strong> shows highest maintenance burden with strong recovery upside. 
+                        <strong>Parkview Plaza</strong> leads in retention rate driven by better engagement and payment performance. 
+                        <strong>Summit Ridge</strong> represents largest scale opportunity with concentrated payment and service risk.
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                <div className="space-y-4">
+                  {Object.values(PROPERTIES).map((prop) => (
+                    <div key={prop.id} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                      <div className="flex flex-col gap-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3">
+                            <Building2 className="h-5 w-5 flex-shrink-0 text-zinc-500 mt-0.5" />
+                            <div>
+                              <p className="text-sm font-semibold text-zinc-900">{prop.name}</p>
+                              <p className="text-xs text-zinc-600 mt-0.5">{prop.units} units · {prop.retentionRate}% retention · {prop.profile}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+                            <div className="text-right">
+                              <p className="text-xs text-zinc-600 font-medium">At risk</p>
+                              <p className="mt-0.5 text-sm font-semibold text-red-700">{prop.atRisk}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-zinc-600 font-medium">ROI</p>
+                              <p className="mt-0.5 text-sm font-semibold text-primary">${prop.roi.toLocaleString()}</p>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-xs text-zinc-600 font-medium">Multiple</p>
+                              <p className="mt-0.5 text-sm font-semibold text-zinc-900">{prop.roiMultiple}</p>
+                            </div>
+                          </div>
+                        </div>
+                        {/* Bar comparison */}
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-zinc-600 font-medium w-20">Retention:</span>
+                          <div className="flex-1 h-2 bg-zinc-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-primary rounded-full" style={{ width: `${prop.retentionRate}%` }}></div>
+                          </div>
+                          <span className="text-xs font-semibold text-zinc-900 w-12 text-right">{prop.retentionRate}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* ROI Section - ENLARGED HEADING */}
-        <section className="scroll-mt-16 relative overflow-hidden py-16 sm:py-20 lg:py-24" id="roi">
+        {/* ROI Section - PREMIUM EMPHASIS */}
+        <section className="scroll-mt-16 relative overflow-hidden py-20 sm:py-24 lg:py-28" id="roi">
           <div className="absolute inset-0 bg-slate-900"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-900/40 to-slate-900/20"></div>
           
           <div className="relative mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <Badge className="mb-3 border-primary/20 bg-primary/10 text-[12px] text-primary font-medium" variant="secondary">
+            {/* Section Heading */}
+            <div className="text-center mb-10">
+              <Badge className="mb-4 border-primary/20 bg-primary/10 text-[13px] text-primary font-medium px-3 py-1.5" variant="secondary">
                 ROI Calculator
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl lg:text-[42px] font-semibold tracking-tight text-white">
+              <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] lg:text-[48px] font-semibold tracking-tight text-white leading-tight">
                 Model your retention economics
               </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-sm text-white/70">
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-white/70 leading-relaxed">
                 Adjust assumptions to project ROI for your portfolio
               </p>
             </div>
 
-            {/* BIG NUMBER FIRST */}
-            <div className="mt-8 rounded-xl border border-primary/20 bg-primary/10 p-6 sm:p-8 text-center backdrop-blur-sm">
-              <p className="text-sm text-white/70 font-medium">Projected Net ROI</p>
-              <p className="mt-2 font-[var(--font-heading)] text-4xl sm:text-5xl font-semibold text-primary" data-testid="roi-result">
+            {/* BIG ROI CARD - STRONGER EMPHASIS */}
+            <div className="mb-8 rounded-2xl border-2 border-primary/30 bg-gradient-to-br from-primary/15 to-primary/5 p-8 sm:p-10 text-center backdrop-blur-sm shadow-2xl">
+              <p className="text-sm text-white/80 font-semibold uppercase tracking-wide mb-3">Projected Net ROI</p>
+              <p className="font-[var(--font-heading)] text-5xl sm:text-6xl lg:text-7xl font-bold text-primary leading-none" data-testid="roi-result">
                 ${netROI.toLocaleString()}
               </p>
-              <p className="mt-2 text-sm text-white/70">{roiMultiple}x return on credit investment</p>
+              <p className="mt-4 text-base text-white/80 font-medium">{roiMultiple}x return on credit investment</p>
             </div>
 
-            {/* FORMULA SECOND */}
-            <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
-              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Units × Risk %</span>
-              <span className="text-white/40">×</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Retention</span>
-              <span className="text-white/40">×</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Turnover Cost</span>
-              <span className="text-white/40">−</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Credit Spend</span>
+            {/* FORMULA ROW - MORE SEPARATION */}
+            <div className="mb-8 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 sm:px-4 py-1.5 sm:py-2 text-white/70 font-medium">Units × Risk %</span>
+              <span className="text-white/40 self-center text-base">×</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 sm:px-4 py-1.5 sm:py-2 text-white/70 font-medium">Retention</span>
+              <span className="text-white/40 self-center text-base">×</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 sm:px-4 py-1.5 sm:py-2 text-white/70 font-medium">Turnover Cost</span>
+              <span className="text-white/40 self-center text-base">−</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-3 sm:px-4 py-1.5 sm:py-2 text-white/70 font-medium">Credit Spend</span>
             </div>
 
-            {/* SLIDERS THIRD */}
-            <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-5 sm:p-6 backdrop-blur-sm">
-              <div className="space-y-5">
+            {/* SLIDERS CARD - BETTER SEPARATION */}
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 sm:p-7 backdrop-blur-sm shadow-xl">
+              <div className="space-y-6">
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">Total Units</label>
-                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">{roiSliders.units}</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">Total Units</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">{roiSliders.units}</span>
                   </div>
                   <input
                     type="range"
@@ -814,9 +886,9 @@ export default function LandingPage() {
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">At-Risk %</label>
-                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">{roiSliders.riskPct}%</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">At-Risk %</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">{roiSliders.riskPct}%</span>
                   </div>
                   <input
                     type="range"
@@ -831,13 +903,13 @@ export default function LandingPage() {
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">Credit per Resident</label>
-                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">${roiSliders.creditCost}</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">Credit per Resident</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">${roiSliders.creditCost}</span>
                   </div>
                   <input
                     type="range"
-                    min="50"
+                    min="5"
                     max="300"
                     step="5"
                     value={roiSliders.creditCost}
@@ -848,27 +920,27 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* DERIVED METRICS FOURTH */}
-              <div className="mt-6 grid gap-3 border-t border-white/10 pt-5 grid-cols-2 lg:grid-cols-4">
+              {/* DERIVED METRICS - LARGER, FULLER TYPOGRAPHY */}
+              <div className="mt-7 grid gap-4 border-t border-white/10 pt-6 grid-cols-2 lg:grid-cols-4">
                 <div>
-                  <p className="text-xs text-white/60 font-medium">At-risk</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">{atRiskUnits}</p>
+                  <p className="text-sm text-white/70 font-semibold mb-1.5">At-risk</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">{atRiskUnits}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 font-medium">Retained</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">{retainedUnits}</p>
+                  <p className="text-sm text-white/70 font-semibold mb-1.5">Retained</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">{retainedUnits}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 font-medium">Avoidance</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-primary">${costAvoidance.toLocaleString()}</p>
+                  <p className="text-sm text-white/70 font-semibold mb-1.5">Avoidance</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-primary">${costAvoidance.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/60 font-medium">Credit</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">${creditSpend.toLocaleString()}</p>
+                  <p className="text-sm text-white/70 font-semibold mb-1.5">Credit</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">${creditSpend.toLocaleString()}</p>
                 </div>
               </div>
 
-              <p className="mt-5 text-center text-xs text-white/50">
+              <p className="mt-6 text-center text-xs text-white/50 leading-relaxed">
                 Assumes 62% retention rate and $4,083 avg. turnover cost
               </p>
             </div>
