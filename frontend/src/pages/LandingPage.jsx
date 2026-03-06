@@ -11,17 +11,17 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background" data-testid="landing-page-root">
       {/* Hero Section with Building Background */}
-      <section className="relative min-h-[780px] overflow-hidden" data-testid="landing-hero-section">
+      <section className="relative min-h-[720px] overflow-hidden" data-testid="landing-hero-section">
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
             alt="City skyline"
             className="h-full w-full object-cover"
-            style={{ filter: 'contrast(1.15) brightness(0.85)' }}
+            style={{ filter: 'contrast(1.1) brightness(0.7)' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/97 via-slate-900/95 to-blue-900/92"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-slate-900/96"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/85 to-slate-800/90"></div>
         </div>
 
         {/* Top Navigation */}
@@ -29,12 +29,12 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 z-50 w-full px-6 pt-6 lg:px-8"
+          className="absolute top-0 z-50 w-full px-6 pt-5 lg:px-8"
         >
           <div className="mx-auto flex max-w-[1400px] items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary backdrop-blur-sm" data-testid="landing-brand-mark">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 text-primary" data-testid="landing-brand-mark">
                 <Sparkles className="h-4 w-4" strokeWidth={2.5} />
               </div>
               <p className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-white">
@@ -43,20 +43,20 @@ export default function LandingPage() {
             </div>
 
             {/* Center: Nav Items in Pill */}
-            <nav className="hidden items-center gap-1 rounded-full border border-white/10 bg-white/5 px-2 py-1.5 backdrop-blur-md md:flex">
-              <a href="#insight" className="rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white">Insight</a>
-              <a href="#detection" className="rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white">Detection</a>
-              <a href="#concierge" className="rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white">Concierge</a>
-              <a href="#portfolio" className="rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white">Portfolio</a>
-              <a href="#roi" className="rounded-full px-4 py-1.5 text-sm font-medium text-white/70 transition-all hover:bg-white/10 hover:text-white">ROI</a>
+            <nav className="hidden items-center gap-1 rounded-full border border-white/8 bg-white/4 px-1.5 py-1.5 backdrop-blur-sm md:flex">
+              <a href="#insight" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/8 hover:text-white">Insight</a>
+              <a href="#detection" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/8 hover:text-white">Detection</a>
+              <a href="#concierge" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/8 hover:text-white">Concierge</a>
+              <a href="#portfolio" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/8 hover:text-white">Portfolio</a>
+              <a href="#roi" className="rounded-full px-3.5 py-1.5 text-sm font-medium text-white/65 transition-colors hover:bg-white/8 hover:text-white">ROI</a>
             </nav>
 
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
-              <Link to="/legal" className="text-sm font-medium text-white/50 transition-colors hover:text-white/70">
+              <Link to="/legal" className="text-sm font-medium text-white/45 transition-colors hover:text-white/65">
                 Legal
               </Link>
-              <Button asChild size="sm" className="h-9 rounded-full px-5 text-sm font-medium shadow-lg" data-testid="landing-sign-in-nav">
+              <Button asChild size="sm" className="h-8 rounded-full bg-primary px-4 text-sm font-medium shadow-sm hover:bg-primary/90" data-testid="landing-sign-in-nav">
                 <Link to="/login">Sign In</Link>
               </Button>
             </div>
@@ -64,7 +64,7 @@ export default function LandingPage() {
         </motion.div>
 
         {/* Hero Content */}
-        <div className="relative mx-auto max-w-[1400px] px-6 pb-28 pt-36 lg:px-8 lg:pb-36 lg:pt-44">
+        <div className="relative mx-auto max-w-[1400px] px-6 pb-24 pt-32 lg:px-8 lg:pb-28 lg:pt-36">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,29 +72,29 @@ export default function LandingPage() {
             className="max-w-3xl"
           >
             <Badge
-              className="mb-6 border-primary/20 bg-primary/10 text-primary hover:bg-primary/10"
+              className="mb-5 border-primary/15 bg-primary/8 text-primary hover:bg-primary/8"
               variant="secondary"
               data-testid="landing-hero-badge"
             >
               Retention Intelligence Platform
             </Badge>
 
-            <h1 className="font-[var(--font-heading)] text-5xl font-semibold leading-[1.1] tracking-[-0.03em] text-white lg:text-6xl" data-testid="landing-hero-title">
+            <h1 className="font-[var(--font-heading)] text-5xl font-semibold leading-[1.08] tracking-[-0.03em] text-white lg:text-6xl" data-testid="landing-hero-title">
               Predict and Prevent <span className="text-primary">Resident Churn</span>
             </h1>
 
-            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-white/75">
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/70">
               Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Button asChild size="lg" className="h-12 rounded-full px-7 text-base font-medium shadow-xl" data-testid="landing-hero-cta">
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Button asChild size="lg" className="h-11 rounded-full bg-primary px-6 text-base font-medium shadow-sm hover:bg-primary/90" data-testid="landing-hero-cta">
                 <Link to="/login">
                   View Demo
                   <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2.5} />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-white/15 bg-white/5 px-7 text-base font-medium text-white backdrop-blur-sm hover:bg-white/10" data-testid="landing-hero-secondary-cta">
+              <Button asChild size="lg" variant="outline" className="h-11 rounded-full border-white/12 bg-white/4 px-6 text-base font-medium text-white backdrop-blur-sm hover:bg-white/8" data-testid="landing-hero-secondary-cta">
                 <Link to="/login">Sign In</Link>
               </Button>
             </div>
@@ -105,40 +105,40 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="mt-24 grid gap-6 md:grid-cols-3"
+            className="mt-20 grid gap-5 md:grid-cols-3"
           >
-            <div className="group rounded-xl border border-white/15 bg-white/8 p-6 backdrop-blur-lg transition-all hover:border-white/25 hover:bg-white/12">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/10 text-white/80 transition-colors group-hover:bg-white/15">
-                  <DollarSign className="h-6 w-6" strokeWidth={2.5} />
+            <div className="rounded-xl border border-white/12 bg-white/6 p-5 backdrop-blur-md">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/8 text-white/75">
+                  <DollarSign className="h-5 w-5" strokeWidth={2.5} />
                 </div>
                 <div>
                   <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">$4,083</p>
-                  <p className="mt-2 text-sm font-medium text-white/60">Avg. turnover cost</p>
+                  <p className="mt-1.5 text-sm font-medium text-white/55">Avg. turnover cost</p>
                 </div>
               </div>
             </div>
 
-            <div className="group rounded-xl border border-white/15 bg-white/8 p-6 backdrop-blur-lg transition-all hover:border-white/25 hover:bg-white/12">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-white/10 text-white/80 transition-colors group-hover:bg-white/15">
-                  <TrendingUp className="h-6 w-6" strokeWidth={2.5} />
+            <div className="rounded-xl border border-white/12 bg-white/6 p-5 backdrop-blur-md">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-white/8 text-white/75">
+                  <TrendingUp className="h-5 w-5" strokeWidth={2.5} />
                 </div>
                 <div>
                   <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">9.6%</p>
-                  <p className="mt-2 text-sm font-medium text-white/60">Annual turnover rate</p>
+                  <p className="mt-1.5 text-sm font-medium text-white/55">Annual turnover rate</p>
                 </div>
               </div>
             </div>
 
-            <div className="group rounded-xl border border-primary/30 bg-gradient-to-br from-primary/15 to-primary/5 p-6 backdrop-blur-lg transition-all hover:border-primary/40 hover:from-primary/20 hover:to-primary/10">
-              <div className="flex items-start gap-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/20 text-primary transition-colors group-hover:bg-primary/30">
-                  <Users className="h-6 w-6" strokeWidth={2.5} />
+            <div className="rounded-xl border border-primary/25 bg-primary/8 p-5 backdrop-blur-md">
+              <div className="flex items-start gap-3.5">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                  <Users className="h-5 w-5" strokeWidth={2.5} />
                 </div>
                 <div>
                   <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-primary">$82,550</p>
-                  <p className="mt-2 text-sm font-medium text-primary/80">Net retention ROI</p>
+                  <p className="mt-1.5 text-sm font-medium text-primary/75">Net retention ROI</p>
                 </div>
               </div>
             </div>
