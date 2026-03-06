@@ -1,38 +1,26 @@
 [
   {
-    "content": "Update demoData.js with realistic business assumptions and Seattle economics",
+    "content": "Priority 1: Rebuild Landing Page completely with Linear-inspired design",
     "status": "in_progress"
   },
   {
-    "content": "Recalculate portfolio metrics to match realistic ratios",
+    "content": "Priority 2: Fix portfolio math in demoData.js with realistic assumptions",
     "status": "pending"
   },
   {
-    "content": "Simplify Landing Page hero (headline + subhead)",
+    "content": "Priority 3: Increase at-risk residents from 5 to 30-35 with realistic distribution",
     "status": "pending"
   },
   {
-    "content": "Apply Linear-inspired UI polish (spacing, borders, teal usage)",
+    "content": "Priority 4: Apply consistent UI polish across all 6 pages",
     "status": "pending"
   },
   {
-    "content": "Improve metric card hierarchy across all pages",
+    "content": "Priority 5: Full QA pass on all routes",
     "status": "pending"
   },
   {
-    "content": "Fix any broken or unrealistic metrics in UI",
-    "status": "pending"
-  },
-  {
-    "content": "Verify Seattle consistency (properties, providers, pricing)",
-    "status": "pending"
-  },
-  {
-    "content": "Full QA pass on all 6 main routes",
-    "status": "pending"
-  },
-  {
-    "content": "Generate final realism and polish report",
+    "content": "Generate final completion report",
     "status": "pending"
   }
 ]
