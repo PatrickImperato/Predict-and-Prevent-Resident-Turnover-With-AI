@@ -14,20 +14,6 @@ from app.core.config import AppConfig
 from app.services.audit_service import write_audit_event
 
 
-
-def _hash_password(raw_password: str) -> str:
-    return bcrypt.hashpw(raw_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
-
-
-def _verify_password(raw_password: str, stored_hash: str) -> bool:
-    if not stored_hash:
-        return False
-
-    try:
-        return bcrypt.checkpw(raw_password.encode("utf-8"), stored_hash.encode("utf-8"))
-    except ValueError:
-        return False
-
 FOUNDATION_USERS = [
     {
         "id": "5ef29d39-94c9-4fb4-bcad-fc48664fb9de",
@@ -62,6 +48,20 @@ FOUNDATION_USERS = [
 ]
 
 
+def hash_password(raw_password: str) -> str:
+    return bcrypt.hashpw(raw_password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+
+def _verify_password(raw_password: str, stored_hash: str) -> bool:
+    if not stored_hash:
+        return False
+
+    try:
+        return bcrypt.checkpw(raw_password.encode("utf-8"), stored_hash.encode("utf-8"))
+    except ValueError:
+        return False
+
+
 def utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
@@ -91,7 +91,7 @@ async def ensure_foundation_users(db: AsyncIOMotorDatabase, config: AppConfig) -
 
         if existing:
             if not existing.get("passwordHash"):
-                base_payload["passwordHash"] = _hash_password(user["password"])
+                base_payload["passwordHash"] = hash_password(user["password"])
             await db.users.update_one({"email": user["email"]}, {"$set": base_payload})
             continue
 
@@ -99,7 +99,7 @@ async def ensure_foundation_users(db: AsyncIOMotorDatabase, config: AppConfig) -
             {
                 "id": user["id"],
                 "email": user["email"],
-                "passwordHash": _hash_password(user["password"]),
+                "passwordHash": hash_password(user["password"]),
                 "displayName": user["displayName"],
                 "role": user["role"],
                 "isSuperAdmin": user["isSuperAdmin"],

@@ -32,6 +32,10 @@ class DatabaseManager:
     async def ensure_indexes(self) -> None:
         db = self.database
         await db.users.create_index("email", unique=True)
+        await db.users.create_index("id", unique=True)
+        await db.properties.create_index("id", unique=True)
+        await db.residents.create_index("id", unique=True)
+        await db.platform_settings.create_index("id", unique=True)
         await db.auth_sessions.create_index("sessionTokenHash", unique=True)
         await db.auth_sessions.create_index("expiresAt", expireAfterSeconds=0)
         await db.seed_metadata.create_index("name", unique=True)

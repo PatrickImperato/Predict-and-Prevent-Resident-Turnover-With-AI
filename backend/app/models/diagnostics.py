@@ -44,6 +44,7 @@ class SeedDiagnosticsResponse(BaseModel):
     last_seed_at: datetime | None = None
     last_seed_by: str | None = None
     seed_status: str
+    last_seed_error: str | None = None
     bootstrap_lock_id: str | None = None
     preview_reset_implemented: bool = False
     production_bootstrap_implemented: bool = False

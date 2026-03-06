@@ -6,6 +6,8 @@ from fastapi import Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.core.config import AppConfig
+from app.seeds.constants import DEMO_DATASET_ID, REQUIRED_PROPERTY_NAMES, SEED_METADATA_NAME
+from app.seeds.production_bootstrap import get_production_bootstrap_placeholder_state
 
 
 KNOWN_COLLECTIONS = [
@@ -37,6 +39,7 @@ KNOWN_COLLECTIONS = [
 ]
 
 DATASET_TRACKED_COLLECTIONS = [
+    "users",
     "properties",
     "residents",
     "providers",
@@ -119,7 +122,22 @@ async def get_collections_diagnostics(
             "__missing__", 0
         )
 
-    seed_health = "warning" if any(missing_dataset_id_counts.values()) else "healthy"
+    required_property_names = await db.properties.distinct(
+        "name", {"datasetId": DEMO_DATASET_ID}
+    )
+    missing_required_properties = [
+        property_name
+        for property_name in REQUIRED_PROPERTY_NAMES
+        if property_name not in required_property_names
+    ]
+
+    seed_health = "healthy"
+    if any(missing_dataset_id_counts.values()):
+        seed_health = "warning"
+    if collection_counts.get("platform_settings", 0) < 1 or collection_counts.get("users", 0) < 3:
+        seed_health = "warning"
+    if missing_required_properties:
+        seed_health = "warning"
 
     return {
         "db_name": config.db_name,
@@ -135,10 +153,11 @@ async def get_seed_diagnostics(
     db: AsyncIOMotorDatabase,
     config: AppConfig,
 ) -> dict:
-    seed_metadata = await db.seed_metadata.find_one({"name": "foundation"}, {"_id": 0})
+    seed_metadata = await db.seed_metadata.find_one({"name": SEED_METADATA_NAME}, {"_id": 0})
+    production_placeholder = get_production_bootstrap_placeholder_state()
     if seed_metadata:
         return {
-            "last_seed_action": seed_metadata.get("lastSeedAction", "foundation"),
+            "last_seed_action": seed_metadata.get("lastSeedAction", "startup-seed"),
             "last_seed_target_env": seed_metadata.get("lastSeedTargetEnv", config.app_env),
             "last_seed_dataset_id": seed_metadata.get(
                 "lastSeedDatasetId", config.demo_dataset_id
@@ -146,23 +165,25 @@ async def get_seed_diagnostics(
             "last_seed_at": seed_metadata.get("lastSeedAt"),
             "last_seed_by": seed_metadata.get("lastSeedBy"),
             "seed_status": seed_metadata.get("seedStatus", "success"),
+            "last_seed_error": seed_metadata.get("lastSeedError"),
             "bootstrap_lock_id": seed_metadata.get("bootstrapLockId"),
-            "preview_reset_implemented": False,
-            "production_bootstrap_implemented": False,
-            "production_bootstrap_mode": "deployment_time_only_placeholder",
+            "preview_reset_implemented": True,
+            "production_bootstrap_implemented": production_placeholder["implemented"],
+            "production_bootstrap_mode": production_placeholder["mode"],
         }
 
     return {
-        "last_seed_action": "not_implemented",
+        "last_seed_action": "not_run",
         "last_seed_target_env": config.app_env,
         "last_seed_dataset_id": config.demo_dataset_id,
         "last_seed_at": None,
         "last_seed_by": None,
-        "seed_status": "not_implemented",
+        "seed_status": "not_run",
+        "last_seed_error": None,
         "bootstrap_lock_id": None,
-        "preview_reset_implemented": False,
-        "production_bootstrap_implemented": False,
-        "production_bootstrap_mode": "deployment_time_only_placeholder",
+        "preview_reset_implemented": True,
+        "production_bootstrap_implemented": production_placeholder["implemented"],
+        "production_bootstrap_mode": production_placeholder["mode"],
     }
 
 

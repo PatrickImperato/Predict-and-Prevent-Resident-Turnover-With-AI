@@ -41,14 +41,14 @@ export const DiagnosticsGuardrailsCard = ({ collections, runtime, session }) => 
       status: session?.authenticated && runtime?.db_name ? "pass" : "fail",
     },
     {
-      label: "Preview reset remains protected and placeholder-only",
+      label: "Preview reset is limited to preview super-admin access",
       status:
         runtime?.app_env === "production" && runtime?.allow_preview_reset
           ? "fail"
           : "pass",
     },
     {
-      label: "Dataset warnings are surfaced explicitly",
+      label: "Missing dataset warnings are surfaced explicitly",
       status: Object.values(collections?.missing_dataset_id_counts || {}).some((value) => value > 0)
         ? "warn"
         : "pass",

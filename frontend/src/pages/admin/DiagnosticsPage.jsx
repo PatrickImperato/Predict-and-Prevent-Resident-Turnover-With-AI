@@ -70,12 +70,12 @@ export default function DiagnosticsPage() {
     <div className="space-y-6" data-testid="diagnostics-page-root">
       <div className="flex flex-col gap-4 rounded-3xl border border-border/80 bg-card/80 p-6 shadow-[var(--shadow-soft)] lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.08em] text-muted-foreground">Phase 4 foundation</p>
+          <p className="text-sm uppercase tracking-[0.08em] text-muted-foreground">Seed control and diagnostics</p>
           <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground" data-testid="diagnostics-page-title">
             Environment and diagnostics control center
           </h2>
           <p className="mt-3 max-w-3xl text-sm text-muted-foreground">
-            This page is wired first so preview versus production binding can be proven before the broader HappyCo Concierge experience is rebuilt.
+            Preview reset is now wired to the deterministic demoA seed service while production bootstrap remains protected internal scaffolding only.
           </p>
         </div>
         <Button
@@ -105,6 +105,7 @@ export default function DiagnosticsPage() {
           <DiagnosticsSeedCard
             canPreviewReset={canPreviewReset}
             onPreviewResetComplete={loadDiagnostics}
+            runtime={runtime}
             seeds={seeds}
           />
           <DiagnosticsGuardrailsCard

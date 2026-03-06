@@ -10,7 +10,7 @@ import {
 
 import { PreviewResetDialog } from "@/components/diagnostics/PreviewResetDialog";
 
-export const DiagnosticsSeedCard = ({ canPreviewReset, onPreviewResetComplete, seeds }) => {
+export const DiagnosticsSeedCard = ({ canPreviewReset, onPreviewResetComplete, runtime, seeds }) => {
   return (
     <Card className="happyco-card" data-testid="diagnostics-seed-card">
       <CardHeader>
@@ -21,7 +21,7 @@ export const DiagnosticsSeedCard = ({ canPreviewReset, onPreviewResetComplete, s
           <div>
             <CardTitle className="text-xl tracking-[-0.02em]">Seed and bootstrap status</CardTitle>
             <CardDescription>
-              Protected placeholders only in Phase 4. No functional reset or bootstrap yet.
+              Preview reset is now live for super-admins in preview. Production bootstrap remains protected scaffolding only.
             </CardDescription>
           </div>
         </div>
@@ -32,23 +32,35 @@ export const DiagnosticsSeedCard = ({ canPreviewReset, onPreviewResetComplete, s
             <p className="text-sm text-muted-foreground">Last seed action</p>
             <p className="mt-1 font-medium text-foreground">{seeds?.last_seed_action || "—"}</p>
           </div>
-          <div className="rounded-xl border border-border/80 bg-muted/40 p-3" data-testid="diagnostics-seed-target-env">
-            <p className="text-sm text-muted-foreground">Target environment</p>
-            <p className="mt-1 font-medium text-foreground">{seeds?.last_seed_target_env || "—"}</p>
+          <div className="rounded-xl border border-border/80 bg-muted/40 p-3" data-testid="diagnostics-seed-last-time">
+            <p className="text-sm text-muted-foreground">Last seed time</p>
+            <p className="mt-1 font-medium text-foreground">{seeds?.last_seed_at ? new Date(seeds.last_seed_at).toLocaleString() : "—"}</p>
           </div>
           <div className="rounded-xl border border-border/80 bg-muted/40 p-3" data-testid="diagnostics-seed-dataset-id">
             <p className="text-sm text-muted-foreground">Dataset</p>
-            <p className="mt-1 font-mono text-foreground">{seeds?.last_seed_dataset_id || "—"}</p>
+            <p className="mt-1 font-mono text-foreground">{seeds?.last_seed_dataset_id || runtime?.dataset_default || "—"}</p>
           </div>
           <div className="rounded-xl border border-border/80 bg-muted/40 p-3" data-testid="diagnostics-seed-status">
-            <p className="text-sm text-muted-foreground">Status</p>
+            <p className="text-sm text-muted-foreground">Seed status</p>
             <p className="mt-1 font-medium text-foreground">{seeds?.seed_status || "—"}</p>
           </div>
         </div>
+
+        {seeds?.last_seed_error ? (
+          <div className="rounded-xl border border-destructive/20 bg-destructive/10 p-4 text-sm text-destructive" data-testid="diagnostics-seed-last-error">
+            {seeds.last_seed_error}
+          </div>
+        ) : null}
+
         <div className="rounded-xl border border-border/80 bg-secondary/35 p-4 text-sm text-secondary-foreground" data-testid="diagnostics-seed-production-bootstrap-placeholder">
           Production bootstrap remains a deployment-time protected placeholder and is intentionally not exposed in the runtime admin UI.
         </div>
-        <PreviewResetDialog canPreviewReset={canPreviewReset} onComplete={onPreviewResetComplete} />
+        <PreviewResetDialog
+          canPreviewReset={canPreviewReset}
+          datasetId={seeds?.last_seed_dataset_id || runtime?.dataset_default || "demoA"}
+          dbName={runtime?.db_name || "preview database"}
+          onComplete={onPreviewResetComplete}
+        />
       </CardContent>
     </Card>
   );

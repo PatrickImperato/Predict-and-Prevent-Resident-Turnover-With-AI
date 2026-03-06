@@ -23,7 +23,7 @@ export const diagnosticsApi = {
   getCollections: () => apiClient.get("/diagnostics/collections"),
   getSeeds: () => apiClient.get("/diagnostics/seeds"),
   getHealth: () => apiClient.get("/diagnostics/health"),
-  triggerPreviewResetPlaceholder: () => apiClient.post("/admin/seeds/preview-reset"),
+  runPreviewReset: (payload) => apiClient.post("/admin/seeds/preview-reset", payload),
 };
 
 export { API_BASE_URL };

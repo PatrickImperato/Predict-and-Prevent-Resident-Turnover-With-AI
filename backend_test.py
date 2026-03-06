@@ -176,13 +176,34 @@ class HappyCoConciergeTester:
             200
         )
 
-    def test_preview_reset_placeholder(self):
-        """Test preview reset placeholder (should return 501)"""
+    def test_diagnostics_seeds_admin(self):
+        """Test diagnostics seeds endpoint (admin required) - NEW"""
         return self.run_test(
-            "Preview Reset Placeholder", 
+            "Diagnostics Seeds (Admin)",
+            "GET",
+            "diagnostics/seeds",
+            200
+        )
+
+    def test_preview_reset_correct_phrase(self):
+        """Test preview reset with correct confirmation phrase"""
+        return self.run_test(
+            "Preview Reset - Correct Phrase",
             "POST",
             "admin/seeds/preview-reset",
-            501
+            200,
+            data={"confirmation_phrase": "RESET PREVIEW"}
+        )
+
+    def test_preview_reset_incorrect_phrase(self):
+        """Test preview reset with incorrect confirmation phrase (should fail)"""
+        return self.run_test(
+            "Preview Reset - Incorrect Phrase (Should Fail)",
+            "POST",
+            "admin/seeds/preview-reset",
+            400,
+            data={"confirmation_phrase": "wrong phrase"},
+            should_pass=True  # We expect 400 status
         )
 
     def test_logout(self):
@@ -223,10 +244,12 @@ class HappyCoConciergeTester:
         self.test_diagnostics_runtime_admin()
         self.test_diagnostics_session_admin() 
         self.test_diagnostics_collections_admin()
+        self.test_diagnostics_seeds_admin()  # NEW - test seeds endpoint
         self.test_diagnostics_health_admin()
         
-        # Test preview reset placeholder
-        self.test_preview_reset_placeholder()
+        # Test preview reset functionality
+        self.test_preview_reset_incorrect_phrase()  # Test incorrect phrase first
+        self.test_preview_reset_correct_phrase()    # Then test correct phrase
         
         # Test logout
         self.test_logout()
@@ -289,8 +312,99 @@ class HappyCoConciergeTester:
         self.test_logout()
         return True
 
+    def validate_seed_data_requirements(self):
+        """Validate that all required seeded data exists with stable identifiers"""
+        print("\n🔍 Validating seeded data requirements...")
+        
+        # First login as admin to access diagnostics
+        success, response = self.test_admin_login()
+        if not success:
+            print("❌ Cannot validate seed data - admin login failed")
+            return False
+            
+        # Test diagnostics collections to check seed status  
+        success, response = self.run_test(
+            "Collections Data for Seed Validation",
+            "GET", 
+            "diagnostics/collections",
+            200
+        )
+        
+        if success and response:
+            try:
+                collections_data = response.json()
+                collection_counts = collections_data.get("collection_counts", {})
+                
+                # Validate required collections have data
+                required_collections = {
+                    "platform_settings": 1,  # At least 1
+                    "users": 3,             # At least 3 (admin, manager, resident)  
+                    "properties": 3,        # Exactly 3 properties
+                    "residents": 1          # At least 1 (Alex Chen)
+                }
+                
+                validation_passed = True
+                for collection, min_count in required_collections.items():
+                    actual_count = collection_counts.get(collection, 0)
+                    if actual_count < min_count:
+                        print(f"❌ {collection}: Expected >= {min_count}, got {actual_count}")
+                        validation_passed = False
+                    else:
+                        print(f"✅ {collection}: {actual_count} records (>= {min_count} required)")
+                        
+                return validation_passed
+                        
+            except Exception as e:
+                print(f"❌ Error validating collections data: {e}")
+                return False
+        else:
+            print("❌ Failed to get collections data for validation")
+            return False
+
+    def validate_seed_metadata_requirements(self):
+        """Validate seed metadata shows successful seed information"""
+        print("\n🔍 Validating seed metadata requirements...")
+        
+        success, response = self.run_test(
+            "Seeds Metadata for Validation",
+            "GET",
+            "diagnostics/seeds", 
+            200
+        )
+        
+        if success and response:
+            try:
+                seeds_data = response.json()
+                
+                # Check required seed metadata fields
+                required_fields = {
+                    "last_seed_action": lambda x: x and x != "not_run",
+                    "last_seed_dataset_id": lambda x: x == "demoA",
+                    "seed_status": lambda x: x == "success",
+                    "last_seed_at": lambda x: x is not None,
+                    "preview_reset_implemented": lambda x: x is True,
+                    "production_bootstrap_implemented": lambda x: x is False
+                }
+                
+                validation_passed = True
+                for field, validator in required_fields.items():
+                    value = seeds_data.get(field)
+                    if not validator(value):
+                        print(f"❌ {field}: Expected valid value, got {value}")
+                        validation_passed = False
+                    else:
+                        print(f"✅ {field}: {value}")
+                        
+                return validation_passed
+                        
+            except Exception as e:
+                print(f"❌ Error validating seeds metadata: {e}")
+                return False
+        else:
+            print("❌ Failed to get seeds metadata for validation")
+            return False
+
     def print_summary(self):
-        """Print test summary"""
         print("\n" + "="*60)
         print("📊 TEST SUMMARY")
         print("="*60)
@@ -311,7 +425,14 @@ class HappyCoConciergeTester:
 def main():
     tester = HappyCoConciergeTester()
     
-    # Run all test flows
+    # First validate seeded data requirements
+    print("\n" + "="*60)
+    print("🌱 VALIDATING SEED REQUIREMENTS")
+    print("="*60)
+    seed_data_valid = tester.validate_seed_data_requirements()
+    seed_metadata_valid = tester.validate_seed_metadata_requirements()
+    
+    # Run all test flows  
     admin_success = tester.run_admin_flow()
     manager_success = tester.run_manager_flow()  
     resident_success = tester.run_resident_flow()
@@ -319,8 +440,14 @@ def main():
     # Print summary
     tester.print_summary()
     
-    # Return appropriate exit code
-    overall_success = admin_success and manager_success and resident_success
+    # Overall success includes seed validation
+    seed_validation_success = seed_data_valid and seed_metadata_valid
+    overall_success = admin_success and manager_success and resident_success and seed_validation_success
+    
+    print(f"\n🌱 SEED VALIDATION: {'✅ PASSED' if seed_validation_success else '❌ FAILED'}")
+    print(f"🔐 AUTH FLOWS: {'✅ PASSED' if admin_success and manager_success and resident_success else '❌ FAILED'}")
+    print(f"🎯 OVERALL: {'✅ PASSED' if overall_success else '❌ FAILED'}")
+    
     return 0 if overall_success and tester.tests_passed == tester.tests_run else 1
 
 if __name__ == "__main__":

@@ -1,35 +1,51 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { diagnosticsApi } from "@/lib/api";
 
-export const PreviewResetDialog = ({ canPreviewReset, onComplete }) => {
+const RESET_PREVIEW_PHRASE = "RESET PREVIEW";
+
+export const PreviewResetDialog = ({ canPreviewReset, datasetId, dbName, onComplete }) => {
+  const [confirmationPhrase, setConfirmationPhrase] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const confirmationMatches = useMemo(
+    () => confirmationPhrase.trim().toUpperCase() === RESET_PREVIEW_PHRASE,
+    [confirmationPhrase],
+  );
+
   const handlePreviewReset = async () => {
+    if (!confirmationMatches) {
+      toast.error("Type the confirmation phrase exactly to continue.");
+      return;
+    }
+
     setSubmitting(true);
     try {
-      await diagnosticsApi.triggerPreviewResetPlaceholder();
-      toast.success("Preview reset placeholder reached.");
+      const response = await diagnosticsApi.runPreviewReset({
+        confirmation_phrase: confirmationPhrase,
+      });
+      toast.success(response.data.message || "Preview database reseeded successfully.");
+      setConfirmationPhrase("");
       onComplete?.();
     } catch (error) {
       const message =
         error?.response?.data?.detail ||
-        "Preview reset remains a protected placeholder in Phase 4.";
-      toast.warning(message);
+        "Preview reset failed. Please check diagnostics and try again.";
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -38,37 +54,62 @@ export const PreviewResetDialog = ({ canPreviewReset, onComplete }) => {
   if (!canPreviewReset) {
     return (
       <div className="rounded-xl border border-border/80 bg-muted/40 p-4 text-sm text-muted-foreground" data-testid="diagnostics-preview-reset-unavailable-message">
-        Preview reset control is hidden unless the active session is both preview-bound and super-admin authorized.
+        Preview reset is available only to a super-admin session bound to the preview environment.
       </div>
     );
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>
+    <Dialog>
+      <DialogTrigger asChild>
         <Button className="rounded-xl" data-testid="diagnostics-preview-reset-trigger" type="button" variant="outline">
           <RotateCcw className="mr-2 h-4 w-4" strokeWidth={1.75} />
-          Preview reset placeholder
+          Reset preview demoA
         </Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent data-testid="diagnostics-preview-reset-dialog">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Protected placeholder only</AlertDialogTitle>
-          <AlertDialogDescription>
-            Preview reset has the correct role and environment protections wired, but the actual reset logic is intentionally not implemented in Phase 4.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel data-testid="diagnostics-preview-reset-cancel">Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            data-testid="diagnostics-preview-reset-confirm"
-            disabled={submitting}
-            onClick={handlePreviewReset}
-          >
-            {submitting ? "Checking placeholder…" : "Call placeholder"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogTrigger>
+      <DialogContent className="rounded-3xl border-border/80" data-testid="diagnostics-preview-reset-dialog">
+        <DialogHeader>
+          <DialogTitle>Reset preview demo dataset</DialogTitle>
+          <DialogDescription>
+            This reseeds the preview database only. Managed HappyCo collections are cleared and demoA is inserted again with stable IDs and rolling dates.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-3 rounded-2xl border border-border/80 bg-muted/35 p-4 text-sm text-muted-foreground">
+          <div className="flex items-center justify-between gap-4">
+            <span>Database</span>
+            <span className="font-mono text-foreground" data-testid="diagnostics-preview-reset-db-name">{dbName}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span>Dataset</span>
+            <span className="font-mono text-foreground" data-testid="diagnostics-preview-reset-dataset-id">{datasetId}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span>Required phrase</span>
+            <span className="font-mono text-foreground" data-testid="diagnostics-preview-reset-required-phrase">{RESET_PREVIEW_PHRASE}</span>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label data-testid="diagnostics-preview-reset-input-label" htmlFor="preview-reset-confirmation">
+            Type the confirmation phrase
+          </Label>
+          <Input
+            className="h-11 rounded-xl"
+            data-testid="diagnostics-preview-reset-input"
+            id="preview-reset-confirmation"
+            onChange={(event) => setConfirmationPhrase(event.target.value)}
+            placeholder={RESET_PREVIEW_PHRASE}
+            value={confirmationPhrase}
+          />
+        </div>
+
+        <DialogFooter>
+          <Button className="rounded-xl" data-testid="diagnostics-preview-reset-confirm" disabled={!confirmationMatches || submitting} onClick={handlePreviewReset} type="button">
+            {submitting ? "Resetting preview…" : "Run preview reset"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
