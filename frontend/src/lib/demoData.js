@@ -81,7 +81,7 @@ export const PROPERTIES = [
     neighborhood: "Ballard",
     units: 52,
     occupied: 48,
-    atRiskCount: 6,
+    atRiskCount: 6,           // Updated to match expanded resident list
     maintenanceVolume: 31,
     serviceAdoption: 0.74,
     avgCreditUsage: 390,
@@ -100,7 +100,7 @@ export const PROPERTIES = [
     neighborhood: "Capitol Hill",
     units: 104,
     occupied: 98,
-    atRiskCount: 12,
+    atRiskCount: 12,          // Updated to match expanded resident list
     maintenanceVolume: 58,
     serviceAdoption: 0.71,
     avgCreditUsage: 415,
@@ -119,7 +119,7 @@ export const PROPERTIES = [
     neighborhood: "Downtown Bellevue",
     units: 144,
     occupied: 136,
-    atRiskCount: 17,
+    atRiskCount: 17,          // Updated to match expanded resident list
     maintenanceVolume: 79,
     serviceAdoption: 0.68,
     avgCreditUsage: 450,
@@ -451,6 +451,7 @@ export const estimateInterventionROI = (intervention, residentContext, property,
 // ============================================================================
 
 export const SAMPLE_AT_RISK_RESIDENTS = [
+  // BALLARD COMMONS - High Risk (6 total)
   {
     id: "res-ballard-501",
     name: "Alex Chen",
@@ -462,14 +463,111 @@ export const SAMPLE_AT_RISK_RESIDENTS = [
     monthlyRent: 2350,
     moveInDate: "2023-07-15",
     frictionSignals: {
-      maintenanceCount: 7,          // High frequency (7 requests in 6 months)
-      avgResponseTimeHours: 18,     // Slow responses
-      sentimentScore: 72,           // Negative sentiment detected
-      daysToLeaseEnd: 132,          // Approaching lease decision
-      serviceUsageCount: 0          // Never used concierge services
+      maintenanceCount: 7,
+      avgResponseTimeHours: 18,
+      sentimentScore: 72,
+      daysToLeaseEnd: 132,
+      serviceUsageCount: 0
     },
     interventionHistory: []
   },
+  {
+    id: "res-ballard-204",
+    name: "Taylor Wong",
+    unit: "204",
+    propertyId: "prop-ballard",
+    email: "taylor.wong@email.com",
+    phone: "(206) 555-0298",
+    leaseEndDate: "2025-06-20",
+    monthlyRent: 2300,
+    moveInDate: "2023-03-15",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 21,
+      sentimentScore: 78,
+      daysToLeaseEnd: 108,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-ballard-312",
+    name: "Casey Martinez",
+    unit: "312",
+    propertyId: "prop-ballard",
+    email: "casey.m@email.com",
+    phone: "(206) 555-0321",
+    leaseEndDate: "2025-08-10",
+    monthlyRent: 2380,
+    moveInDate: "2022-08-10",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 19,
+      sentimentScore: 70,
+      daysToLeaseEnd: 159,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-ballard-408",
+    name: "Devon Harris",
+    unit: "408",
+    propertyId: "prop-ballard",
+    email: "devon.harris@email.com",
+    phone: "(206) 555-0445",
+    leaseEndDate: "2025-07-01",
+    monthlyRent: 2320,
+    moveInDate: "2023-07-01",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 22,
+      sentimentScore: 75,
+      daysToLeaseEnd: 118,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-ballard-515",
+    name: "Jamie Rodriguez",
+    unit: "515",
+    propertyId: "prop-ballard",
+    email: "j.rodriguez@email.com",
+    phone: "(206) 555-0567",
+    leaseEndDate: "2025-09-12",
+    monthlyRent: 2410,
+    moveInDate: "2024-03-12",
+    frictionSignals: {
+      maintenanceCount: 5,
+      avgResponseTimeHours: 16,
+      sentimentScore: 68,
+      daysToLeaseEnd: 191,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-ballard-602",
+    name: "Morgan Lee",
+    unit: "602",
+    propertyId: "prop-ballard",
+    email: "morgan.lee@email.com",
+    phone: "(206) 555-0689",
+    leaseEndDate: "2025-08-25",
+    monthlyRent: 2390,
+    moveInDate: "2023-02-25",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 20,
+      sentimentScore: 71,
+      daysToLeaseEnd: 174,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+
+  // CAPITOL HILL RESIDENCES - High Risk (12 total)
   {
     id: "res-capitol-312",
     name: "Maria Santos",
@@ -490,6 +588,217 @@ export const SAMPLE_AT_RISK_RESIDENTS = [
     interventionHistory: []
   },
   {
+    id: "res-capitol-702",
+    name: "Sam Patel",
+    unit: "702",
+    propertyId: "prop-capitol",
+    email: "sam.patel@email.com",
+    phone: "(206) 555-0356",
+    leaseEndDate: "2025-07-20",
+    monthlyRent: 2500,
+    moveInDate: "2023-01-20",
+    frictionSignals: {
+      maintenanceCount: 9,
+      avgResponseTimeHours: 26,
+      sentimentScore: 81,
+      daysToLeaseEnd: 137,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-405",
+    name: "Riley Chen",
+    unit: "405",
+    propertyId: "prop-capitol",
+    email: "riley.chen@email.com",
+    phone: "(206) 555-0412",
+    leaseEndDate: "2025-06-15",
+    monthlyRent: 2475,
+    moveInDate: "2022-12-15",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 24,
+      sentimentScore: 76,
+      daysToLeaseEnd: 103,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-801",
+    name: "Quinn Thompson",
+    unit: "801",
+    propertyId: "prop-capitol",
+    email: "q.thompson@email.com",
+    phone: "(206) 555-0534",
+    leaseEndDate: "2025-09-05",
+    monthlyRent: 2520,
+    moveInDate: "2023-09-05",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 19,
+      sentimentScore: 72,
+      daysToLeaseEnd: 184,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-208",
+    name: "Jordan Williams",
+    unit: "208",
+    propertyId: "prop-capitol",
+    email: "j.williams@email.com",
+    phone: "(206) 555-0656",
+    leaseEndDate: "2025-07-08",
+    monthlyRent: 2430,
+    moveInDate: "2023-07-08",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 23,
+      sentimentScore: 79,
+      daysToLeaseEnd: 125,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-514",
+    name: "Avery Johnson",
+    unit: "514",
+    propertyId: "prop-capitol",
+    email: "avery.j@email.com",
+    phone: "(206) 555-0778",
+    leaseEndDate: "2025-08-18",
+    monthlyRent: 2490,
+    moveInDate: "2022-08-18",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 21,
+      sentimentScore: 70,
+      daysToLeaseEnd: 166,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-903",
+    name: "Dakota Brown",
+    unit: "903",
+    propertyId: "prop-capitol",
+    email: "dakota.brown@email.com",
+    phone: "(206) 555-0890",
+    leaseEndDate: "2025-06-28",
+    monthlyRent: 2510,
+    moveInDate: "2023-06-28",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 20,
+      sentimentScore: 73,
+      daysToLeaseEnd: 115,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-1012",
+    name: "Sage Miller",
+    unit: "1012",
+    propertyId: "prop-capitol",
+    email: "sage.miller@email.com",
+    phone: "(206) 555-0912",
+    leaseEndDate: "2025-09-22",
+    monthlyRent: 2540,
+    moveInDate: "2024-03-22",
+    frictionSignals: {
+      maintenanceCount: 5,
+      avgResponseTimeHours: 17,
+      sentimentScore: 67,
+      daysToLeaseEnd: 201,
+      serviceUsageCount: 2
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-615",
+    name: "River Davis",
+    unit: "615",
+    propertyId: "prop-capitol",
+    email: "river.davis@email.com",
+    phone: "(206) 555-1034",
+    leaseEndDate: "2025-07-15",
+    monthlyRent: 2465,
+    moveInDate: "2023-01-15",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 25,
+      sentimentScore: 77,
+      daysToLeaseEnd: 132,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-307",
+    name: "Phoenix Garcia",
+    unit: "307",
+    propertyId: "prop-capitol",
+    email: "phoenix.g@email.com",
+    phone: "(206) 555-1156",
+    leaseEndDate: "2025-08-30",
+    monthlyRent: 2445,
+    moveInDate: "2023-08-30",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 18,
+      sentimentScore: 69,
+      daysToLeaseEnd: 178,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-718",
+    name: "Skylar Martinez",
+    unit: "718",
+    propertyId: "prop-capitol",
+    email: "skylar.m@email.com",
+    phone: "(206) 555-1278",
+    leaseEndDate: "2025-06-10",
+    monthlyRent: 2480,
+    moveInDate: "2022-12-10",
+    frictionSignals: {
+      maintenanceCount: 9,
+      avgResponseTimeHours: 27,
+      sentimentScore: 82,
+      daysToLeaseEnd: 98,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-capitol-1104",
+    name: "Rowan Anderson",
+    unit: "1104",
+    propertyId: "prop-capitol",
+    email: "rowan.anderson@email.com",
+    phone: "(206) 555-1390",
+    leaseEndDate: "2025-09-14",
+    monthlyRent: 2555,
+    moveInDate: "2024-03-14",
+    frictionSignals: {
+      maintenanceCount: 5,
+      avgResponseTimeHours: 16,
+      sentimentScore: 66,
+      daysToLeaseEnd: 193,
+      serviceUsageCount: 2
+    },
+    interventionHistory: []
+  },
+
+  // BELLEVUE SKYLINE TOWERS - High Risk (17 total)
+  {
     id: "res-bellevue-805",
     name: "Jordan Kim",
     unit: "805",
@@ -509,40 +818,306 @@ export const SAMPLE_AT_RISK_RESIDENTS = [
     interventionHistory: []
   },
   {
-    id: "res-ballard-204",
-    name: "Taylor Wong",
-    unit: "204",
-    propertyId: "prop-ballard",
-    email: "taylor.wong@email.com",
-    phone: "(206) 555-0298",
-    leaseEndDate: "2025-09-15",
-    monthlyRent: 2300,
-    moveInDate: "2024-03-15",
+    id: "res-bellevue-412",
+    name: "Emerson Taylor",
+    unit: "412",
+    propertyId: "prop-bellevue",
+    email: "emerson.t@email.com",
+    phone: "(425) 555-0356",
+    leaseEndDate: "2025-07-22",
+    monthlyRent: 2680,
+    moveInDate: "2022-07-22",
+    frictionSignals: {
+      maintenanceCount: 9,
+      avgResponseTimeHours: 26,
+      sentimentScore: 83,
+      daysToLeaseEnd: 139,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-1208",
+    name: "Charlie Wilson",
+    unit: "1208",
+    propertyId: "prop-bellevue",
+    email: "charlie.wilson@email.com",
+    phone: "(425) 555-0478",
+    leaseEndDate: "2025-06-05",
+    monthlyRent: 2720,
+    moveInDate: "2023-06-05",
+    frictionSignals: {
+      maintenanceCount: 10,
+      avgResponseTimeHours: 28,
+      sentimentScore: 85,
+      daysToLeaseEnd: 93,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-704",
+    name: "Finley Moore",
+    unit: "704",
+    propertyId: "prop-bellevue",
+    email: "finley.moore@email.com",
+    phone: "(425) 555-0590",
+    leaseEndDate: "2025-08-12",
+    monthlyRent: 2640,
+    moveInDate: "2023-08-12",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 22,
+      sentimentScore: 74,
+      daysToLeaseEnd: 160,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-915",
+    name: "Reese Jackson",
+    unit: "915",
+    propertyId: "prop-bellevue",
+    email: "reese.jackson@email.com",
+    phone: "(425) 555-0612",
+    leaseEndDate: "2025-07-05",
+    monthlyRent: 2690,
+    moveInDate: "2022-07-05",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 25,
+      sentimentScore: 79,
+      daysToLeaseEnd: 122,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-308",
+    name: "Blake White",
+    unit: "308",
+    propertyId: "prop-bellevue",
+    email: "blake.white@email.com",
+    phone: "(425) 555-0734",
+    leaseEndDate: "2025-09-18",
+    monthlyRent: 2610,
+    moveInDate: "2024-03-18",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 19,
+      sentimentScore: 71,
+      daysToLeaseEnd: 197,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-1011",
+    name: "Peyton Harris",
+    unit: "1011",
+    propertyId: "prop-bellevue",
+    email: "peyton.harris@email.com",
+    phone: "(425) 555-0856",
+    leaseEndDate: "2025-06-25",
+    monthlyRent: 2700,
+    moveInDate: "2023-06-25",
+    frictionSignals: {
+      maintenanceCount: 9,
+      avgResponseTimeHours: 27,
+      sentimentScore: 81,
+      daysToLeaseEnd: 112,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-515",
+    name: "Cameron Martin",
+    unit: "515",
+    propertyId: "prop-bellevue",
+    email: "cameron.martin@email.com",
+    phone: "(425) 555-0978",
+    leaseEndDate: "2025-08-28",
+    monthlyRent: 2630,
+    moveInDate: "2023-02-28",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 21,
+      sentimentScore: 73,
+      daysToLeaseEnd: 176,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-1314",
+    name: "Hayden Thompson",
+    unit: "1314",
+    propertyId: "prop-bellevue",
+    email: "hayden.t@email.com",
+    phone: "(425) 555-1090",
+    leaseEndDate: "2025-07-18",
+    monthlyRent: 2750,
+    moveInDate: "2022-07-18",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 23,
+      sentimentScore: 76,
+      daysToLeaseEnd: 135,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-602",
+    name: "Kendall Lee",
+    unit: "602",
+    propertyId: "prop-bellevue",
+    email: "kendall.lee@email.com",
+    phone: "(425) 555-1212",
+    leaseEndDate: "2025-09-08",
+    monthlyRent: 2620,
+    moveInDate: "2024-03-08",
     frictionSignals: {
       maintenanceCount: 5,
-      avgResponseTimeHours: 14,
-      sentimentScore: 65,
-      daysToLeaseEnd: 194,
+      avgResponseTimeHours: 17,
+      sentimentScore: 68,
+      daysToLeaseEnd: 187,
       serviceUsageCount: 2
     },
     interventionHistory: []
   },
   {
-    id: "res-capitol-702",
-    name: "Sam Patel",
-    unit: "702",
-    propertyId: "prop-capitol",
-    email: "sam.patel@email.com",
-    phone: "(206) 555-0356",
-    leaseEndDate: "2025-07-20",
-    monthlyRent: 2500,
-    moveInDate: "2023-01-20",
+    id: "res-bellevue-1107",
+    name: "Logan Clark",
+    unit: "1107",
+    propertyId: "prop-bellevue",
+    email: "logan.clark@email.com",
+    phone: "(425) 555-1334",
+    leaseEndDate: "2025-06-12",
+    monthlyRent: 2710,
+    moveInDate: "2022-12-12",
     frictionSignals: {
       maintenanceCount: 9,
-      avgResponseTimeHours: 26,
-      sentimentScore: 81,
-      daysToLeaseEnd: 137,
+      avgResponseTimeHours: 25,
+      sentimentScore: 80,
+      daysToLeaseEnd: 100,
       serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-418",
+    name: "Ellis Rodriguez",
+    unit: "418",
+    propertyId: "prop-bellevue",
+    email: "ellis.rodriguez@email.com",
+    phone: "(425) 555-1456",
+    leaseEndDate: "2025-08-22",
+    monthlyRent: 2660,
+    moveInDate: "2023-08-22",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 20,
+      sentimentScore: 72,
+      daysToLeaseEnd: 170,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-810",
+    name: "Sawyer Lewis",
+    unit: "810",
+    propertyId: "prop-bellevue",
+    email: "sawyer.lewis@email.com",
+    phone: "(425) 555-1578",
+    leaseEndDate: "2025-07-28",
+    monthlyRent: 2670,
+    moveInDate: "2023-01-28",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 24,
+      sentimentScore: 77,
+      daysToLeaseEnd: 145,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-1415",
+    name: "Parker Walker",
+    unit: "1415",
+    propertyId: "prop-bellevue",
+    email: "parker.walker@email.com",
+    phone: "(425) 555-1690",
+    leaseEndDate: "2025-09-25",
+    monthlyRent: 2760,
+    moveInDate: "2024-03-25",
+    frictionSignals: {
+      maintenanceCount: 5,
+      avgResponseTimeHours: 18,
+      sentimentScore: 69,
+      daysToLeaseEnd: 204,
+      serviceUsageCount: 1
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-209",
+    name: "Harley Young",
+    unit: "209",
+    propertyId: "prop-bellevue",
+    email: "harley.young@email.com",
+    phone: "(425) 555-1812",
+    leaseEndDate: "2025-06-18",
+    monthlyRent: 2590,
+    moveInDate: "2023-06-18",
+    frictionSignals: {
+      maintenanceCount: 7,
+      avgResponseTimeHours: 22,
+      sentimentScore: 75,
+      daysToLeaseEnd: 105,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-1203",
+    name: "Stevie Allen",
+    unit: "1203",
+    propertyId: "prop-bellevue",
+    email: "stevie.allen@email.com",
+    phone: "(425) 555-1934",
+    leaseEndDate: "2025-08-05",
+    monthlyRent: 2730,
+    moveInDate: "2022-08-05",
+    frictionSignals: {
+      maintenanceCount: 8,
+      avgResponseTimeHours: 26,
+      sentimentScore: 78,
+      daysToLeaseEnd: 153,
+      serviceUsageCount: 0
+    },
+    interventionHistory: []
+  },
+  {
+    id: "res-bellevue-511",
+    name: "Rory King",
+    unit: "511",
+    propertyId: "prop-bellevue",
+    email: "rory.king@email.com",
+    phone: "(425) 555-2056",
+    leaseEndDate: "2025-09-12",
+    monthlyRent: 2615,
+    moveInDate: "2024-03-12",
+    frictionSignals: {
+      maintenanceCount: 6,
+      avgResponseTimeHours: 19,
+      sentimentScore: 70,
+      daysToLeaseEnd: 191,
+      serviceUsageCount: 2
     },
     interventionHistory: []
   }

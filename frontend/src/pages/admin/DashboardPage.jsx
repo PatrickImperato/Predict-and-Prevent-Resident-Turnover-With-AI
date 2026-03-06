@@ -1,4 +1,4 @@
-import { ArrowRight, TrendingUp, Users, DollarSign, Building2 } from "lucide-react";
+import { ArrowRight, TrendingUp, DollarSign, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -25,18 +25,17 @@ export default function DashboardPage() {
       data-testid="dashboard-page-root"
     >
       {/* Header */}
-      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
               Seattle Portfolio
             </Badge>
-            <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
+            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
               Portfolio Control Center
             </h2>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-              Real-time retention intelligence across Ballard Commons, Capitol Hill Residences, and Bellevue Skyline Towers. 
-              Powered by HappyCo operational data and predictive churn modeling.
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+              Real-time retention intelligence across Ballard Commons, Capitol Hill Residences, and Bellevue Skyline Towers.
             </p>
           </div>
           <Button asChild className="h-10 rounded-lg shadow-sm">
@@ -130,45 +129,45 @@ export default function DashboardPage() {
       <section>
         <div className="saas-card">
           <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-lg font-semibold tracking-tight text-slate-900">Property Performance</h3>
-            <Badge className="border-slate-200 bg-slate-50 text-slate-700" variant="secondary">
+            <h3 className="text-lg font-semibold tracking-tight text-foreground">Property Performance</h3>
+            <Badge className="border-border bg-muted text-muted-foreground" variant="secondary">
               {propertyPerformance.length} Properties
             </Badge>
           </div>
-          <div className="overflow-hidden rounded-lg border border-slate-200">
+          <div className="overflow-hidden rounded-lg border border-border">
             <Table>
               <TableHeader>
-                <TableRow className="border-slate-200 bg-slate-50">
-                  <TableHead className="text-xs font-semibold text-slate-700">Property</TableHead>
-                  <TableHead className="text-center text-xs font-semibold text-slate-700">Units</TableHead>
-                  <TableHead className="text-center text-xs font-semibold text-slate-700">Occupied</TableHead>
-                  <TableHead className="text-center text-xs font-semibold text-slate-700">At Risk</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-slate-700">Interventions</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-slate-700">Projected Savings</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-slate-700">Net ROI</TableHead>
-                  <TableHead className="text-xs font-semibold text-slate-700">Manager</TableHead>
+                <TableRow className="border-border bg-muted/50">
+                  <TableHead className="text-xs font-semibold text-foreground">Property</TableHead>
+                  <TableHead className="text-center text-xs font-semibold text-foreground">Units</TableHead>
+                  <TableHead className="text-center text-xs font-semibold text-foreground">Occupied</TableHead>
+                  <TableHead className="text-center text-xs font-semibold text-foreground">At Risk</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-foreground">Interventions</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-foreground">Projected Savings</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-foreground">Net ROI</TableHead>
+                  <TableHead className="text-xs font-semibold text-foreground">Manager</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {propertyPerformance.map((property) => (
-                  <TableRow key={property.id} className="border-slate-200 hover:bg-slate-50">
+                  <TableRow key={property.id} className="border-border hover:bg-muted/30">
                     <TableCell>
                       <Link 
-                        className="font-medium text-slate-900 hover:text-teal-600" 
+                        className="font-medium text-foreground hover:text-primary" 
                         to={`/app/admin/properties/${property.id}`}
                         data-testid={`property-link-${property.id}`}
                       >
                         <div>
                           <p className="font-semibold">{property.name}</p>
-                          <p className="text-xs text-slate-600">{property.neighborhood}</p>
+                          <p className="text-xs text-muted-foreground">{property.neighborhood}</p>
                         </div>
                       </Link>
                     </TableCell>
-                    <TableCell className="text-center text-slate-700">{property.units}</TableCell>
+                    <TableCell className="text-center text-foreground">{property.units}</TableCell>
                     <TableCell className="text-center">
                       <div>
-                        <p className="font-medium text-slate-900">{property.occupied}</p>
-                        <p className="text-xs text-slate-600">{property.occupancyRate}%</p>
+                        <p className="font-medium text-foreground">{property.occupied}</p>
+                        <p className="text-xs text-muted-foreground">{property.occupancyRate}%</p>
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
@@ -176,14 +175,14 @@ export default function DashboardPage() {
                         className={`${
                           property.atRiskCount >= 10 ? 'border-red-200 bg-red-50 text-red-700' :
                           property.atRiskCount >= 5 ? 'border-amber-200 bg-amber-50 text-amber-700' :
-                          'border-slate-200 bg-slate-50 text-slate-700'
+                          'border-border bg-muted text-muted-foreground'
                         }`}
                         variant="secondary"
                       >
                         {property.atRiskCount}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right text-slate-700">{property.interventionsRecommended}</TableCell>
+                    <TableCell className="text-right text-foreground">{property.interventionsRecommended}</TableCell>
                     <TableCell className="text-right font-medium text-teal-600">
                       ${property.projectedSavings.toLocaleString()}
                     </TableCell>
@@ -192,7 +191,7 @@ export default function DashboardPage() {
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
-                        <p className="font-medium text-slate-900">{property.manager}</p>
+                        <p className="font-medium text-foreground">{property.manager}</p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -206,7 +205,7 @@ export default function DashboardPage() {
       {/* Top Flagged Residents & Insights */}
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
         <div className="saas-card">
-          <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Top Flagged Residents</h3>
+          <h3 className="mb-4 text-lg font-semibold tracking-tight text-foreground">Top Flagged Residents</h3>
           <div className="space-y-3">
             {topFlaggedResidents.map((resident, index) => {
               const property = propertyPerformance.find(p => p.id === resident.propertyId);
@@ -219,26 +218,26 @@ export default function DashboardPage() {
                   transition={{ duration: 0.22, delay: 0.3 + index * 0.05 }}
                 >
                   <Link
-                    className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-4 transition-all hover:border-slate-300 hover:bg-white hover:shadow-sm active:scale-[0.99]"
+                    className="flex items-center justify-between rounded-lg border border-border bg-muted/40 p-4 transition-all hover:border-primary/50 hover:bg-card hover:shadow-sm active:scale-[0.99]"
                     to={`/app/manager/churn-risk`}
                     data-testid={`flagged-resident-${resident.id}`}
                   >
                     <div>
-                      <p className="font-semibold text-slate-900">{resident.name}</p>
-                      <p className="text-sm text-slate-600">
+                      <p className="font-semibold text-foreground">{resident.name}</p>
+                      <p className="text-sm text-muted-foreground">
                         {property?.name} • Unit {resident.unit}
                       </p>
-                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+                      <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                         Primary: {resident.topDriver.name}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-semibold tracking-tight text-slate-900">{resident.riskScore}</p>
+                      <p className="text-2xl font-semibold tracking-tight text-foreground">{resident.riskScore}</p>
                       <Badge 
                         className={`mt-1 ${
                           resident.riskScore >= 80 ? 'border-red-200 bg-red-50 text-red-700' :
                           resident.riskScore >= 70 ? 'border-amber-200 bg-amber-50 text-amber-700' :
-                          'border-slate-200 bg-slate-50 text-slate-700'
+                          'border-border bg-muted text-muted-foreground'
                         }`}
                         variant="secondary"
                       >
@@ -261,17 +260,17 @@ export default function DashboardPage() {
                 <DollarSign className="h-5 w-5" />
               </div>
               <div className="flex-1">
-                <h4 className="font-semibold text-slate-900">Platform Business Impact</h4>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  HappyCo Concierge turns operational friction into measurable NOI improvement. Current Seattle portfolio shows <strong>${currentMetrics.netRetentionROI.toLocaleString()} net retention ROI</strong> with <strong>{currentMetrics.roiMultiple}x return multiple</strong> on credits deployed.
+                <h4 className="font-semibold text-foreground">Platform Business Impact</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  HappyCo Concierge turns operational friction into measurable NOI improvement. Current Seattle portfolio shows <strong className="text-foreground">${currentMetrics.netRetentionROI.toLocaleString()} net retention ROI</strong> with <strong className="text-foreground">{currentMetrics.roiMultiple}x return multiple</strong> on credits deployed.
                 </p>
                 <div className="mt-4 grid gap-3 grid-cols-2">
                   <div className="rounded-lg border border-teal-200 bg-white p-3">
-                    <p className="text-xs font-medium text-slate-600">Turnover Savings</p>
+                    <p className="text-xs font-medium text-muted-foreground">Turnover Savings</p>
                     <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedSavings / 1000).toFixed(0)}k</p>
                   </div>
                   <div className="rounded-lg border border-teal-200 bg-white p-3">
-                    <p className="text-xs font-medium text-slate-600">Service Revenue</p>
+                    <p className="text-xs font-medium text-muted-foreground">Service Revenue</p>
                     <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedRevenue / 1000).toFixed(1)}k</p>
                   </div>
                 </div>
@@ -286,9 +285,9 @@ export default function DashboardPage() {
                 <TrendingUp className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900">Leading Indicator Intelligence</h4>
-                <p className="mt-2 text-sm leading-relaxed text-slate-700">
-                  HappyCo operational signals predict resident friction <strong>4+ months earlier</strong> than 
+                <h4 className="font-semibold text-foreground">Leading Indicator Intelligence</h4>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  HappyCo operational signals predict resident friction <strong className="text-foreground">4+ months earlier</strong> than 
                   traditional move-out notices. Maintenance frequency, response time patterns, and sentiment tracking enable proactive interventions with measurable retention ROI.
                 </p>
               </div>
@@ -297,28 +296,28 @@ export default function DashboardPage() {
 
           {/* Churn Model Weights */}
           <div className="saas-card">
-            <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Churn Model Weights</h3>
+            <h3 className="mb-4 text-lg font-semibold tracking-tight text-foreground">Churn Model Weights</h3>
             <div className="space-y-3">
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="rounded-lg border border-border bg-muted/40 p-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-900">Maintenance Frequency</p>
+                  <p className="font-medium text-foreground">Maintenance Frequency</p>
                   <p className="text-sm font-semibold text-teal-600">35%</p>
                 </div>
-                <p className="mt-2 text-sm text-slate-600">Repeat maintenance requests indicate resident friction</p>
+                <p className="mt-2 text-sm text-muted-foreground">Repeat maintenance requests indicate resident friction</p>
               </div>
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="rounded-lg border border-border bg-muted/40 p-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-900">Sentiment Decline</p>
+                  <p className="font-medium text-foreground">Sentiment Decline</p>
                   <p className="text-sm font-semibold text-teal-600">25%</p>
                 </div>
-                <p className="mt-2 text-sm text-slate-600">Detected negative tone in resident interactions</p>
+                <p className="mt-2 text-sm text-muted-foreground">Detected negative tone in resident interactions</p>
               </div>
-              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="rounded-lg border border-border bg-muted/40 p-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-slate-900">Response Time</p>
+                  <p className="font-medium text-foreground">Response Time</p>
                   <p className="text-sm font-semibold text-teal-600">20%</p>
                 </div>
-                <p className="mt-2 text-sm text-slate-600">Slow response to requests creates dissatisfaction</p>
+                <p className="mt-2 text-sm text-muted-foreground">Slow response to requests creates dissatisfaction</p>
               </div>
             </div>
           </div>

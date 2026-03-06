@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,38 +6,41 @@
 
 @layer base {
   :root {
-    --font-heading: "Inter", system-ui, sans-serif;
-    --font-body: "Inter", system-ui, sans-serif;
+    --font-heading: "Space Grotesk", system-ui, sans-serif;
+    --font-body: "Work Sans", system-ui, sans-serif;
     --font-mono: "IBM Plex Mono", monospace;
 
-    /* Premium SaaS Color System */
-    --background: 218 24% 97%;
-    --foreground: 222 47% 11%;
+    /* Premium SaaS Color System - Updated per design guidelines */
+    --background: 210 33% 98%;
+    --foreground: 222 22% 14%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 22% 14%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 173 80% 40%;
+    --popover-foreground: 222 22% 14%;
+    --primary: 185 78% 28%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 214 32% 97%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
+    --secondary: 35 62% 92%;
+    --secondary-foreground: 222 22% 14%;
+    --muted: 210 24% 95%;
+    --muted-foreground: 215 16% 42%;
+    --accent: 35 66% 88%;
+    --accent-foreground: 222 22% 14%;
+    --destructive: 350 80% 52%;
     --destructive-foreground: 0 0% 100%;
     --success: 142 76% 36%;
     --warning: 38 92% 50%;
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 173 80% 40%;
-    --chart-1: 173 80% 40%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 38 92% 50%;
-    --chart-4: 221 83% 53%;
-    --chart-5: 0 84% 60%;
+    --border: 215 20% 88%;
+    --input: 215 20% 88%;
+    --ring: 185 78% 28%;
+    --chart-1: 185 78% 28%;
+    --chart-2: 35 80% 52%;
+    --chart-3: 215 16% 42%;
+    --chart-4: 189 45% 46%;
+    --chart-5: 350 80% 52%;
     --radius: 0.75rem;
+    --shadow-soft: 0 1px 1px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.08);
+    --shadow-hard: 0 1px 1px rgba(16, 24, 40, 0.06), 0 16px 40px rgba(16, 24, 40, 0.12);
+    --surface-noise-opacity: 0.06;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);

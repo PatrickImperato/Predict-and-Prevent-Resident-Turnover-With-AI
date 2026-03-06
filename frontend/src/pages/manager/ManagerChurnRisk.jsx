@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertCircle, TrendingUp, DollarSign, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertCircle, TrendingUp, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 
@@ -61,11 +61,13 @@ export default function ManagerChurnRisk() {
       
       // Show success toast
       toast.success("Intervention Deployed", {
-        description: `${resident.recommendedIntervention.label} intervention ($${resident.recommendedIntervention.creditOffer} credit) sent to ${resident.name}. Projected ROI: $${resident.projectedROI.netROI.toLocaleString()} (${resident.projectedROI.roiMultiple}x).`
+        description: `${resident.recommendedIntervention.label} intervention ($${resident.recommendedIntervention.creditOffer} credit) sent to ${resident.name}. Projected ROI: $${resident.projectedROI.netROI.toLocaleString()} (${resident.projectedROI.roiMultiple}x).`,
+        className: "border-teal-200 bg-teal-50 text-teal-900"
       });
     } else {
       toast.error("Deployment Failed", {
-        description: "Unable to deploy intervention. Please try again."
+        description: "Unable to deploy intervention. Please try again.",
+        className: "border-red-200 bg-red-50 text-red-900"
       });
     }
   };
@@ -73,7 +75,7 @@ export default function ManagerChurnRisk() {
   const getRiskBadgeColor = (score) => {
     if (score >= 80) return "border-red-200 bg-red-50 text-red-700";
     if (score >= 70) return "border-amber-200 bg-amber-50 text-amber-700";
-    return "border-slate-200 bg-slate-50 text-slate-700";
+    return "border-border bg-muted text-muted-foreground";
   };
   
   const getRiskLabel = (score) => {
@@ -95,14 +97,14 @@ export default function ManagerChurnRisk() {
       data-testid="manager-churn-risk-page"
     >
       {/* Header */}
-      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-red-200 bg-red-50 text-red-700 hover:bg-red-50" variant="secondary">
           Churn Risk Analysis
         </Badge>
-        <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
+        <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
           At-Risk Residents
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Churn prediction powered by HappyCo operational data. Risk scores compute from maintenance frequency, 
           response times, sentiment signals, and lease timing to identify friction early.
         </p>
@@ -130,7 +132,7 @@ export default function ManagerChurnRisk() {
       {/* High Risk Residents */}
       {highRiskResidents.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-semibold text-slate-900">High Risk Residents</h3>
+          <h3 className="mb-4 text-lg font-semibold text-foreground">High Risk Residents</h3>
           <div className="space-y-4">
             {highRiskResidents.map((resident) => {
               const isExpanded = expandedResidentId === resident.id;
@@ -151,8 +153,8 @@ export default function ManagerChurnRisk() {
                           <AlertCircle className="h-5 w-5" strokeWidth={2} />
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
-                          <p className="text-sm text-slate-600">
+                          <h4 className="text-lg font-semibold text-foreground">{resident.name}</h4>
+                          <p className="text-sm text-muted-foreground">
                             Unit {resident.unit} • {property?.name} • {resident.frictionSignals.daysToLeaseEnd} days to lease end
                           </p>
                         </div>
@@ -161,14 +163,14 @@ export default function ManagerChurnRisk() {
                       {/* Top 3 Drivers */}
                       <div className="mt-6 grid gap-4 md:grid-cols-3">
                         {resident.riskDrivers.slice(0, 3).map((driver) => (
-                          <div key={driver.name} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                          <div key={driver.name} className="rounded-lg border border-border bg-muted/40 p-4">
                             <div className="flex items-center justify-between">
-                              <p className="text-sm font-medium text-slate-900">{driver.name}</p>
+                              <p className="text-sm font-medium text-foreground">{driver.name}</p>
                               <Badge 
                                 className={`text-xs ${
                                   driver.severity === 'high' ? 'border-red-200 bg-red-50 text-red-700' :
                                   driver.severity === 'medium' ? 'border-amber-200 bg-amber-50 text-amber-700' :
-                                  'border-slate-200 bg-slate-50 text-slate-700'
+                                  'border-border bg-muted text-muted-foreground'
                                 }`}
                                 variant="secondary"
                               >
@@ -176,7 +178,7 @@ export default function ManagerChurnRisk() {
                               </Badge>
                             </div>
                             <Progress className="mt-3" value={parseFloat(driver.contribution)} />
-                            <p className="mt-2 text-sm text-slate-700">
+                            <p className="mt-2 text-sm text-muted-foreground">
                               {driver.name === "Maintenance Frequency" && `${driver.rawValue} requests`}
                               {driver.name === "Response Time" && `${driver.rawValue}hr avg`}
                               {driver.name === "Sentiment Decline" && `${driver.rawValue}% negative`}
@@ -191,8 +193,8 @@ export default function ManagerChurnRisk() {
                       <div className="mt-4 rounded-lg border border-teal-200 bg-teal-50 p-4">
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <p className="text-sm font-semibold text-slate-900">Recommended: {resident.recommendedIntervention.label} Intervention</p>
-                            <p className="mt-1 text-sm text-slate-700">{resident.recommendedIntervention.rationale}</p>
+                            <p className="text-sm font-semibold text-foreground">Recommended: {resident.recommendedIntervention.label} Intervention</p>
+                            <p className="mt-1 text-sm text-muted-foreground">{resident.recommendedIntervention.rationale}</p>
                             <p className="mt-2 text-sm font-medium text-teal-700">
                               Credit offer: ${resident.recommendedIntervention.creditOffer} • Tier {resident.recommendedIntervention.tier}
                             </p>
@@ -217,37 +219,37 @@ export default function ManagerChurnRisk() {
                             transition={{ duration: 0.2 }}
                             className="mt-4 overflow-hidden"
                           >
-                            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
-                              <h5 className="text-sm font-semibold text-slate-900">ROI Impact Projection</h5>
-                              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                            <div className="rounded-lg border border-border bg-muted/40 p-6">
+                              <h5 className="text-sm font-semibold text-foreground">ROI Impact Projection</h5>
+                              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                                 {resident.projectedROI.explanation}
                               </p>
                               
                               <div className="mt-4 grid gap-4 md:grid-cols-4">
-                                <div className="rounded-lg border border-slate-200 bg-white p-4">
-                                  <p className="text-xs font-medium text-slate-600">Expected Savings</p>
+                                <div className="rounded-lg border border-border bg-card p-4">
+                                  <p className="text-xs font-medium text-muted-foreground">Expected Savings</p>
                                   <p className="mt-1 text-lg font-semibold text-teal-600">
                                     ${resident.projectedROI.expectedSavings.toLocaleString()}
                                   </p>
-                                  <p className="mt-1 text-xs text-slate-500">
+                                  <p className="mt-1 text-xs text-muted-foreground">
                                     {resident.projectedROI.churnReductionRate} retention
                                   </p>
                                 </div>
                                 
-                                <div className="rounded-lg border border-slate-200 bg-white p-4">
-                                  <p className="text-xs font-medium text-slate-600">Service Revenue</p>
+                                <div className="rounded-lg border border-border bg-card p-4">
+                                  <p className="text-xs font-medium text-muted-foreground">Service Revenue</p>
                                   <p className="mt-1 text-lg font-semibold text-teal-600">
                                     ${resident.projectedROI.expectedRevenue.toLocaleString()}
                                   </p>
-                                  <p className="mt-1 text-xs text-slate-500">From bookings</p>
+                                  <p className="mt-1 text-xs text-muted-foreground">From bookings</p>
                                 </div>
                                 
-                                <div className="rounded-lg border border-slate-200 bg-white p-4">
-                                  <p className="text-xs font-medium text-slate-600">Credit Cost</p>
-                                  <p className="mt-1 text-lg font-semibold text-slate-900">
+                                <div className="rounded-lg border border-border bg-card p-4">
+                                  <p className="text-xs font-medium text-muted-foreground">Credit Cost</p>
+                                  <p className="mt-1 text-lg font-semibold text-foreground">
                                     ${resident.projectedROI.totalCost.toLocaleString()}
                                   </p>
-                                  <p className="mt-1 text-xs text-slate-500">Investment</p>
+                                  <p className="mt-1 text-xs text-muted-foreground">Investment</p>
                                 </div>
                                 
                                 <div className="rounded-lg border border-teal-200 bg-teal-50 p-4">
@@ -268,7 +270,7 @@ export default function ManagerChurnRisk() {
 
                     {/* Score & Action */}
                     <div className="ml-6 text-right">
-                      <p className="text-4xl font-semibold tracking-tight text-slate-900">{resident.riskScore}</p>
+                      <p className="text-4xl font-semibold tracking-tight text-foreground">{resident.riskScore}</p>
                       <Badge className={`mt-2 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
                         {getRiskLabel(resident.riskScore)}
                       </Badge>
@@ -300,26 +302,26 @@ export default function ManagerChurnRisk() {
       {/* Medium Risk Residents */}
       {mediumRiskResidents.length > 0 && (
         <section>
-          <h3 className="mb-4 text-lg font-semibold text-slate-900">Medium Risk Residents</h3>
+          <h3 className="mb-4 text-lg font-semibold text-foreground">Medium Risk Residents</h3>
           <div className="space-y-4">
             {mediumRiskResidents.map((resident) => {
               const isDeployed = deployedInterventions.has(resident.id);
               const property = getProperty(resident.propertyId);
               
               return (
-                <div key={resident.id} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <div key={resident.id} className="rounded-lg border border-border bg-card p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
-                      <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
-                      <p className="mt-1 text-sm text-slate-600">
+                      <h4 className="text-lg font-semibold text-foreground">{resident.name}</h4>
+                      <p className="mt-1 text-sm text-muted-foreground">
                         Unit {resident.unit} • {property?.name}
                       </p>
-                      <p className="mt-2 text-sm text-slate-700">
+                      <p className="mt-2 text-sm text-muted-foreground">
                         Top driver: {resident.topDriver.name} ({resident.topDriver.contribution} pts)
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-2xl font-semibold text-slate-900">{resident.riskScore}</p>
+                      <p className="text-2xl font-semibold text-foreground">{resident.riskScore}</p>
                       <Badge className={`mt-1 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
                         Medium
                       </Badge>
