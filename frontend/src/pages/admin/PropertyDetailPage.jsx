@@ -47,13 +47,13 @@ export default function PropertyDetailPage() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
-      className="space-y-8" 
+      className="space-y-6" 
       data-testid="property-detail-page-root"
     >
-      <section className="rounded-3xl border border-border/80 bg-card/85 p-8 shadow-[var(--shadow-soft)]">
+      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <Button asChild className="rounded-full" data-testid="property-detail-back-to-properties-button" size="sm" variant="outline">
+            <Button asChild className="h-9 rounded-lg" data-testid="property-detail-back-to-properties-button" size="sm" variant="outline">
               <Link to="/app/admin/properties">
                 <ArrowLeft className="mr-2 h-4 w-4" strokeWidth={1.75} />
                 Back to properties
@@ -61,21 +61,21 @@ export default function PropertyDetailPage() {
             </Button>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               {detail.property.is_flagship ? (
-                <Badge className="bg-primary/10 text-primary" data-testid="property-detail-flagship-badge" variant="secondary">
+                <Badge className="border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" data-testid="property-detail-flagship-badge" variant="secondary">
                   Flagship property
                 </Badge>
               ) : null}
-              <Badge className="bg-muted text-muted-foreground" data-testid="property-detail-manager-badge" variant="secondary">
+              <Badge className="border-slate-200 bg-slate-100 text-slate-700" data-testid="property-detail-manager-badge" variant="secondary">
                 Manager: {detail.property.manager_name || "Unassigned"}
               </Badge>
             </div>
-            <h2 className="mt-4 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground" data-testid="property-detail-title">
+            <h2 className="mt-4 font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900" data-testid="property-detail-title">
               {detail.property.name}
             </h2>
-            <p className="mt-3 max-w-4xl text-sm leading-7 text-muted-foreground">{detail.property.overview}</p>
+            <p className="mt-2 max-w-4xl text-sm leading-relaxed text-slate-600">{detail.property.overview}</p>
           </div>
-          <div className="rounded-2xl border border-border/80 bg-muted/35 p-4 text-sm text-muted-foreground" data-testid="property-detail-address-card">
-            <p className="font-medium text-foreground">{detail.property.address.street}</p>
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" data-testid="property-detail-address-card">
+            <p className="font-medium text-slate-900">{detail.property.address.street}</p>
             <p>{detail.property.address.city}, {detail.property.address.state} {detail.property.address.postalCode}</p>
           </div>
         </div>
@@ -83,18 +83,16 @@ export default function PropertyDetailPage() {
 
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" data-testid="property-detail-summary-grid">
         {detail.summary_cards.map((card) => (
-          <Card className="happyco-card" data-testid={`property-detail-summary-${card.key}`} key={card.key}>
-            <CardContent className="p-5">
-              <p className="text-sm text-muted-foreground">{card.label}</p>
-              <p className="mt-3 font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{card.value}</p>
-              {card.detail ? <p className="mt-2 text-sm text-muted-foreground">{card.detail}</p> : null}
-            </CardContent>
-          </Card>
+          <div className="saas-metric-card" data-testid={`property-detail-summary-${card.key}`} key={card.key}>
+            <p className="metric-label">{card.label}</p>
+            <p className="metric-value mt-3">{card.value}</p>
+            {card.detail ? <p className="metric-detail mt-2">{card.detail}</p> : null}
+          </div>
         ))}
       </section>
 
       <Tabs className="space-y-5" defaultValue="resident-story" data-testid="property-detail-tabs">
-        <TabsList className="grid w-full grid-cols-3 rounded-2xl bg-muted/60 p-1 md:w-[540px]">
+        <TabsList className="grid w-full grid-cols-3 rounded-xl bg-slate-100 p-1 md:w-[540px]">
           <TabsTrigger data-testid="property-detail-tab-resident-story" value="resident-story">Resident story</TabsTrigger>
           <TabsTrigger data-testid="property-detail-tab-units" value="units">Units</TabsTrigger>
           <TabsTrigger data-testid="property-detail-tab-operations" value="operations">Operations</TabsTrigger>
@@ -102,79 +100,83 @@ export default function PropertyDetailPage() {
 
         <TabsContent value="resident-story">
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-            <Card className="happyco-card" data-testid="property-detail-alex-profile-card">
-              <CardHeader>
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/12 text-primary">
-                    <Building2 className="h-5 w-5" strokeWidth={1.75} />
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl tracking-[-0.02em]">Alex Chen end-to-end profile</CardTitle>
-                    <p className="mt-1 text-sm text-muted-foreground">Unit {detail.resident_profile.unit} • {detail.resident_profile.email}</p>
-                  </div>
+            <div className="saas-card" data-testid="property-detail-alex-profile-card">
+              <div className="mb-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-600/10 text-teal-600">
+                  <Building2 className="h-5 w-5" strokeWidth={1.75} />
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold tracking-tight text-slate-900">Alex Chen end-to-end profile</h3>
+                  <p className="mt-1 text-sm text-slate-600">Unit {detail.resident_profile.unit} • {detail.resident_profile.email}</p>
+                </div>
+              </div>
+              <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-border/80 bg-muted/35 p-4"><p className="text-sm text-muted-foreground">Churn score</p><p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{detail.resident_profile.churn_score}</p></div>
-                  <div className="rounded-2xl border border-border/80 bg-muted/35 p-4"><p className="text-sm text-muted-foreground">Score change</p><p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">+{detail.resident_profile.score_change}</p></div>
-                  <div className="rounded-2xl border border-border/80 bg-muted/35 p-4"><p className="text-sm text-muted-foreground">Risk tier</p><p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{detail.resident_profile.risk_tier}</p></div>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-medium text-slate-600">Churn score</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile.churn_score}</p>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-medium text-slate-600">Score change</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">+{detail.resident_profile.score_change}</p>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                    <p className="text-xs font-medium text-slate-600">Risk tier</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile.risk_tier}</p>
+                  </div>
                 </div>
-                <div className="rounded-2xl border border-border/80 bg-secondary/35 p-4 text-sm leading-7 text-secondary-foreground" data-testid="property-detail-score-explanation">
-                  <p className="font-medium text-foreground">{detail.resident_profile.driver_summary}</p>
+                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-slate-700" data-testid="property-detail-score-explanation">
+                  <p className="font-medium text-slate-900">{detail.resident_profile.driver_summary}</p>
                   <p className="mt-2">{detail.resident_profile.score_explanation}</p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {detail.weighted_drivers.map((driver) => (
-                    <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" data-testid={`property-detail-driver-${driver.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={driver.label}>
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-driver-${driver.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={driver.label}>
                       <div className="flex items-center justify-between">
-                        <p className="font-medium text-foreground">{driver.label}</p>
-                        <p className="text-sm text-primary">{driver.weight}%</p>
+                        <p className="font-medium text-slate-900">{driver.label}</p>
+                        <p className="text-sm font-semibold text-teal-600">{driver.weight}%</p>
                       </div>
                       <Progress className="mt-3" value={(driver.impact_score / driver.weight) * 100} />
-                      <p className="mt-3 text-sm font-medium text-foreground">{driver.signal_value}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">{driver.narrative}</p>
+                      <p className="mt-3 text-sm font-medium text-slate-900">{driver.signal_value}</p>
+                      <p className="mt-2 text-sm text-slate-600">{driver.narrative}</p>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             <div className="grid gap-5">
-              <Card className="happyco-card" data-testid="property-detail-flagged-residents-card">
-                <CardHeader>
-                  <CardTitle className="text-xl tracking-[-0.02em]">Top flagged residents</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <div className="saas-card" data-testid="property-detail-flagged-residents-card">
+                <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Top flagged residents</h3>
+                <div className="space-y-3">
                   {detail.flagged_residents.map((resident) => (
-                    <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" data-testid={`property-detail-flagged-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={resident.resident_id}>
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-flagged-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={resident.resident_id}>
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-foreground">{resident.name}</p>
-                          <p className="text-sm text-muted-foreground">Unit {resident.unit_number}</p>
+                          <p className="font-medium text-slate-900">{resident.name}</p>
+                          <p className="text-sm text-slate-600">Unit {resident.unit_number}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{resident.score}</p>
-                          <p className="text-xs text-muted-foreground">{resident.primary_driver}</p>
+                          <p className="text-2xl font-semibold tracking-tight text-slate-900">{resident.score}</p>
+                          <p className="text-xs text-slate-500">{resident.primary_driver}</p>
                         </div>
                       </div>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
-              <Card className="happyco-card" data-testid="property-detail-score-history-card">
-                <CardHeader>
-                  <CardTitle className="text-xl tracking-[-0.02em]">Churn score history</CardTitle>
-                </CardHeader>
-                <CardContent className="grid gap-3 sm:grid-cols-3">
+                </div>
+              </div>
+              <div className="saas-card" data-testid="property-detail-score-history-card">
+                <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Churn score history</h3>
+                <div className="grid gap-3 sm:grid-cols-3">
                   {detail.resident_profile.score_history.map((point) => (
-                    <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" data-testid={`property-detail-score-point-${point.as_of_date}`} key={point.as_of_date}>
-                      <p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">{new Date(point.as_of_date).toLocaleDateString()}</p>
-                      <p className="mt-2 font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{point.score}</p>
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-score-point-${point.as_of_date}`} key={point.as_of_date}>
+                      <p className="text-xs font-medium uppercase tracking-wide text-slate-600">{new Date(point.as_of_date).toLocaleDateString()}</p>
+                      <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{point.score}</p>
+                      <p className="mt-2 text-sm text-slate-600">{point.primary_driver}</p>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           </div>
 
