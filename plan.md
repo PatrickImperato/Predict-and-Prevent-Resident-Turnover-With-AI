@@ -121,21 +121,22 @@
 
 ---
 
-### Phase 5 — Core UI structure + auth-gated admin routing (no business logic) ⏳ IN PROGRESS
+### Phase 5 — Core UI structure + auth-gated admin routing (no business logic) ✅ COMPLETED
 **Purpose:** Build the core UI structure and authentication flow while keeping environment/diagnostics guarantees intact.
 
-**Scope (strict):**
-1. Public **Landing page** parity with current preview layout/messaging.
-2. **Login page** parity:
+#### Phase 5 delivered
+1. Public **Landing page** parity structure and messaging implemented at `/`.
+2. **Login page** parity implemented:
    - email + password form
    - demo account cards (admin/manager/resident)
    - integrates with secure cookie session auth endpoint
-   - manager/resident sessions are **rejected or redirected** in this phase because admin-only UI is implemented.
+   - **manager/resident logins are rejected/redirected** in this phase because only admin routes are implemented.
 3. Reusable **Admin shell** layout for all `/app/admin/*` routes:
    - sidebar navigation
-   - topbar with environment badge + user menu
+   - topbar with environment badge
+   - user menu
    - shared layout wrapper
-4. Sidebar navigation items:
+4. Sidebar navigation items implemented:
    - Dashboard
    - Properties
    - Providers
@@ -150,26 +151,23 @@
    - `/app/admin/tenants`
    - `/app/admin/analytics`
    - `/app/admin/settings`
-6. Auth gating:
+6. Auth gating enforced:
    - All `/app/admin/*` routes require **authenticated admin** session.
 7. Diagnostics remains functional and accessible from the sidebar.
+8. Root behavior implemented:
+   - Signed-in admins visiting `/` → redirect to `/app/admin/dashboard`.
 
-**Confirmed behaviors for Phase 5:**
-- Signed-in admins visiting `/` → redirect to `/app/admin/dashboard`.
-- Manager/resident demo logins → rejected or redirected (admin-only shell implemented).
+#### Phase 5 verification
+- JS lint clean.
+- Frontend build: `yarn build` succeeds.
+- UI screenshot flow passed.
+- Test agent report: `/app/test_reports/iteration_2.json` confirms all Phase 5 acceptance criteria.
 
-**Out of scope (explicitly not in Phase 5):**
+**Out of scope (still not implemented):**
 - Dashboard business logic (KPIs, charts, reconciled revenue/credits)
 - Properties/providers/tenants/analytics/settings data fetching and CRUD
 - Seed system implementation (`demoA`) and real preview reset
 - Production bootstrap implementation
-
-**Phase 5 acceptance criteria:**
-- Landing page matches preview copy/layout choices closely.
-- Login page matches preview copy and demo-card behavior; uses secure cookie session.
-- Admin shell is shared and consistent for all admin routes.
-- All admin routes are admin-gated (no partial 403 drift).
-- Diagnostics remains fully functional from sidebar.
 
 ---
 
@@ -207,17 +205,17 @@
 ---
 
 ## 3) Next Actions
-- Complete Phase 5 in this order:
-  1) landing parity route `/`
-  2) login parity refinements + admin-only behavior enforcement
-  3) admin shell route map + placeholder pages
-  4) verify diagnostics from sidebar and admin gating across all `/app/admin/*`
-- Capture remaining parity specifics behind admin auth (screenshots/walkthrough) to ensure exact labels/layout matches.
+- Begin Phase 6 in this order:
+  1) implement deterministic seed services for `demoA` with rolling dates
+  2) implement preview reset (super-admin only) with explicit confirmation + audit
+  3) implement deployment-time production bootstrap (idempotent + audited)
+  4) extend diagnostics to surface seed drift/missing datasetId as explicit warnings
+- Capture remaining parity specifics behind admin auth (screenshots/walkthrough) to ensure exact labels/layout matches when business pages are implemented.
 - Decide the exact test domain value before Phase 9.
 
 ## 4) Success Criteria
 - Environment separation is provable: diagnostics + hard failures prevent mixing. ✅
-- Preview matches current preview landing/login/admin UX wherever feasible (copy/layout/behavior). ⏳
+- Preview matches current preview landing/login/admin UX wherever feasible (copy/layout/behavior). ✅ (for landing/login/shell/diagnostics)
 - Seeded demo dataset (`demoA`) is polished, current-dated, and KPIs reconcile. ⏳
-- Admin routes are consistent (no brittle filters; no surprise 403s). ⏳
+- Admin routes are consistent (no brittle filters; no surprise 403s). ✅ (gating + shell consistency) / ⏳ (data pages)
 - Production is verified on `<TBD_TEST_DOMAIN>` before any live-domain cutover. ⏳
