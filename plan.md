@@ -11,6 +11,7 @@
 - Preserve the **current preview** presentation closely: spacing, typography, color usage, card density, shadows, nav patterns, and polished feel.
 - Preserve public layout parity outside the admin shell.
 - Preserve **legal/privacy/cookie link visibility patterns** like current preview.
+- **Do not introduce a new design system**; continue with the existing Tailwind + shadcn component set and current palette.
 
 ### Authentication & routing constraints (V1)
 - Auth approach for V1:
@@ -44,21 +45,15 @@
   - CTA: “Sign In”
   - Right-side demo account cards with autofill.
 
-### New V1 data/experience decisions locked
+### Locked V1 data/experience decisions
 - **Flagship property first:** *The Metropolitan at Riverside* is the canonical fully functional example. ✅ implemented
 - **Canonical property manager identity:** **Sarah Mitchell** is the canonical manager for the flagship property. ✅ implemented
 - **Canonical resident example:** **Alex Chen** is the end-to-end functional resident. ✅ implemented
-- **Churn model weights (explicit in UI and data):** ✅ implemented
-  - Maintenance Frequency = 30
-  - Resolution Time = 20
-  - Repeat Issues = 15
-  - Negative Sentiment = 15
-  - Unit Age = 10
-  - Low Engagement = 10
+- **Primary churn examples:** Alex Chen, Maria Santos, James Wilson. ✅ implemented across dashboard + properties
 - **Communication style:** informal, AI-driven, proactive; leading-indicator signals for churn. ✅ implemented in seeded concierge messages
 - **Public legal/privacy/cookie parity:** match current preview copy as closely as publicly visible; use closest-safe parity where not exposed. ✅ implemented with footer links + cookie notice pattern + /legal
 
-### Coherent demo system rule (now enforced)
+### Coherent demo system rule (enforced)
 - The demo is a **coherent base data architecture**, not scattered page-level demo data.
 - Dashboard + properties UI are driven by backend read models derived from seeded collections.
 
@@ -101,7 +96,7 @@ Implemented:
 
 ### Phase 6 — Seed + hardening (demoA, reset UX, diagnostics seed visibility) ✅ COMPLETED
 Implemented:
-- deterministic `demoA` seed for core records
+- deterministic `demoA` seed
 - preview reset (super-admin + preview + typed phrase)
 - diagnostics seed metadata and missing dataset warnings
 - production bootstrap scaffolding (not runnable)
@@ -111,8 +106,8 @@ Implemented:
 ### Phase 7 — Dashboard + Properties (read models + UI driven by seeded data) ✅ COMPLETED
 **Purpose:** Implement the first real business UI and read models (dashboard + properties) with seeded backend data driving all numbers. Build a coherent system centered on the flagship property.
 
-#### Phase 7 delivered scope
-1) **Seed model expansion (flagship property depth)** ✅
+#### Phase 7 delivered scope ✅
+1) **Seed model expansion (flagship property depth)**
 - Expanded demoA seeded data to support real dashboard + properties UI.
 - Built **The Metropolitan at Riverside** as a coherent flagship example including:
   - property record
@@ -133,54 +128,146 @@ Implemented:
   - Property manager: **Sarah Mitchell** (seeded manager identity)
   - Resident example: **Alex Chen** (end-to-end)
 
-2) **Backend read models & APIs** ✅
+2) **Backend read models & APIs**
 - Added coherent read-model services powering:
   - **Public overview**: `GET /api/public/overview`
   - **Admin dashboard overview**: `GET /api/admin/dashboard`
   - **Admin properties list**: `GET /api/admin/properties`
   - **Admin property detail**: `GET /api/admin/properties/{propertyId}`
-- Read models are derived from seeded collections (no hardcoded core metrics in the UI layer).
 
-3) **Dashboard UI (admin)** ✅
+3) **Dashboard UI (admin)**
 - Implemented dashboard cards and key sections using backend read model responses.
 - Includes top flagged residents and churn weights.
-- Makes churn story obvious: informal AI communication + leading indicators.
 
-4) **Properties UI (admin)** ✅
+4) **Properties UI (admin)**
 - Implemented properties list (portfolio context) with the three required properties.
 - Implemented property detail view (flagship-first) using id-based routing.
-- Shows churn score + weighted driver explanation for Alex Chen.
 
-5) **Public legal + footer link visibility** ✅
+5) **Public legal + footer link visibility**
 - Added `/legal` route.
 - Added visible footer links (Legal notice / Privacy & activity logging / Cookie notice).
-- Added a cookie notice bar pattern consistent with preview visibility requirements.
+- Added cookie notice bar pattern.
 
-6) **Reconciliation + regression hardening** ✅
-- Ensured dashboard reconciliation totals match properties totals for:
+6) **Reconciliation + regression hardening**
+- Ensured dashboard reconciliation totals match properties totals:
   - gross revenue
   - credits issued
   - net revenue
-- Fixed and revalidated an admin session persistence regression (AdminRoute cache fallback) and retested successfully.
-
-#### Phase 7 acceptance criteria (met)
-- Dashboard numbers derived from seeded backend collections and reconcile. ✅
-- Property list and flagship property detail fully driven by backend read models. ✅
-- Alex Chen functional end-to-end in the read model (profile, unit, score, drivers, maintenance, comms, interventions, credits, bookings, financial links). ✅
-- Flagged residents includes Alex Chen, Maria Santos, James Wilson. ✅
-- UI style remains very close to preview. ✅
-- `/legal` exists; public legal/privacy/cookie links visible like preview. ✅
+- Fixed and revalidated an admin session persistence regression (AdminRoute cache fallback).
 
 ---
 
-### Phase 8 — Remaining admin domains (providers, tenants, analytics, settings) ⏳ NOT STARTED
-- Implement read models + UI for remaining admin pages.
-- Maintain parity for labels/copy/layout and ensure credits tracked separately from gross revenue.
-- Extend flagship-first coherence into:
-  - providers directory and provider-performance views
-  - tenants/residents full list + detail routes
-  - analytics rollups and export-ready summaries
-  - global/platform settings editing (admin-only)
+### Phase 8 — Residents + Providers + Analytics + Operational Workflows (read models + UI) ⏳ IN PROGRESS (this is the current phase)
+**Objective:** Extend the coherent flagship-first architecture to include resident views, provider management, analytics read models, and believable operational workflows — while preserving the current UI style and ensuring **backend remains the single source of truth**.
+
+#### Phase 8 scope (locked, implement without further clarification pauses)
+
+##### A) Data model evolution (no cross-env access)
+- Maintain hierarchy:
+  - Portfolio → Properties → Units → Residents → Maintenance → Churn signals → Concierge comms → Interventions → Financial outcomes
+- Preserve internal consistency across:
+  - Admin
+  - Property Manager (read models only; UI shells still deferred)
+  - Resident (new resident-facing read models/pages)
+- Continue flagship-first depth on **The Metropolitan at Riverside**.
+
+##### B) Churn model update (this phase)
+- Update churn model weights to:
+  - Maintenance Frequency: **30%**
+  - Resolution Time: **25%**
+  - Sentiment Analysis: **25%**
+  - Engagement Level: **20%**
+- Ensure resident churn score explanations and primary driver ordering reflect the new model.
+- Keep churn story centered on:
+  - operational friction + informal AI messaging as leading indicators
+
+##### C) Resident view (read models + UI)
+**Endpoints**
+- `GET /api/residents/{residentId}`
+- `GET /api/residents/{residentId}/timeline`
+- `GET /api/residents/{residentId}/services`
+
+**Frontend**
+- `ResidentProfilePage`
+
+**UI requirements**
+- Resident profile + unit assignment
+- Maintenance timeline
+- Concierge conversations (SMS/app follow-ups)
+- Credits issued
+- Offers delivered
+- Bookings scheduled
+- Narrative timeline showing (seeded and derived):
+  - Maintenance request → Concierge follow-up → Offer delivered → Service booked → Risk score reduced
+
+##### D) Provider management (read models + UI)
+**Seed example providers (add to seed system)**
+- SparkClean
+- FixRight HVAC
+- Urban Pest Control
+
+**Endpoints**
+- `GET /api/providers`
+- `GET /api/providers/{providerId}`
+
+**Frontend**
+- Replace Providers placeholder with a real `ProvidersPage` driven by backend.
+
+**Provider UI requirements**
+- Service categories
+- Availability (seeded signal)
+- Service fulfillment tracking
+- Booking history
+- Revenue attribution
+- Coverage percentage and fulfillment rate
+
+##### E) Analytics read models (admin)
+**Endpoints**
+- `GET /api/admin/analytics/portfolio`
+- `GET /api/admin/analytics/property/{propertyId}`
+
+**Metrics**
+- Average churn score
+- Risk distribution
+- Intervention success rate
+- Turnover avoided
+- Service revenue
+- Credits issued
+- Net retention ROI
+
+**Charts**
+- Derive from seeded history collections already present:
+  - churn score history
+  - monthly revenue
+  - interventions log
+  - maintenance history
+
+##### F) Financial model reconciliation (must be consistent)
+- Retention ROI = turnover avoided + service revenue − credits invested
+- Use the example assumptions used in the UI:
+  - turnover cost = **3800**
+  - annual avoided turnovers = **5**
+  - monthly service revenue = **2000**
+  - credits invested per month = **500**
+- Ensure admin analytics totals reconcile with:
+  - dashboard totals
+  - property totals
+  - monthly revenue documents
+  - credits documents
+
+##### G) Admin tenants/residents list flow
+- Replace Tenants placeholder with an admin residents list driven by backend.
+- Keep Alex Chen / Maria Santos / James Wilson prominent as churn examples.
+
+##### H) Verification (must complete before closing Phase 8)
+- Python lint passes
+- JavaScript lint passes
+- Frontend build succeeds
+- Backend reconciliation tests succeed
+- Dashboard totals match property totals
+- Resident risk score read models show post-intervention / score-change narratives consistent with seeded churn history
+- Add testing report:
+  - `/app/test_reports/iteration_6.json`
 
 ---
 
@@ -206,29 +293,25 @@ Implemented:
 ---
 
 ## 3) Next Actions
-**Immediate next build order (post Phase 7):**
-1) Phase 8: implement admin domains beyond dashboard/properties:
-   - providers
-   - tenants
-   - analytics
-   - settings
-2) Phase 9: implement manager and resident shells using the existing coherent seeded records (Sarah Mitchell + Alex Chen).
-3) Strengthen reconciliation and add automated tests that assert:
-   - dashboard totals == properties totals
-   - property detail revenue == monthly_revenue current month for that property
-   - credits remain separate from gross revenue across all views
-4) Prepare production bootstrap implementation plan (still deployment-time only), but keep it not runnable until explicitly approved.
+**Immediate next build order (post Phase 7, current Phase 8 in progress):**
+1) Implement resident read models + `ResidentProfilePage`.
+2) Implement provider management read models + real `ProvidersPage`.
+3) Implement analytics read models + real `AnalyticsPage`.
+4) Implement admin tenants/residents list + routing to resident profile.
+5) Expand seed dataset to include required provider names and operational workflow linking.
+6) Add iteration_6 test report + reconciliation assertions.
 
 ---
 
 ## 4) Success Criteria
 - Environment separation is provable: diagnostics + hard failures prevent mixing. ✅
-- Preview matches current preview landing/login/admin UX wherever feasible (copy/layout/behavior). ✅ (landing/login/shell/diagnostics + legal + cookie notice)
+- Preview matches current preview landing/login/admin UX wherever feasible (copy/layout/behavior). ✅
 - Seeded demo dataset (`demoA`) is deterministic, current-dated, and supports a coherent flagship-first demo narrative. ✅
 - Preview reset is safe (super-admin + preview + typed confirmation) and updates diagnostics clearly. ✅
 - Admin routes are consistent (no brittle filters; no surprise 403s). ✅
 - Dashboard + properties numbers reconcile across UI and underlying collections. ✅
 - Flagship property is a coherent, deeply connected data model (not page-level demo data). ✅
 - Public legal route and visible legal/privacy/cookie links match preview patterns. ✅
+- **Phase 8 target (in progress):** residents + providers + analytics read models are coherent and reconcile with dashboard totals. ⏳
 - Production is verified on `<TBD_TEST_DOMAIN>` before any live-domain cutover. ⏳
 - Production bootstrap remains safe-by-design and not runnable until explicitly implemented/approved. ✅ (scaffold-only)

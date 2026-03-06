@@ -1,6 +1,7 @@
 import { ArrowRight, ChartColumnBig, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
 import { PublicFooter } from "@/components/public/PublicFooter";
@@ -8,6 +9,7 @@ import { EnvironmentBadge } from "@/components/layout/EnvironmentBadge";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CountUp } from "@/components/ui/count-up";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
 import { publicApi } from "@/lib/api";
@@ -41,8 +43,13 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="landing-page-root">
-      <div className="teal-mist border-b border-border/70">
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
+      <motion.div 
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.24, ease: "easeOut" }}
+        className="teal-mist border-b border-border/70"
+      >
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-4 py-6 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/12 text-primary" data-testid="landing-brand-mark">
               <Sparkles className="h-5 w-5" strokeWidth={1.75} />
@@ -62,10 +69,16 @@ export default function LandingPage() {
             </Button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-        <section className="grid gap-8 rounded-[32px] border border-border/80 bg-card/90 p-6 shadow-[var(--shadow-soft)] lg:grid-cols-[minmax(0,1.1fr)_400px] lg:p-8" data-testid="landing-hero-section">
+      <main className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+        <motion.section 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32, delay: 0.12, ease: [0.25, 0.1, 0.25, 1] }}
+          className="grid gap-8 rounded-[32px] border border-border/80 bg-card/90 p-8 shadow-[var(--shadow-soft)] lg:grid-cols-[minmax(0,1.1fr)_400px] lg:p-10" 
+          data-testid="landing-hero-section"
+        >
           <div className="space-y-6">
             <Badge className="w-fit bg-primary/10 text-primary" data-testid="landing-hero-badge" variant="secondary">
               Retention Intelligence Platform
@@ -93,15 +106,31 @@ export default function LandingPage() {
 
             <div className="grid gap-4 md:grid-cols-3" data-testid="landing-hero-stats-grid">
               {loading
-                ? Array.from({ length: 3 }).map((_, index) => <Skeleton className="h-28 rounded-2xl" key={index} />)
-                : heroStats.map((stat) => (
-                    <Card className="happyco-card border-border/70" data-testid={`landing-hero-stat-${stat.key}`} key={stat.key}>
-                      <CardContent className="p-5">
-                        <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{stat.value}</p>
-                        <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
-                        {stat.detail ? <p className="mt-1 text-xs text-muted-foreground">{stat.detail}</p> : null}
-                      </CardContent>
-                    </Card>
+                ? Array.from({ length: 3 }).map((_, index) => <Skeleton className="h-32 rounded-2xl" key={index} />)
+                : heroStats.map((stat, index) => (
+                    <motion.div
+                      key={stat.key}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.28, delay: 0.4 + index * 0.08, ease: "easeOut" }}
+                    >
+                      <Card className="happyco-card border-border/70 transition-shadow hover:shadow-[var(--shadow-hard)]" data-testid={`landing-hero-stat-${stat.key}`}>
+                        <CardContent className="p-6">
+                          <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
+                            {stat.value.replace(/[^\d]/g, '') ? (
+                              <CountUp 
+                                end={parseInt(stat.value.replace(/[^\d]/g, ''))} 
+                                prefix={stat.value.match(/^\$/)?'$':''}
+                                suffix={stat.value.match(/%/)?'%':''} 
+                                duration={1100}
+                              />
+                            ) : stat.value}
+                          </p>
+                          <p className="mt-2 text-sm font-medium text-muted-foreground">{stat.label}</p>
+                          {stat.detail ? <p className="mt-1 text-xs text-muted-foreground">{stat.detail}</p> : null}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
                   ))}
             </div>
           </div>
@@ -135,9 +164,16 @@ export default function LandingPage() {
               </div>
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]" data-testid="landing-churn-detection-section">
+        <motion.section 
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]" 
+          data-testid="landing-churn-detection-section"
+        >
           <Card className="happyco-card">
             <CardHeader>
               <CardTitle className="text-xl tracking-[-0.02em]">Identify At-Risk Residents Automatically</CardTitle>
@@ -199,9 +235,16 @@ export default function LandingPage() {
               </div>
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
 
-        <section className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]" data-testid="landing-concierge-section">
+        <motion.section 
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]" 
+          data-testid="landing-concierge-section"
+        >
           <Card className="happyco-card overflow-hidden">
             <img
               alt="Modern apartment living space"
@@ -237,9 +280,15 @@ export default function LandingPage() {
               ))}
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
 
-        <section className="mt-8">
+        <motion.section 
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mt-10"
+        >
           <Card className="happyco-card border-border/80 bg-card/95">
             <CardContent className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between lg:p-8">
               <div>
@@ -259,26 +308,38 @@ export default function LandingPage() {
               </div>
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
 
-        <section className="mt-8" data-testid="landing-cta-section">
-          <Card className="happyco-card surface-noise border-border/80 bg-card/95 p-2">
-            <CardContent className="flex flex-col gap-5 rounded-[24px] border border-border/70 bg-muted/35 p-6 lg:flex-row lg:items-center lg:justify-between lg:p-8">
+        <motion.section 
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mt-10" 
+          data-testid="landing-cta-section"
+        >
+          <Card className="happyco-card surface-noise border-border/80 bg-card/95 p-3">
+            <CardContent className="flex flex-col gap-6 rounded-[24px] border border-border/70 bg-gradient-to-br from-muted/40 to-muted/20 p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
               <div>
-                <p className="text-sm uppercase tracking-[0.08em] text-muted-foreground">Ready to Explore?</p>
-                <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">Sign in to experience the admin dashboard and flagship property workflow.</h2>
+                <Badge className="mb-3 w-fit bg-primary/10 text-primary" variant="secondary">Ready to Explore?</Badge>
+                <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground lg:text-4xl">
+                  Sign in to experience the admin dashboard and flagship property workflow.
+                </h2>
               </div>
-              <div className="flex flex-wrap gap-3">
-                <Button asChild className="rounded-full px-5" data-testid="landing-cta-sign-in-button" size="lg">
-                  <Link to="/login">Sign In to Demo</Link>
+              <div className="flex flex-wrap gap-4">
+                <Button asChild className="rounded-full px-6 shadow-md transition-all hover:shadow-lg active:scale-[0.98]" data-testid="landing-cta-sign-in-button" size="lg">
+                  <Link to="/login">
+                    Sign In to Demo
+                    <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.75} />
+                  </Link>
                 </Button>
-                <Button asChild className="rounded-full px-5" data-testid="landing-cta-legal-link" size="lg" variant="outline">
+                <Button asChild className="rounded-full px-6" data-testid="landing-cta-legal-link" size="lg" variant="outline">
                   <Link to="/legal">View legal notice</Link>
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </section>
+        </motion.section>
       </main>
 
       <PublicFooter />

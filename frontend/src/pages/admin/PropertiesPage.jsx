@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,8 +39,14 @@ export default function PropertiesPage() {
   }
 
   return (
-    <div className="space-y-6" data-testid="properties-page-root">
-      <section className="rounded-3xl border border-border/80 bg-card/85 p-6 shadow-[var(--shadow-soft)]">
+    <motion.div 
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.24, ease: "easeOut" }}
+      className="space-y-8" 
+      data-testid="properties-page-root"
+    >
+      <section className="rounded-3xl border border-border/80 bg-card/85 p-8 shadow-[var(--shadow-soft)]">
         <Badge className="w-fit bg-primary/10 text-primary" data-testid="properties-page-badge" variant="secondary">
           Flagship property first
         </Badge>
@@ -51,16 +58,22 @@ export default function PropertiesPage() {
         </p>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-testid="properties-portfolio-totals-grid">
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" data-testid="properties-portfolio-totals-grid">
         <Card className="happyco-card"><CardContent className="p-5"><p className="text-sm text-muted-foreground">Total units</p><p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{data.portfolio_totals.total_units}</p></CardContent></Card>
         <Card className="happyco-card"><CardContent className="p-5"><p className="text-sm text-muted-foreground">Occupied units</p><p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{data.portfolio_totals.occupied_units}</p></CardContent></Card>
         <Card className="happyco-card"><CardContent className="p-5"><p className="text-sm text-muted-foreground">Gross revenue</p><p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">${data.portfolio_totals.gross_revenue.toLocaleString()}</p></CardContent></Card>
         <Card className="happyco-card"><CardContent className="p-5"><p className="text-sm text-muted-foreground">Credits issued</p><p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">${data.portfolio_totals.credits_issued.toLocaleString()}</p></CardContent></Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-3" data-testid="properties-card-grid">
-        {data.properties.map((property) => (
-          <Card className="happyco-card happyco-card-hover" data-testid={`properties-card-${property.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={property.property_id}>
+      <section className="grid gap-5 xl:grid-cols-3" data-testid="properties-card-grid">
+        {data.properties.map((property, index) => (
+          <motion.div
+            key={property.property_id}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.26, delay: 0.08 + index * 0.06, ease: "easeOut" }}
+          >
+            <Card className="happyco-card happyco-card-hover h-full" data-testid={`properties-card-${property.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
             <CardHeader>
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -101,8 +114,9 @@ export default function PropertiesPage() {
               </Button>
             </CardContent>
           </Card>
+          </motion.div>
         ))}
       </section>
-    </div>
+    </motion.div>
   );
 }

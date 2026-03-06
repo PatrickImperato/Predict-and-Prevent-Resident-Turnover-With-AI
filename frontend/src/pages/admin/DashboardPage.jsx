@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -40,8 +41,14 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-6" data-testid="dashboard-page-root">
-      <section className="rounded-3xl border border-border/80 bg-card/85 p-6 shadow-[var(--shadow-soft)]">
+    <motion.div 
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.24, ease: "easeOut" }}
+      className="space-y-8" 
+      data-testid="dashboard-page-root"
+    >
+      <section className="rounded-3xl border border-border/80 bg-card/85 p-8 shadow-[var(--shadow-soft)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Badge className="w-fit bg-primary/10 text-primary" data-testid="dashboard-flagship-badge" variant="secondary">
@@ -63,31 +70,43 @@ export default function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-testid="dashboard-summary-cards-grid">
-        {dashboard.summary_cards.map((card) => (
-          <Card className="happyco-card" data-testid={`dashboard-summary-card-${card.key}`} key={card.key}>
-            <CardContent className="p-5">
-              <p className="text-sm text-muted-foreground">{card.label}</p>
-              <p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{card.value}</p>
-              {card.detail ? <p className="mt-2 text-sm text-muted-foreground">{card.detail}</p> : null}
-            </CardContent>
-          </Card>
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" data-testid="dashboard-summary-cards-grid">
+        {dashboard.summary_cards.map((card, index) => (
+          <motion.div
+            key={card.key}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.24, delay: 0.04 + index * 0.06, ease: "easeOut" }}
+          >
+            <Card className="happyco-card" data-testid={`dashboard-summary-card-${card.key}`}>
+              <CardContent className="p-6">
+                <p className="text-sm font-medium text-muted-foreground">{card.label}</p>
+                <p className="mt-3 font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">{card.value}</p>
+                {card.detail ? <p className="mt-2 text-sm text-muted-foreground">{card.detail}</p> : null}
+              </CardContent>
+            </Card>
+          </motion.div>
         ))}
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
         <Card className="happyco-card" data-testid="dashboard-flagged-residents-card">
           <CardHeader>
             <CardTitle className="text-xl tracking-[-0.02em]">Top flagged residents</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {dashboard.flagged_residents.map((resident) => (
-              <Link
-                className="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/35 p-4 transition-colors hover:bg-muted/60"
-                data-testid={`dashboard-flagged-resident-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+            {dashboard.flagged_residents.map((resident, index) => (
+              <motion.div
                 key={resident.resident_id}
-                to={`/app/admin/properties/${resident.property_id}`}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.22, delay: 0.3 + index * 0.05 }}
               >
+                <Link
+                  className="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/35 p-5 transition-all hover:bg-muted/60 hover:shadow-md active:scale-[0.99]"
+                  data-testid={`dashboard-flagged-resident-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+                  to={`/app/admin/properties/${resident.property_id}`}
+                >
                 <div>
                   <p className="font-medium text-foreground">{resident.name}</p>
                   <p className="text-sm text-muted-foreground">
@@ -100,6 +119,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-muted-foreground">+{resident.score_change} this period</p>
                 </div>
               </Link>
+              </motion.div>
             ))}
           </CardContent>
         </Card>
@@ -120,7 +140,7 @@ export default function DashboardPage() {
         </Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
         <Card className="happyco-card" data-testid="dashboard-properties-table-card">
           <CardHeader>
             <CardTitle className="text-xl tracking-[-0.02em]">Portfolio property context</CardTitle>
@@ -153,7 +173,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           <Card className="happyco-card" data-testid="dashboard-churn-weights-card">
             <CardHeader>
               <CardTitle className="text-xl tracking-[-0.02em]">Churn model weights</CardTitle>
@@ -184,6 +204,6 @@ export default function DashboardPage() {
           </Card>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }

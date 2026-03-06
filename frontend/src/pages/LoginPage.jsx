@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { DemoAccountCards } from "@/components/auth/DemoAccountCards";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { Badge } from "@/components/ui/badge";
+import { CountUp } from "@/components/ui/count-up";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/context/AuthContext";
 import { publicApi } from "@/lib/api";
@@ -66,9 +68,19 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="login-page-root">
-      <div className="px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto grid min-h-[calc(100vh-8rem)] max-w-[1400px] gap-6 rounded-[28px] border border-border/70 bg-card/60 p-4 shadow-[var(--shadow-soft)] backdrop-blur lg:grid-cols-[420px_minmax(0,1fr)] lg:p-6">
-          <aside className="surface-noise rounded-[24px] bg-card/94 p-6 sm:p-8">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.32 }}
+        className="px-4 py-8 sm:px-6 lg:px-8"
+      >
+        <div className="mx-auto grid min-h-[calc(100vh-10rem)] max-w-[1400px] gap-6 rounded-[28px] border border-border/70 bg-card/60 p-5 shadow-[var(--shadow-soft)] backdrop-blur lg:grid-cols-[440px_minmax(0,1fr)] lg:p-7">
+          <motion.aside 
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.32, delay: 0.08, ease: "easeOut" }}
+            className="surface-noise rounded-[24px] bg-card/94 p-7 sm:p-9"
+          >
             <LoginForm
               email={email}
               onEmailChange={setEmail}
@@ -78,9 +90,14 @@ export default function LoginPage() {
               session={session}
               submitting={submitting}
             />
-          </aside>
+          </motion.aside>
 
-          <section className="teal-mist flex flex-col justify-between gap-8 rounded-[24px] border border-border/70 bg-card/90 p-6 sm:p-8">
+          <motion.section 
+            initial={{ opacity: 0, x: 12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.32, delay: 0.16, ease: "easeOut" }}
+            className="teal-mist flex flex-col justify-between gap-8 rounded-[24px] border border-border/70 bg-card/90 p-7 sm:p-9"
+          >
             <div className="space-y-6">
               <Badge className="w-fit bg-primary/10 text-primary" data-testid="login-page-demo-access-badge" variant="secondary">
                 Demo Access
@@ -97,18 +114,40 @@ export default function LoginPage() {
 
               <div className="grid gap-3 sm:grid-cols-3" data-testid="login-page-stats-grid">
                 {overview
-                  ? loginStats.map((stat) => (
-                      <div className="happyco-card rounded-2xl border-border/80 bg-muted/35 p-4" data-testid={`login-page-stat-${stat.key}`} key={stat.key}>
-                        <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">{stat.value}</p>
-                        <p className="mt-2 text-sm text-muted-foreground">{stat.label}</p>
-                      </div>
+                  ? loginStats.map((stat, index) => (
+                      <motion.div
+                        key={stat.key}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.24, delay: 0.3 + index * 0.06 }}
+                        className="happyco-card rounded-2xl border-border/80 bg-muted/35 p-5"
+                        data-testid={`login-page-stat-${stat.key}`}
+                      >
+                        <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-[-0.02em] text-foreground">
+                          {stat.value.replace(/[^\d]/g, '') ? (
+                            <CountUp 
+                              end={parseInt(stat.value.replace(/[^\d]/g, ''))} 
+                              prefix={stat.value.match(/^\$/)?'$':''}
+                              suffix={stat.value.match(/%/)?'%':''} 
+                              duration={1000}
+                            />
+                          ) : stat.value}
+                        </p>
+                        <p className="mt-2 text-sm font-medium text-muted-foreground">{stat.label}</p>
+                      </motion.div>
                     ))
-                  : Array.from({ length: 3 }).map((_, index) => <Skeleton className="h-24 rounded-2xl" key={index} />)}
+                  : Array.from({ length: 3 }).map((_, index) => <Skeleton className="h-28 rounded-2xl" key={index} />)}
               </div>
             </div>
 
             {session?.demo_mode_enabled ? (
-              <div className="space-y-4" data-testid="login-demo-access-panel">
+              <motion.div 
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.28, delay: 0.5 }}
+                className="space-y-4" 
+                data-testid="login-demo-access-panel"
+              >
                 <div>
                   <p className="font-[var(--font-heading)] text-lg font-semibold tracking-[-0.02em] text-foreground">Select a demo account to auto-fill credentials</p>
                   <p className="mt-1 text-sm text-muted-foreground">
@@ -122,15 +161,15 @@ export default function LoginPage() {
                     toast.message(`${account.label} credentials applied.`);
                   }}
                 />
-              </div>
+              </motion.div>
             ) : (
               <div className="rounded-xl border border-border/80 bg-muted/40 p-4 text-sm text-muted-foreground" data-testid="login-demo-access-disabled">
                 Demo account shortcuts are hidden outside preview.
               </div>
             )}
-          </section>
+          </motion.section>
         </div>
-      </div>
+      </motion.div>
 
       <PublicFooter />
       <CookieNoticeBar notice={overview?.cookie_notice} />

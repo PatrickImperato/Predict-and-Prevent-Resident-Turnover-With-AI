@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "content": "Update plan.md for residents/providers/analytics operational workflow phase",
+    "status": "in_progress"
+  },
+  {
+    "content": "Review current seeded data, tenants/providers/analytics placeholders, and relevant backend/frontend files",
+    "status": "pending"
+  },
+  {
+    "content": "Expand coherent seed model and backend read APIs for residents, providers, and analytics",
+    "status": "pending"
+  },
+  {
+    "content": "Implement ResidentProfilePage, ProvidersPage, AnalyticsPage, and tenants list using backend data",
+    "status": "pending"
+  },
+  {
+    "content": "Verify reconciliation, run lint/build/tests, and generate testing report iteration_6",
+    "status": "pending"
+  }
+]

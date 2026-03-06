@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
 import { PublicFooter } from "@/components/public/PublicFooter";
@@ -27,7 +28,12 @@ const sections = [
 export default function LegalPage() {
   return (
     <div className="min-h-screen bg-background" data-testid="legal-page-root">
-      <div className="teal-mist border-b border-border/70">
+      <motion.div 
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.24, ease: "easeOut" }}
+        className="teal-mist border-b border-border/70"
+      >
         <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-10 sm:px-6 lg:px-8">
           <Badge className="w-fit bg-primary/10 text-primary" data-testid="legal-page-badge" variant="secondary">
             Public notice
@@ -47,19 +53,26 @@ export default function LegalPage() {
             </Button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      <main className="mx-auto max-w-[1400px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <main className="mx-auto max-w-[1400px] px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
         <div className="grid gap-6 lg:grid-cols-3">
-          {sections.map((section) => (
-            <Card className="happyco-card" data-testid={`legal-section-${section.id}`} id={section.id} key={section.id}>
-              <CardHeader>
-                <CardTitle className="text-xl tracking-[-0.02em]">{section.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm leading-7 text-muted-foreground">{section.body}</p>
-              </CardContent>
-            </Card>
+          {sections.map((section, index) => (
+            <motion.div
+              key={section.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.28, delay: 0.12 + index * 0.08, ease: "easeOut" }}
+            >
+              <Card className="happyco-card h-full" data-testid={`legal-section-${section.id}`} id={section.id}>
+                <CardHeader>
+                  <CardTitle className="text-xl tracking-[-0.02em]">{section.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm leading-7 text-muted-foreground">{section.body}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       </main>

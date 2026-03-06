@@ -2,6 +2,7 @@ import { ArrowLeft, Building2, MessageSquare, Wrench } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { motion } from "framer-motion";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,8 +43,14 @@ export default function PropertyDetailPage() {
   }
 
   return (
-    <div className="space-y-6" data-testid="property-detail-page-root">
-      <section className="rounded-3xl border border-border/80 bg-card/85 p-6 shadow-[var(--shadow-soft)]">
+    <motion.div 
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.24, ease: "easeOut" }}
+      className="space-y-8" 
+      data-testid="property-detail-page-root"
+    >
+      <section className="rounded-3xl border border-border/80 bg-card/85 p-8 shadow-[var(--shadow-soft)]">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Button asChild className="rounded-full" data-testid="property-detail-back-to-properties-button" size="sm" variant="outline">
@@ -74,7 +81,7 @@ export default function PropertyDetailPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4" data-testid="property-detail-summary-grid">
+      <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" data-testid="property-detail-summary-grid">
         {detail.summary_cards.map((card) => (
           <Card className="happyco-card" data-testid={`property-detail-summary-${card.key}`} key={card.key}>
             <CardContent className="p-5">
@@ -86,7 +93,7 @@ export default function PropertyDetailPage() {
         ))}
       </section>
 
-      <Tabs className="space-y-4" defaultValue="resident-story" data-testid="property-detail-tabs">
+      <Tabs className="space-y-5" defaultValue="resident-story" data-testid="property-detail-tabs">
         <TabsList className="grid w-full grid-cols-3 rounded-2xl bg-muted/60 p-1 md:w-[540px]">
           <TabsTrigger data-testid="property-detail-tab-resident-story" value="resident-story">Resident story</TabsTrigger>
           <TabsTrigger data-testid="property-detail-tab-units" value="units">Units</TabsTrigger>
@@ -94,7 +101,7 @@ export default function PropertyDetailPage() {
         </TabsList>
 
         <TabsContent value="resident-story">
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
             <Card className="happyco-card" data-testid="property-detail-alex-profile-card">
               <CardHeader>
                 <div className="flex items-center gap-3">
@@ -133,7 +140,7 @@ export default function PropertyDetailPage() {
               </CardContent>
             </Card>
 
-            <div className="grid gap-4">
+            <div className="grid gap-5">
               <Card className="happyco-card" data-testid="property-detail-flagged-residents-card">
                 <CardHeader>
                   <CardTitle className="text-xl tracking-[-0.02em]">Top flagged residents</CardTitle>
@@ -171,7 +178,7 @@ export default function PropertyDetailPage() {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-4 xl:grid-cols-3">
+          <div className="mt-5 grid gap-5 xl:grid-cols-3">
             <Card className="happyco-card" data-testid="property-detail-maintenance-card">
               <CardHeader><div className="flex items-center gap-3"><Wrench className="h-5 w-5 text-primary" strokeWidth={1.75} /><CardTitle className="text-xl tracking-[-0.02em]">Maintenance history</CardTitle></div></CardHeader>
               <CardContent className="space-y-3">
@@ -233,7 +240,7 @@ export default function PropertyDetailPage() {
         </TabsContent>
 
         <TabsContent value="operations">
-          <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
             <Card className="happyco-card" data-testid="property-detail-bookings-card">
               <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Bookings and revenue linkage</CardTitle></CardHeader>
               <CardContent className="space-y-3">
@@ -257,7 +264,7 @@ export default function PropertyDetailPage() {
               </CardContent>
             </Card>
 
-            <div className="grid gap-4">
+            <div className="grid gap-5">
               <Card className="happyco-card" data-testid="property-detail-providers-card">
                 <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Provider relationships</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
@@ -285,6 +292,6 @@ export default function PropertyDetailPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+    </motion.div>
   );
 }

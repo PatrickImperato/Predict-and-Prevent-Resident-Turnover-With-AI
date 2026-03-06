@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   Activity,
   BriefcaseBusiness,
@@ -22,8 +23,11 @@ const navItems = [
 
 export const AdminSidebar = () => {
   return (
-    <aside
-      className="surface-noise border-b border-border/80 bg-card/72 px-4 py-5 backdrop-blur xl:w-[280px] xl:border-b-0 xl:border-r"
+    <motion.aside
+      initial={{ opacity: 0, x: -12 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.28, ease: "easeOut" }}
+      className="surface-noise border-b border-border/80 bg-card/72 px-5 py-6 backdrop-blur xl:w-[280px] xl:border-b-0 xl:border-r"
       data-testid="admin-sidebar"
     >
       <div className="flex items-center gap-3">
@@ -38,29 +42,35 @@ export const AdminSidebar = () => {
         </div>
       </div>
 
-      <nav className="mt-6 grid gap-2" data-testid="admin-sidebar-nav">
-        {navItems.map((item) => {
+      <nav className="mt-8 grid gap-2" data-testid="admin-sidebar-nav">
+        {navItems.map((item, index) => {
           const Icon = item.icon;
           return (
-            <NavLink
-              className={({ isActive }) =>
-                [
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors transition-shadow",
-                  isActive
-                    ? "bg-primary/10 text-primary shadow-[var(--shadow-soft)]"
-                    : "text-muted-foreground hover:bg-muted/70 hover:text-foreground",
-                ].join(" ")
-              }
-              data-testid={`sidebar-nav-${item.label.toLowerCase()}-link`}
+            <motion.div
               key={item.label}
-              to={item.path}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.22, delay: 0.24 + index * 0.04, ease: "easeOut" }}
             >
-              <Icon className="h-4 w-4" strokeWidth={1.75} />
-              <span>{item.label}</span>
-            </NavLink>
+              <NavLink
+                className={({ isActive }) =>
+                  [
+                    "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
+                    isActive
+                      ? "bg-primary/10 text-primary shadow-sm"
+                      : "text-muted-foreground hover:bg-muted/70 hover:text-foreground hover:shadow-sm",
+                  ].join(" ")
+                }
+                data-testid={`sidebar-nav-${item.label.toLowerCase()}-link`}
+                to={item.path}
+              >
+                <Icon className="h-[18px] w-[18px]" strokeWidth={1.75} />
+                <span>{item.label}</span>
+              </NavLink>
+            </motion.div>
           );
         })}
       </nav>
-    </aside>
+    </motion.aside>
   );
 };

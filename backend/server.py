@@ -6,14 +6,17 @@ from pathlib import Path
 
 from app.core.config import load_config
 from app.core.database import init_database
+from app.routers.analytics import router as analytics_router
 from app.routers.auth import router as auth_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.diagnostics import router as diagnostics_router
 from app.routers.properties import router as properties_router
+from app.routers.providers import router as providers_router
 from app.routers.public import router as public_router
+from app.routers.residents import router as residents_router
 from app.routers.seed_admin import router as seed_admin_router
+from app.routers.tenants import router as tenants_router
 from app.services.seed_service import ensure_seed_state
-
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -31,7 +34,7 @@ async def root():
         "message": "HappyCo Concierge V1 API is running",
         "app_env": config.app_env,
         "db_name": config.db_name,
-        "scope": "phase-7-dashboard-properties",
+        "scope": "phase-8-residents-providers-analytics",
     }
 
 
@@ -39,6 +42,10 @@ api_router.include_router(public_router, prefix="/public", tags=["public"])
 api_router.include_router(auth_router, prefix="/auth", tags=["auth"])
 api_router.include_router(dashboard_router, prefix="/admin", tags=["dashboard"])
 api_router.include_router(properties_router, prefix="/admin", tags=["properties"])
+api_router.include_router(analytics_router, prefix="/admin/analytics", tags=["analytics"])
+api_router.include_router(tenants_router, prefix="/admin", tags=["tenants"])
+api_router.include_router(providers_router, tags=["providers"])
+api_router.include_router(residents_router, tags=["residents"])
 api_router.include_router(diagnostics_router, prefix="/diagnostics", tags=["diagnostics"])
 api_router.include_router(seed_admin_router, prefix="/admin/seeds", tags=["admin-seeds"])
 

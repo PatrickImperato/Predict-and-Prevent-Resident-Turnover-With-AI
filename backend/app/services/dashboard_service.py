@@ -27,18 +27,14 @@ async def _load_maps(db: AsyncIOMotorDatabase):
     metrics_map = {item["propertyId"]: item for item in metrics}
 
     current_month = _month_key()
-    revenue_rows = await db.monthly_revenue.find(
-        {"month": current_month}, {"_id": 0}
-    ).to_list(length=None)
+    revenue_rows = await db.monthly_revenue.find({"month": current_month}, {"_id": 0}).to_list(length=None)
     revenue_map = {item["propertyId"]: item for item in revenue_rows}
 
     return properties, properties_map, metrics_map, revenue_map, current_month
 
 
 async def _latest_predictions(db: AsyncIOMotorDatabase):
-    return await db.churn_prediction_history.find(
-        {"isLatest": True}, {"_id": 0}
-    ).sort("score", -1).to_list(length=None)
+    return await db.churn_prediction_history.find({"isLatest": True}, {"_id": 0}).sort("score", -1).to_list(length=None)
 
 
 async def _flagged_residents(db: AsyncIOMotorDatabase, limit: int = 3):
@@ -48,16 +44,13 @@ async def _flagged_residents(db: AsyncIOMotorDatabase, limit: int = 3):
     properties_map = {item["id"]: item for item in properties}
 
     predictions = await _latest_predictions(db)
-    top = predictions[:limit]
     items = []
-    for prediction in top:
+    for prediction in predictions[:limit]:
         resident = residents_map.get(prediction["residentId"])
         if not resident:
             continue
         property_record = properties_map.get(resident["propertyId"], {})
-        primary_driver = "Maintenance Frequency"
-        if prediction.get("drivers"):
-            primary_driver = prediction["drivers"][0].get("label", primary_driver)
+        primary_driver = prediction.get("drivers", [{}])[0].get("label", "Maintenance Frequency")
         items.append(
             {
                 "resident_id": resident["id"],
@@ -80,75 +73,30 @@ async def get_dashboard_read_model(db: AsyncIOMotorDatabase) -> dict:
     predictions = await _latest_predictions(db)
 
     total_units = sum(property_item.get("unitCount", 0) for property_item in properties)
-    occupied_units = sum(
-        property_item.get("occupiedUnits", 0) for property_item in properties
-    )
+    occupied_units = sum(property_item.get("occupiedUnits", 0) for property_item in properties)
     portfolio_gross = sum(item.get("grossRevenue", 0) for item in revenue_map.values())
     portfolio_credits = sum(item.get("creditsIssued", 0) for item in revenue_map.values())
     portfolio_net = sum(item.get("netRevenue", 0) for item in revenue_map.values())
     at_risk = sum(item.get("atRiskResidents", 0) for item in metrics_map.values())
     retention_roi = sum(item.get("retentionRoi", 0) for item in metrics_map.values())
-
-    average_churn = round(
-        sum(item.get("score", 0) for item in predictions) / max(len(predictions), 1)
-    )
+    average_churn = round(sum(item.get("score", 0) for item in predictions) / max(len(predictions), 1))
 
     flagship_property = properties_map[FLAGSHIP_PROPERTY_ID]
     flagship_metrics = metrics_map[FLAGSHIP_PROPERTY_ID]
     flagship_revenue = revenue_map[FLAGSHIP_PROPERTY_ID]
 
     summary_cards = [
-        {
-            "key": "portfolio-units",
-            "label": "Portfolio units",
-            "value": f"{total_units}",
-            "detail": f"{occupied_units} occupied across {len(properties)} properties",
-        },
-        {
-            "key": "at-risk-residents",
-            "label": "At-risk residents",
-            "value": f"{at_risk}",
-            "detail": "Latest flagged residents from churn signals",
-        },
-        {
-            "key": "gross-revenue",
-            "label": "Current gross revenue",
-            "value": _currency(portfolio_gross),
-            "detail": f"{_currency(portfolio_credits)} credits tracked separately",
-        },
-        {
-            "key": "retention-roi",
-            "label": "Portfolio retention ROI",
-            "value": _currency(retention_roi),
-            "detail": f"Average churn score {average_churn}",
-        },
+        {"key": "portfolio-units", "label": "Portfolio units", "value": f"{total_units}", "detail": f"{occupied_units} occupied across {len(properties)} properties"},
+        {"key": "at-risk-residents", "label": "At-risk residents", "value": f"{at_risk}", "detail": "Latest flagged residents from churn signals"},
+        {"key": "gross-revenue", "label": "Current gross revenue", "value": _currency(portfolio_gross), "detail": f"{_currency(portfolio_credits)} credits tracked separately"},
+        {"key": "retention-roi", "label": "Portfolio retention ROI", "value": _currency(retention_roi), "detail": f"Average churn score {average_churn}"},
     ]
 
     flagship_cards = [
-        {
-            "key": "flagship-units",
-            "label": "Flagship units",
-            "value": f"{flagship_property['unitCount']}",
-            "detail": f"{flagship_property['occupiedUnits']} occupied",
-        },
-        {
-            "key": "flagship-at-risk",
-            "label": "At risk",
-            "value": f"{flagship_metrics['atRiskResidents']}",
-            "detail": "The Metropolitan at Riverside",
-        },
-        {
-            "key": "flagship-provider-coverage",
-            "label": "Provider coverage",
-            "value": _percent(flagship_metrics['providerCoveragePercent']),
-            "detail": "Service categories covered",
-        },
-        {
-            "key": "flagship-revenue",
-            "label": "Property revenue",
-            "value": _currency(flagship_revenue['grossRevenue']),
-            "detail": f"Net {_currency(flagship_revenue['netRevenue'])}",
-        },
+        {"key": "flagship-units", "label": "Flagship units", "value": f"{flagship_property['unitCount']}", "detail": f"{flagship_property['occupiedUnits']} occupied"},
+        {"key": "flagship-at-risk", "label": "At risk", "value": f"{flagship_metrics['atRiskResidents']}", "detail": "The Metropolitan at Riverside"},
+        {"key": "flagship-provider-coverage", "label": "Provider coverage", "value": _percent(flagship_metrics['providerCoveragePercent']), "detail": "Service categories covered"},
+        {"key": "flagship-revenue", "label": "Property revenue", "value": _currency(flagship_revenue['grossRevenue']), "detail": f"Net {_currency(flagship_revenue['netRevenue'])}"},
     ]
 
     portfolio_properties = []
@@ -171,9 +119,9 @@ async def get_dashboard_read_model(db: AsyncIOMotorDatabase) -> dict:
         )
 
     ai_concierge_highlights = [
-        "AI outreach uses short SMS-style nudges to resolve friction before move-out intent hardens.",
-        "Maintenance volume, repeat issues, and negative sentiment are surfaced as leading churn indicators.",
-        "Credits, offers, and bookings are linked so revenue and retention outcomes reconcile in one system.",
+        "AI outreach uses informal, human support language to resolve friction before move-out intent hardens.",
+        "Maintenance volume, slower resolution, sentiment shifts, and lower engagement are surfaced as leading churn indicators.",
+        "Credits, offers, bookings, and revenue are linked so retention outcomes reconcile in one system.",
     ]
 
     return {
@@ -198,33 +146,14 @@ async def get_public_overview_read_model(db: AsyncIOMotorDatabase) -> dict:
     properties, properties_map, metrics_map, revenue_map, _ = await _load_maps(db)
     flagship_metrics = metrics_map[FLAGSHIP_PROPERTY_ID]
     flagship_revenue = revenue_map[FLAGSHIP_PROPERTY_ID]
-    flagship_economics = await db.property_economics.find_one(
-        {"propertyId": FLAGSHIP_PROPERTY_ID}, {"_id": 0}
-    )
-    alex_prediction = await db.churn_prediction_history.find_one(
-        {"residentName": "Alex Chen", "isLatest": True}, {"_id": 0}
-    )
+    flagship_economics = await db.property_economics.find_one({"propertyId": FLAGSHIP_PROPERTY_ID}, {"_id": 0})
+    alex_prediction = await db.churn_prediction_history.find_one({"residentName": "Alex Chen", "isLatest": True}, {"_id": 0})
 
     return {
         "hero_stats": [
-            {
-                "key": "avg-turnover-cost",
-                "label": "Avg. turnover cost",
-                "value": _currency(flagship_economics.get("estimatedTurnoverCost", 6500)),
-                "detail": "Per prevented move-out",
-            },
-            {
-                "key": "annual-turnover-rate",
-                "label": "Annual turnover rate",
-                "value": "10–15%",
-                "detail": "Portfolio range",
-            },
-            {
-                "key": "portfolio-roi-example",
-                "label": "Portfolio ROI example",
-                "value": _currency(sum(item.get("retentionRoi", 0) for item in metrics_map.values())),
-                "detail": "Portfolio retention ROI",
-            },
+            {"key": "avg-turnover-cost", "label": "Avg. turnover cost", "value": _currency(flagship_economics.get("estimatedTurnoverCost", 3800)), "detail": "Per prevented move-out"},
+            {"key": "annual-turnover-rate", "label": "Annual turnover rate", "value": "10–15%", "detail": "Portfolio range"},
+            {"key": "portfolio-roi-example", "label": "Portfolio ROI example", "value": _currency(sum(item.get("retentionRoi", 0) for item in metrics_map.values())), "detail": "Portfolio retention ROI"},
         ],
         "signals": [
             {"label": "Maintenance requests", "value": str(alex_prediction.get("signalSummary", {}).get("maintenanceCount", 0))},
@@ -234,76 +163,21 @@ async def get_public_overview_read_model(db: AsyncIOMotorDatabase) -> dict:
         "flagged_residents": dashboard["flagged_residents"],
         "scoring_weights": CHURN_WEIGHTS,
         "flagship_metrics": [
-            {
-                "key": "total-units",
-                "label": "Total units",
-                "value": str(properties_map[FLAGSHIP_PROPERTY_ID].get("unitCount", 0)),
-                "detail": None,
-            },
-            {
-                "key": "at-risk",
-                "label": "At risk",
-                "value": str(flagship_metrics.get("atRiskResidents", 0)),
-                "detail": None,
-            },
-            {
-                "key": "avg-score",
-                "label": "Avg. score",
-                "value": str(flagship_metrics.get("avgChurnScore", 0)),
-                "detail": None,
-            },
+            {"key": "total-units", "label": "Total units", "value": str(properties_map[FLAGSHIP_PROPERTY_ID].get("unitCount", 0)), "detail": None},
+            {"key": "at-risk", "label": "At risk", "value": str(flagship_metrics.get("atRiskResidents", 0)), "detail": None},
+            {"key": "avg-score", "label": "Avg. score", "value": str(flagship_metrics.get("avgChurnScore", 0)), "detail": None},
         ],
         "portfolio_metrics": [
-            {
-                "key": "property-revenue",
-                "label": "Property Revenue",
-                "value": _currency(flagship_revenue.get("grossRevenue", 0)),
-                "detail": "The Metropolitan at Riverside",
-            },
-            {
-                "key": "provider-coverage",
-                "label": "Provider Coverage",
-                "value": _percent(flagship_metrics.get("providerCoveragePercent", 0)),
-                "detail": "Service categories covered",
-            },
-            {
-                "key": "fulfillment-rate",
-                "label": "Fulfillment Rate",
-                "value": _percent(flagship_metrics.get("fulfillmentRate", 0)),
-                "detail": "Bookings completed",
-            },
-            {
-                "key": "retention-roi",
-                "label": "Retention ROI",
-                "value": _currency(sum(item.get("retentionRoi", 0) for item in metrics_map.values())),
-                "detail": "Portfolio total",
-            },
+            {"key": "property-revenue", "label": "Property Revenue", "value": _currency(flagship_revenue.get("grossRevenue", 0)), "detail": "The Metropolitan at Riverside"},
+            {"key": "provider-coverage", "label": "Provider Coverage", "value": _percent(flagship_metrics.get("providerCoveragePercent", 0)), "detail": "Service categories covered"},
+            {"key": "fulfillment-rate", "label": "Fulfillment Rate", "value": _percent(flagship_metrics.get("fulfillmentRate", 0)), "detail": "Bookings completed"},
+            {"key": "retention-roi", "label": "Retention ROI", "value": _currency(sum(item.get("retentionRoi", 0) for item in metrics_map.values())), "detail": "Portfolio total"},
         ],
         "financial_metrics": [
-            {
-                "key": "estimated-annual-roi",
-                "label": "Estimated Annual ROI",
-                "value": _currency(flagship_economics.get("estimatedAnnualRoi", 37000)),
-                "detail": None,
-            },
-            {
-                "key": "credits-invested",
-                "label": "Credits invested per month",
-                "value": _currency(flagship_economics.get("creditsInvestedPerMonth", 500)),
-                "detail": None,
-            },
-            {
-                "key": "avoided-turnovers",
-                "label": "Avoided turnovers per year",
-                "value": str(flagship_economics.get("avoidedTurnoversPerYear", 5)),
-                "detail": None,
-            },
-            {
-                "key": "monthly-service-revenue",
-                "label": "Monthly service revenue",
-                "value": _currency(flagship_economics.get("monthlyServiceRevenueProjection", 2000)),
-                "detail": None,
-            },
+            {"key": "estimated-annual-roi", "label": "Estimated Annual ROI", "value": _currency(flagship_economics.get("estimatedAnnualRoi", 37000)), "detail": None},
+            {"key": "credits-invested", "label": "Credits invested per month", "value": _currency(flagship_economics.get("creditsInvestedPerMonth", 500)), "detail": None},
+            {"key": "avoided-turnovers", "label": "Avoided turnovers per year", "value": str(flagship_economics.get("avoidedTurnoversPerYear", 5)), "detail": None},
+            {"key": "monthly-service-revenue", "label": "Monthly service revenue", "value": _currency(flagship_economics.get("monthlyServiceRevenueProjection", 2000)), "detail": None},
         ],
         "properties": [property_item["name"] for property_item in properties],
         "cookie_notice": {

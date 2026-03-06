@@ -6,6 +6,7 @@ from app.core.config import AppConfig
 from app.seeds.constants import (
     DEMO_DATASET_ID,
     FLAGSHIP_PROPERTY_ID,
+    PROVIDER_IDS,
     REQUIRED_PROPERTY_NAMES,
     RESIDENT_IDS,
     USER_IDS,
@@ -66,6 +67,14 @@ def validate_seed_documents(seed_documents: dict[str, list[dict]], config: AppCo
             f"Seed documents missing required users: {', '.join(sorted(missing_emails))}"
         )
 
+    provider_names = {doc.get("name") for doc in seed_documents["providers"]}
+    required_provider_names = {"SparkClean", "FixRight HVAC", "Urban Pest Control"}
+    missing_provider_names = required_provider_names - provider_names
+    if missing_provider_names:
+        raise SeedValidationError(
+            f"Seed documents missing required providers: {', '.join(sorted(missing_provider_names))}"
+        )
+
     alex = next(
         (
             resident
@@ -89,9 +98,7 @@ def validate_seed_documents(seed_documents: dict[str, list[dict]], config: AppCo
             "The Metropolitan at Riverside must contain exactly 100 seeded unit records"
         )
 
-    alex_unit = next(
-        (unit for unit in flagship_units if unit.get("number") == "501"), None
-    )
+    alex_unit = next((unit for unit in flagship_units if unit.get("number") == "501"), None)
     if not alex_unit or alex_unit.get("assignedResidentId") != alex.get("id"):
         raise SeedValidationError(
             "Alex Chen must be assigned to unit 501 in the flagship property"
@@ -102,7 +109,7 @@ def validate_seed_documents(seed_documents: dict[str, list[dict]], config: AppCo
         for item in seed_documents["concierge_messages"]
         if item.get("residentId") == alex.get("id")
     ]
-    if len(alex_messages) < 3:
+    if len(alex_messages) < 4:
         raise SeedValidationError(
             "Alex Chen must include proactive AI concierge communication history"
         )
@@ -128,56 +135,24 @@ async def validate_seed_database_state(
     db: AsyncIOMotorDatabase,
     config: AppConfig,
 ) -> dict[str, int]:
-    platform_settings_count = await db.platform_settings.count_documents(
-        {"datasetId": DEMO_DATASET_ID}
-    )
+    platform_settings_count = await db.platform_settings.count_documents({"datasetId": DEMO_DATASET_ID})
     properties_count = await db.properties.count_documents({"datasetId": DEMO_DATASET_ID})
     users_count = await db.users.count_documents({"datasetId": DEMO_DATASET_ID})
     residents_count = await db.residents.count_documents({"datasetId": DEMO_DATASET_ID})
-    units_count = await db.units.count_documents(
-        {"datasetId": DEMO_DATASET_ID, "propertyId": FLAGSHIP_PROPERTY_ID}
-    )
-    predictions_count = await db.churn_prediction_history.count_documents(
-        {"datasetId": DEMO_DATASET_ID}
-    )
-    messages_count = await db.concierge_messages.count_documents(
-        {"datasetId": DEMO_DATASET_ID, "residentId": RESIDENT_IDS["alex"]}
-    )
+    units_count = await db.units.count_documents({"datasetId": DEMO_DATASET_ID, "propertyId": FLAGSHIP_PROPERTY_ID})
+    predictions_count = await db.churn_prediction_history.count_documents({"datasetId": DEMO_DATASET_ID})
+    messages_count = await db.concierge_messages.count_documents({"datasetId": DEMO_DATASET_ID, "residentId": RESIDENT_IDS["alex"]})
+    providers_count = await db.providers.count_documents({"datasetId": DEMO_DATASET_ID})
 
     property_names = await db.properties.distinct("name", {"datasetId": DEMO_DATASET_ID})
-    missing_property_names = [
-        property_name
-        for property_name in REQUIRED_PROPERTY_NAMES
-        if property_name not in property_names
-    ]
+    missing_property_names = [property_name for property_name in REQUIRED_PROPERTY_NAMES if property_name not in property_names]
 
-    alex_count = await db.residents.count_documents(
-        {
-            "datasetId": DEMO_DATASET_ID,
-            "fullName": "Alex Chen",
-            "isQaResident": True,
-        }
-    )
-
-    admin_user_count = await db.users.count_documents(
-        {
-            "id": USER_IDS["admin"],
-            "datasetId": DEMO_DATASET_ID,
-            "role": "admin",
-        }
-    )
-    manager_user_count = await db.users.count_documents(
-        {
-            "id": USER_IDS["manager"],
-            "datasetId": DEMO_DATASET_ID,
-            "displayName": "Sarah Mitchell",
-        }
-    )
-
-    alex_prediction_count = await db.churn_prediction_history.count_documents(
-        {"residentName": "Alex Chen", "isLatest": True}
-    )
+    alex_count = await db.residents.count_documents({"datasetId": DEMO_DATASET_ID, "fullName": "Alex Chen", "isQaResident": True})
+    admin_user_count = await db.users.count_documents({"id": USER_IDS["admin"], "datasetId": DEMO_DATASET_ID, "role": "admin"})
+    manager_user_count = await db.users.count_documents({"id": USER_IDS["manager"], "datasetId": DEMO_DATASET_ID, "displayName": "Sarah Mitchell"})
+    alex_prediction_count = await db.churn_prediction_history.count_documents({"residentName": "Alex Chen", "isLatest": True})
     alex_booking_count = await db.bookings.count_documents({"residentId": RESIDENT_IDS["alex"]})
+    fixright_count = await db.providers.count_documents({"id": PROVIDER_IDS["fixright"], "name": "FixRight HVAC"})
 
     missing_reasons: list[str] = []
     if platform_settings_count < 1:
@@ -200,14 +175,14 @@ async def validate_seed_database_state(
         missing_reasons.append("Alex Chen bookings")
     if alex_count < 1:
         missing_reasons.append("Alex Chen QA resident")
-    if messages_count < 3:
+    if messages_count < 4:
         missing_reasons.append("Alex Chen AI concierge messages")
     if admin_user_count < 1:
         missing_reasons.append("admin user")
+    if providers_count < 3 or fixright_count < 1:
+        missing_reasons.append("required providers")
     if missing_property_names:
-        missing_reasons.append(
-            f"properties missing: {', '.join(missing_property_names)}"
-        )
+        missing_reasons.append(f"properties missing: {', '.join(missing_property_names)}")
 
     if missing_reasons:
         raise SeedValidationError(
@@ -226,4 +201,5 @@ async def validate_seed_database_state(
         "residents": residents_count,
         "units": units_count,
         "predictions": predictions_count,
+        "providers": providers_count,
     }

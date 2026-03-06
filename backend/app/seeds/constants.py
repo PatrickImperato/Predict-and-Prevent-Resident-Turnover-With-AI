@@ -23,6 +23,12 @@ RESIDENT_IDS = {
     "james": "ba8f6dbb-18c1-45ba-b562-c7dc78fc56fa",
 }
 
+PROVIDER_IDS = {
+    "sparkclean": "15d3e16a-b1d0-4ef7-a737-524ec5d1da7a",
+    "fixright": "d7d5fc8a-14de-4f9d-a7d8-4b756650d5cb",
+    "urban_pest": "efe938ff-589f-48ce-8b25-7542228de802",
+}
+
 REQUIRED_PROPERTY_NAMES = [
     "Lakeside Commons",
     "Downtown Tower",
@@ -37,28 +43,18 @@ CHURN_WEIGHTS = [
     },
     {
         "label": "Resolution Time",
-        "weight": 20,
+        "weight": 25,
         "description": "Longer time to close requests compounds resident frustration.",
     },
     {
-        "label": "Repeat Issues",
-        "weight": 15,
-        "description": "Repeat failures show unresolved friction inside the unit experience.",
+        "label": "Sentiment Analysis",
+        "weight": 25,
+        "description": "Conversation tone signals dissatisfaction before explicit move-out intent appears.",
     },
     {
-        "label": "Negative Sentiment",
-        "weight": 15,
-        "description": "Conversation tone helps detect dissatisfaction before a notice is given.",
-    },
-    {
-        "label": "Unit Age",
-        "weight": 10,
-        "description": "Older unit condition can amplify friction when service quality drops.",
-    },
-    {
-        "label": "Low Engagement",
-        "weight": 10,
-        "description": "Reduced response and lower concierge engagement often precede move-out intent.",
+        "label": "Engagement Level",
+        "weight": 20,
+        "description": "Lower response and lower concierge engagement indicate rising churn risk.",
     },
 ]
 
