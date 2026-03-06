@@ -29,7 +29,7 @@ export default function LandingPage() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="absolute top-0 z-50 w-full px-6 pt-4 lg:px-8"
+          className="absolute top-0 z-50 w-full px-6 pt-3 lg:px-8"
         >
           <div className="mx-auto flex max-w-[1400px] items-center justify-between">
             {/* Left: Logo */}
@@ -43,12 +43,12 @@ export default function LandingPage() {
             </div>
 
             {/* Center: Nav Items in Pill */}
-            <nav className="hidden items-center gap-0.5 rounded-full border border-white/8 bg-white/[0.03] px-1 py-1 backdrop-blur-[6px] md:flex">
-              <a href="#insight" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white">Insight</a>
-              <a href="#detection" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white">Detection</a>
-              <a href="#concierge" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white">Concierge</a>
-              <a href="#portfolio" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white">Portfolio</a>
-              <a href="#roi" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/60 transition-colors hover:bg-white/8 hover:text-white">ROI</a>
+            <nav className="hidden items-center gap-0.5 rounded-full border border-white/6 bg-white/[0.025] px-0.5 py-0.5 backdrop-blur-[4px] md:flex">
+              <a href="#insight" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Insight</a>
+              <a href="#detection" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Detection</a>
+              <a href="#concierge" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Concierge</a>
+              <a href="#portfolio" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">Portfolio</a>
+              <a href="#roi" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-colors hover:bg-white/6 hover:text-white">ROI</a>
             </nav>
 
             {/* Right: Actions */}
@@ -64,7 +64,7 @@ export default function LandingPage() {
         </motion.div>
 
         {/* Hero Content */}
-        <div className="relative mx-auto max-w-[1400px] px-6 pb-20 pt-28 lg:px-8 lg:pb-24 lg:pt-32">
+        <div className="relative mx-auto max-w-[1400px] px-6 pb-16 pt-24 lg:px-8 lg:pb-20 lg:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -80,10 +80,10 @@ export default function LandingPage() {
             </Badge>
 
             <h1 className="font-[var(--font-heading)] text-5xl font-semibold leading-[1.1] tracking-[-0.03em] text-white lg:text-[56px]" data-testid="landing-hero-title">
-              Predict and Prevent<br /><span className="text-primary">Resident Churn</span>
+              Predict and Prevent <span className="text-primary">Resident Churn</span>
             </h1>
 
-            <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-white/65">
+            <p className="mt-4 max-w-[520px] text-[17px] leading-relaxed text-white/65">
               Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
             </p>
 
@@ -105,40 +105,42 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="mt-16 grid gap-4 md:grid-cols-3"
+            className="absolute bottom-16 left-6 right-6 lg:bottom-20 lg:left-8 lg:right-8"
           >
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-[8px]">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/6 text-white/70">
-                  <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
-                </div>
-                <div>
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">$4,083</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-white/50">Avg. turnover cost</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-[8px]">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/6 text-white/70">
-                  <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
-                </div>
-                <div>
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">9.6%</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-white/50">Annual turnover rate</p>
+            <div className="mx-auto grid max-w-[1400px] gap-4 md:grid-cols-3">
+              <div className="rounded-xl border border-white/8 bg-white/[0.03] p-4 backdrop-blur-[4px]">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/70">
+                    <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">$4,083</p>
+                    <p className="mt-1.5 text-[13px] font-medium text-white/50">Avg. turnover cost</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="rounded-xl border border-primary/20 bg-primary/6 p-4 backdrop-blur-[8px]">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                  <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
+              <div className="rounded-xl border border-white/8 bg-white/[0.03] p-4 backdrop-blur-[4px]">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 text-white/70">
+                    <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-white">9.6%</p>
+                    <p className="mt-1.5 text-[13px] font-medium text-white/50">Annual turnover rate</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
-                  <p className="mt-1.5 text-[13px] font-medium text-primary/70">Net retention ROI</p>
+              </div>
+
+              <div className="rounded-xl border border-primary/15 bg-primary/[0.05] p-4 backdrop-blur-[4px]">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                  </div>
+                  <div>
+                    <p className="font-[var(--font-heading)] text-[28px] font-semibold leading-none tracking-tight text-primary">$82,550</p>
+                    <p className="mt-1.5 text-[13px] font-medium text-primary/70">Net retention ROI</p>
+                  </div>
                 </div>
               </div>
             </div>
