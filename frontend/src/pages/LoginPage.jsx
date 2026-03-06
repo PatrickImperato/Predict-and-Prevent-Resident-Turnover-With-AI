@@ -91,9 +91,9 @@ export default function LoginPage() {
 
   return (
     <div className="h-screen overflow-hidden bg-background" data-testid="login-page-root">
-      {/* Top Navigation - MATCHES LANDING PAGE EXACTLY */}
-      <header className="absolute top-0 z-50 w-full bg-background/80 backdrop-blur-sm border-b border-border/40">
-        <div className="flex h-16 items-center justify-between px-6 lg:px-8">
+      {/* Top Navigation */}
+      <header className="absolute top-0 z-50 w-full bg-background/90 backdrop-blur-sm border-b border-border/40">
+        <div className="flex h-16 items-center px-6 lg:px-8">
           <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
             {/* Left: Logo */}
             <div className="flex items-center gap-2.5">
@@ -105,23 +105,14 @@ export default function LoginPage() {
               </p>
             </div>
 
-            {/* Center: Nav Items in Pill */}
-            <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-1 rounded-full border border-border/60 bg-muted/30 px-1.5 py-1.5 backdrop-blur-[3px] md:flex">
-              <a href="/#insight" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Insight</a>
-              <a href="/#detection" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Detection</a>
-              <a href="/#concierge" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Concierge</a>
-              <a href="/#portfolio" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">Portfolio</a>
-              <a href="/#roi" className="rounded-full px-3.5 py-1.5 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">ROI</a>
-            </nav>
-
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
+              <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+                Back to Overview
+              </Link>
               <Link to="/legal" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Legal
               </Link>
-              <Button asChild size="sm" className="h-8 rounded-full bg-primary px-4 text-[13px] font-medium shadow-none hover:bg-primary/90">
-                <Link to="/login">Sign In</Link>
-              </Button>
             </div>
           </div>
         </div>
