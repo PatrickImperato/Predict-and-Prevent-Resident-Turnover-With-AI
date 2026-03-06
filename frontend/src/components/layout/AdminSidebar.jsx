@@ -38,7 +38,7 @@ export const AdminSidebar = () => {
           <p className="font-[var(--font-heading)] text-sm font-semibold tracking-tight text-white">
             HappyCo Concierge
           </p>
-          <p className="text-xs text-slate-400">Admin workspace</p>
+          <p className="text-xs text-slate-400">{roleLabel}</p>
         </div>
       </div>
 
