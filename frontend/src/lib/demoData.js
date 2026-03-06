@@ -632,23 +632,152 @@ export const MANAGER_ANALYTICS = {
   ]
 };
 
-// AI Concierge responses
+// ============================================================================
+// PORTFOLIO ANALYTICS ROLLUP (Computed from Seattle portfolio)
+// ============================================================================
+
+/**
+ * Compute current portfolio-wide retention metrics
+ * All analytics must derive from this single source
+ */
+export const computePortfolioAnalytics = () => {
+  const config = RETENTION_CONFIG.global;
+  
+  // Aggregate across all at-risk residents
+  const totalAtRisk = AT_RISK_RESIDENTS_WITH_SCORES.length;
+  const highRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 80).length;
+  const mediumRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 70 && r.riskScore < 80).length;
+  const lowRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 60 && r.riskScore < 70).length;
+  
+  // Sum recommended credits across all interventions
+  const totalCreditsRecommended = AT_RISK_RESIDENTS_WITH_SCORES.reduce(
+    (sum, r) => sum + (r.recommendedIntervention?.creditOffer || 0), 0
+  );
+  
+  // Sum projected savings
+  const totalProjectedSavings = AT_RISK_RESIDENTS_WITH_SCORES.reduce(
+    (sum, r) => sum + (r.projectedROI?.expectedSavings || 0), 0
+  );
+  
+  // Sum projected service revenue
+  const totalProjectedRevenue = AT_RISK_RESIDENTS_WITH_SCORES.reduce(
+    (sum, r) => sum + (r.projectedROI?.expectedRevenue || 0), 0
+  );
+  
+  // Calculate net ROI
+  const netRetentionROI = totalProjectedSavings + totalProjectedRevenue - totalCreditsRecommended;
+  const roiMultiple = totalCreditsRecommended > 0 ? netRetentionROI / totalCreditsRecommended : 0;
+  
+  // Simulated historical data (last 6 months) - scaled from current metrics
+  const monthlyTrend = [
+    { month: "Oct", turnoversAvoided: 6, creditsDeployed: 2100, serviceRevenue: 8820, retentionSavings: 22800 },
+    { month: "Nov", turnoversAvoided: 7, creditsDeployed: 2450, serviceRevenue: 9380, retentionSavings: 26600 },
+    { month: "Dec", turnoversAvoided: 8, creditsDeployed: 2800, serviceRevenue: 9940, retentionSavings: 30400 },
+    { month: "Jan", turnoversAvoided: 9, creditsDeployed: 3150, serviceRevenue: 10500, retentionSavings: 34200 },
+    { month: "Feb", turnoversAvoided: 8, creditsDeployed: 2800, serviceRevenue: 10080, retentionSavings: 30400 },
+    { month: "Mar", turnoversAvoided: 9, creditsDeployed: 3150, serviceRevenue: 10640, retentionSavings: 34200 }
+  ];
+  
+  // Calculate monthly ROI
+  const monthlyROI = monthlyTrend.map(m => ({
+    month: m.month,
+    value: m.retentionSavings + m.serviceRevenue - m.creditsDeployed
+  }));
+  
+  return {
+    // Current snapshot
+    current: {
+      totalAtRisk,
+      highRisk,
+      mediumRisk,
+      lowRisk,
+      totalCreditsRecommended,
+      totalProjectedSavings,
+      totalProjectedRevenue,
+      netRetentionROI,
+      roiMultiple: roiMultiple.toFixed(2),
+      avgTurnoverCost: config.avgTurnoverCost
+    },
+    
+    // Historical trends
+    trends: {
+      retentionROI: monthlyROI,
+      retentionSavings: monthlyTrend.map(m => ({ month: m.month, value: m.retentionSavings })),
+      turnoversAvoided: monthlyTrend.map(m => ({ month: m.month, turnovers: m.turnoversAvoided })),
+      serviceRevenue: monthlyTrend.map(m => ({ month: m.month, value: m.serviceRevenue })),
+      creditsDeployed: monthlyTrend.map(m => ({ month: m.month, value: m.creditsDeployed }))
+    },
+    
+    // Risk distribution
+    riskDistribution: [
+      { level: "High Risk", count: highRisk, percentage: Math.round((highRisk / totalAtRisk) * 100) },
+      { level: "Medium Risk", count: mediumRisk, percentage: Math.round((mediumRisk / totalAtRisk) * 100) },
+      { level: "Low Risk", count: lowRisk, percentage: Math.round((lowRisk / totalAtRisk) * 100) }
+    ]
+  };
+};
+
+/**
+ * Get property performance summary for Admin dashboard
+ */
+export const getPropertyPerformance = () => {
+  return PROPERTIES.map(property => {
+    // Get at-risk residents for this property
+    const propertyResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.propertyId === property.id);
+    const interventionsRecommended = propertyResidents.length;
+    
+    // Calculate property-specific metrics
+    const projectedSavings = propertyResidents.reduce(
+      (sum, r) => sum + (r.projectedROI?.expectedSavings || 0), 0
+    );
+    
+    const creditsRecommended = propertyResidents.reduce(
+      (sum, r) => sum + (r.recommendedIntervention?.creditOffer || 0), 0
+    );
+    
+    const projectedRevenue = propertyResidents.reduce(
+      (sum, r) => sum + (r.projectedROI?.expectedRevenue || 0), 0
+    );
+    
+    const netROI = projectedSavings + projectedRevenue - creditsRecommended;
+    
+    return {
+      id: property.id,
+      name: property.name,
+      code: property.code,
+      neighborhood: property.neighborhood,
+      units: property.units,
+      occupied: property.occupied,
+      occupancyRate: ((property.occupied / property.units) * 100).toFixed(1),
+      atRiskCount: propertyResidents.length,
+      interventionsRecommended,
+      creditsRecommended,
+      projectedSavings,
+      projectedRevenue,
+      netROI,
+      manager: property.manager,
+      managerEmail: property.managerEmail
+    };
+  });
+};
+
+// AI Concierge responses (Seattle-specific)
 export const CONCIERGE_RESPONSES = {
-  greeting: "Hello! I'm your HappyCo AI Concierge. I can help you book services, manage maintenance requests, or answer questions about your retention credits. How can I assist you today?",
+  greeting: "Hello! I'm your HappyCo AI Concierge for Seattle properties. I can help you book local services, manage maintenance requests, or answer questions about your retention credits. How can I assist you today?",
   
-  bookCleaning: (creditAvailable) => `You currently have $${creditAvailable} in retention credits available. A Deep Cleaning service costs $120 and takes about 2 hours. Would you like me to schedule that for you?`,
+  bookCleaning: (creditAvailable) => `You currently have $${creditAvailable} in retention credits available. Emerald City Cleaning offers Deep Cleaning for $135 (2-3 hours). Would you like me to schedule that for you?`,
   
-  scheduleMaintenance: "I can help you submit a maintenance request. What issue are you experiencing? Common categories include HVAC, plumbing, appliances, or electrical.",
+  scheduleMaintenance: "I can help you submit a maintenance request. What issue are you experiencing? Our Seattle partners cover HVAC (Puget Sound HVAC), plumbing (Cascade Plumbing), and general handyman services.",
   
-  checkCredits: (creditAvailable) => `You have $${creditAvailable} in retention credits available. These credits can be applied to any service in our marketplace. Would you like to browse available services?`,
+  checkCredits: (creditAvailable) => `You have $${creditAvailable} in retention credits available. These credits can be applied to any service from our Seattle provider network. Would you like to browse available services?`,
   
-  availableServices: "Here are our most popular services: Deep Cleaning ($120), AC Tune-up ($85), Pet Grooming ($65), Furniture Assembly ($140), and Grocery Delivery ($40). Which interests you?",
+  availableServices: "Here are our most popular Seattle services: Deep Cleaning ($135 - Emerald City Cleaning), AC Tune-up ($95 - Puget Sound HVAC), Pet Grooming ($75 - Seattle Pet Services), Furniture Assembly ($150 - Handy Seattle). Which interests you?",
   
-  bookingConfirmed: (service, price, creditApplied) => `Perfect! I've scheduled your ${service} service. ${creditApplied > 0 ? `I've applied $${creditApplied} from your retention credits.` : ''} Your ${creditApplied > 0 ? `remaining balance is $${price - creditApplied}` : `total is $${price}`}. You'll receive a confirmation shortly.`,
+  bookingConfirmed: (service, price, creditApplied) => `Perfect! I've scheduled your ${service} with our Seattle provider. ${creditApplied > 0 ? `I've applied $${creditApplied} from your retention credits.` : ''} Your ${creditApplied > 0 ? `remaining balance is $${price - creditApplied}` : `total is $${price}`}. You'll receive a confirmation shortly.`,
   
-  maintenanceSubmitted: (category) => `I've submitted your ${category} maintenance request. Our team will review it within 2 hours and reach out to schedule a visit. Is there anything else I can help with?`,
+  maintenanceSubmitted: (category) => `I've submitted your ${category} maintenance request to our Seattle team. They'll review it within 2 hours and reach out to schedule a visit. Is there anything else I can help with?`,
   
-  fallback: "I'm here to help with booking services, scheduling maintenance, or managing your retention credits. What would you like to do?"
+  fallback: "I'm here to help with booking Seattle services, scheduling maintenance, or managing your retention credits. What would you like to do?"
 };
 
 export default {
@@ -662,6 +791,8 @@ export default {
   computeRiskScore,
   recommendIntervention,
   estimateInterventionROI,
+  computePortfolioAnalytics,
+  getPropertyPerformance,
   SAMPLE_AT_RISK_RESIDENTS,
   AT_RISK_RESIDENTS_WITH_SCORES,
   PORTFOLIO_ANALYTICS,
