@@ -1,0 +1,18 @@
+[
+  {
+    "content": "Explore current project structure and reference assets relevant to HappyCo Concierge V1 planning",
+    "status": "in_progress"
+  },
+  {
+    "content": "Obtain and read full design guidelines for the rebuild",
+    "status": "pending"
+  },
+  {
+    "content": "Create initial blueprint in plan.md capturing confirmed V1 decisions and planning-only phase",
+    "status": "pending"
+  },
+  {
+    "content": "Produce the five planning artifacts and recommended build order without writing app code",
+    "status": "pending"
+  }
+]
