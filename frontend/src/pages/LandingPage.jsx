@@ -161,40 +161,23 @@ export default function LandingPage() {
   const [insightTab, setInsightTab] = useState("maintenance");
   const [detectionProperty, setDetectionProperty] = useState("riverside");
   const [portfolioView, setPortfolioView] = useState("single");
-  const [roiPreset, setRoiPreset] = useState("midrise");
   const [roiSliders, setRoiSliders] = useState({ 
     units: 250, 
     atRiskPct: 14, 
-    retentionLift: 62, 
-    turnoverCost: 4083, 
-    incentiveCost: 185 
+    incentiveCost: 125
   });
   const [isScrolled, setIsScrolled] = useState(false);
 
-  // ROI presets
-  const roiPresets = {
-    garden: { atRiskPct: 12, turnoverCost: 3200 },
-    midrise: { atRiskPct: 14, turnoverCost: 4083 },
-    highrise: { atRiskPct: 16, turnoverCost: 5200 },
-    student: { atRiskPct: 22, turnoverCost: 2800 }
-  };
-
-  const applyRoiPreset = (preset) => {
-    setRoiPreset(preset);
-    setRoiSliders({
-      ...roiSliders,
-      atRiskPct: roiPresets[preset].atRiskPct,
-      turnoverCost: roiPresets[preset].turnoverCost
-    });
-  };
-
-  // ROI calculation - Transparent Formula
-  const residentsAtRisk = Math.round(roiSliders.units * (roiSliders.atRiskPct / 100));
-  const residentsSaved = Math.round(residentsAtRisk * (roiSliders.retentionLift / 100));
-  const grossTurnoverAvoided = residentsSaved * roiSliders.turnoverCost;
-  const totalIncentiveSpend = residentsAtRisk * roiSliders.incentiveCost;
-  const netSavings = grossTurnoverAvoided - totalIncentiveSpend;
-  const roiMultiple = totalIncentiveSpend > 0 ? (grossTurnoverAvoided / totalIncentiveSpend).toFixed(1) : "0.0";
+  // ROI calculation - Simplified with Internal Assumptions
+  const RETENTION_LIFT = 0.41; // 41% - internal assumption
+  const TURNOVER_COST = 3200; // $3,200 - internal assumption
+  
+  const atRiskResidents = Math.round(roiSliders.units * (roiSliders.atRiskPct / 100));
+  const residentsSaved = Math.round(atRiskResidents * RETENTION_LIFT);
+  const grossTurnoverAvoided = residentsSaved * TURNOVER_COST;
+  const incentiveSpend = atRiskResidents * roiSliders.incentiveCost;
+  const annualNetSavings = grossTurnoverAvoided - incentiveSpend;
+  const returnOnSpend = incentiveSpend > 0 ? (annualNetSavings / incentiveSpend).toFixed(1) : "0.0";
 
   const selectedScenario = FRICTION_SCENARIOS[insightTab];
   const selectedProperty = PROPERTIES[detectionProperty];
@@ -868,112 +851,74 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ROI Section - REDESIGNED COMPACT CALCULATOR */}
-        <section className="scroll-mt-16 relative overflow-hidden py-16 sm:py-20" id="roi">
+        {/* ROI Section - SIMPLIFIED EXECUTIVE READY */}
+        <section className="scroll-mt-16 relative overflow-hidden py-20 sm:py-24" id="roi">
           <div className="absolute inset-0 bg-slate-900"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-900/40 to-slate-900/20"></div>
           
           <div className="relative mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8">
             {/* Section Heading */}
-            <div className="text-center mb-8">
-              <Badge className="mb-3 border-primary/20 bg-primary/10 text-[13px] text-primary/90 font-medium px-3 py-1.5" variant="secondary">
-                ROI Calculator
+            <div className="text-center mb-10">
+              <Badge className="mb-4 border-primary/20 bg-primary/10 text-[13px] text-primary/90 font-medium px-3 py-1.5" variant="secondary">
+                Retention Economics
               </Badge>
               <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl font-semibold tracking-tight text-white leading-tight">
                 Model your retention economics
               </h2>
-              <p className="mx-auto mt-2 max-w-2xl text-[14px] text-white/65 leading-relaxed">
-                Calculate savings from preventing resident turnover
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-white/70 leading-relaxed">
+                Calculate savings from preventing resident turnover with simple portfolio assumptions.
               </p>
             </div>
 
-            {/* Summary Cards - Top */}
-            <div className="mb-6 grid gap-4 sm:grid-cols-2">
-              {/* Net Savings */}
-              <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/15 to-primary/5 p-6 backdrop-blur-sm">
-                <p className="text-xs text-white/70 font-semibold uppercase tracking-wide mb-1">Annual Net Savings</p>
-                <p className="font-[var(--font-heading)] text-4xl sm:text-5xl font-bold text-primary leading-none" data-testid="roi-result">
-                  ${netSavings.toLocaleString()}
+            {/* Formula Row */}
+            <div className="mb-8 flex flex-wrap justify-center gap-2 text-sm">
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75 font-medium">At Risk Residents</span>
+              <span className="text-white/40 self-center text-base">×</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75 font-medium">Retention Lift</span>
+              <span className="text-white/40 self-center text-base">×</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75 font-medium">Turnover Cost</span>
+              <span className="text-white/40 self-center text-base">−</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-white/75 font-medium">Incentive Spend</span>
+            </div>
+
+            {/* Top Output Cards */}
+            <div className="mb-8 grid gap-5 sm:grid-cols-2">
+              {/* Annual Net Savings - Primary */}
+              <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/15 to-primary/5 p-7 backdrop-blur-sm">
+                <p className="text-xs text-white/75 font-semibold uppercase tracking-wide mb-2">Annual Net Savings</p>
+                <p className="font-[var(--font-heading)] text-5xl sm:text-6xl font-bold text-primary leading-none" data-testid="roi-result">
+                  ${annualNetSavings.toLocaleString()}
                 </p>
-                <p className="mt-2 text-sm text-white/75">Gross ${grossTurnoverAvoided.toLocaleString()} \u2212 Spend ${totalIncentiveSpend.toLocaleString()}</p>
               </div>
 
-              {/* ROI Multiple */}
-              <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
-                <p className="text-xs text-white/70 font-semibold uppercase tracking-wide mb-1">Return on Incentive Spend</p>
-                <p className="font-[var(--font-heading)] text-4xl sm:text-5xl font-bold text-white leading-none">
-                  {roiMultiple}x
+              {/* Return on Incentive Spend - Secondary */}
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm">
+                <p className="text-xs text-white/75 font-semibold uppercase tracking-wide mb-2">Return on Incentive Spend</p>
+                <p className="font-[var(--font-heading)] text-5xl sm:text-6xl font-bold text-white leading-none">
+                  {returnOnSpend}x
                 </p>
-                <p className="mt-2 text-sm text-white/65">Per dollar invested in retention</p>
+                <p className="mt-3 text-sm text-white/70">Per dollar invested in retention</p>
               </div>
             </div>
 
-            {/* Explanatory Line */}
-            <p className="mb-6 text-center text-sm text-white/60 leading-relaxed max-w-3xl mx-auto">
-              This estimates how much turnover cost your team avoids by retaining at-risk residents using concierge incentives.
+            {/* Helper Text */}
+            <p className="mb-8 text-center text-sm text-white/65 leading-relaxed max-w-3xl mx-auto">
+              This model estimates annual value created by retaining at-risk residents through concierge incentives.
             </p>
 
-            {/* Sliders Container */}
-            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-sm">
-              {/* Property Type Presets */}
-              <div className="mb-6">
-                <p className="text-xs text-white/70 font-semibold uppercase tracking-wide mb-3">Property Type</p>
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => applyRoiPreset('garden')}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-                      roiPreset === 'garden'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    Garden Style
-                  </button>
-                  <button
-                    onClick={() => applyRoiPreset('midrise')}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-                      roiPreset === 'midrise'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    Mid-Rise
-                  </button>
-                  <button
-                    onClick={() => applyRoiPreset('highrise')}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-                      roiPreset === 'highrise'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    High-Rise
-                  </button>
-                  <button
-                    onClick={() => applyRoiPreset('student')}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
-                      roiPreset === 'student'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
-                    }`}
-                  >
-                    Student Housing
-                  </button>
-                </div>
-              </div>
-
-              {/* Sliders in Two Columns */}
-              <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-                {/* Column 1 */}
+            {/* Calculator Card */}
+            <div className="rounded-xl border border-white/10 bg-white/[0.03] p-7 backdrop-blur-sm">
+              {/* 3 Sliders */}
+              <div className="space-y-6 mb-8">
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-white">Total Units</label>
-                    <span className="font-[var(--font-heading)] text-base font-bold text-white">{roiSliders.units}</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">Total Units</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">{roiSliders.units}</span>
                   </div>
                   <input
                     type="range"
                     min="50"
-                    max="1000"
+                    max="500"
                     step="10"
                     value={roiSliders.units}
                     onChange={(e) => setRoiSliders({ ...roiSliders, units: parseInt(e.target.value) })}
@@ -983,14 +928,14 @@ export default function LandingPage() {
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-white">Residents At Risk %</label>
-                    <span className="font-[var(--font-heading)] text-base font-bold text-white">{roiSliders.atRiskPct}%</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">Residents At Risk</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">{roiSliders.atRiskPct}%</span>
                   </div>
                   <input
                     type="range"
                     min="5"
-                    max="30"
+                    max="25"
                     step="1"
                     value={roiSliders.atRiskPct}
                     onChange={(e) => setRoiSliders({ ...roiSliders, atRiskPct: parseInt(e.target.value) })}
@@ -1000,48 +945,14 @@ export default function LandingPage() {
                 </div>
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-white">Retention Lift From Concierge</label>
-                    <span className="font-[var(--font-heading)] text-base font-bold text-white">{roiSliders.retentionLift}%</span>
+                  <div className="mb-3 flex items-center justify-between">
+                    <label className="text-[15px] font-semibold text-white">Average Incentive Per Resident</label>
+                    <span className="font-[var(--font-heading)] text-lg font-bold text-white">${roiSliders.incentiveCost}</span>
                   </div>
                   <input
                     type="range"
-                    min="10"
-                    max="70"
-                    step="1"
-                    value={roiSliders.retentionLift}
-                    onChange={(e) => setRoiSliders({ ...roiSliders, retentionLift: parseInt(e.target.value) })}
-                    className="w-full"
-                    data-testid="roi-slider-retention"
-                  />
-                </div>
-
-                <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-white">Average Turnover Cost</label>
-                    <span className="font-[var(--font-heading)] text-base font-bold text-white\">${roiSliders.turnoverCost.toLocaleString()}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="2000"
-                    max="6000"
-                    step="100"
-                    value={roiSliders.turnoverCost}
-                    onChange={(e) => setRoiSliders({ ...roiSliders, turnoverCost: parseInt(e.target.value) })}
-                    className="w-full"
-                    data-testid="roi-slider-turnover"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <div className="mb-2 flex items-center justify-between">
-                    <label className="text-sm font-semibold text-white">Retention Incentive Per Resident</label>
-                    <span className="font-[var(--font-heading)] text-base font-bold text-white\">${roiSliders.incentiveCost}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="50"
-                    max="500"
+                    min="5"
+                    max="250"
                     step="5"
                     value={roiSliders.incentiveCost}
                     onChange={(e) => setRoiSliders({ ...roiSliders, incentiveCost: parseInt(e.target.value) })}
@@ -1051,29 +962,30 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Breakdown Metrics - Bottom */}
-              <div className="mt-6 grid gap-3 border-t border-white/10 pt-5 grid-cols-2 lg:grid-cols-4">
+              {/* Derived Metrics Row */}
+              <div className="grid gap-5 border-t border-white/10 pt-7 grid-cols-2 lg:grid-cols-4">
                 <div>
-                  <p className="text-xs text-white/65 font-semibold mb-1">Residents At Risk</p>
-                  <p className="font-[var(--font-heading)] text-xl font-bold text-white">{residentsAtRisk}</p>
-                  <p className="text-xs text-white/50 mt-0.5">{roiSliders.units} \u00d7 {roiSliders.atRiskPct}%</p>
+                  <p className="text-sm text-white/75 font-semibold mb-2">At Risk Residents</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">{atRiskResidents}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/65 font-semibold mb-1">Residents Saved</p>
-                  <p className="font-[var(--font-heading)] text-xl font-bold text-primary">{residentsSaved}</p>
-                  <p className="text-xs text-white/50 mt-0.5">{residentsAtRisk} \u00d7 {roiSliders.retentionLift}%</p>
+                  <p className="text-sm text-white/75 font-semibold mb-2">Residents Saved</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-primary">{residentsSaved}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/65 font-semibold mb-1">Gross Turnover Avoided</p>
-                  <p className="font-[var(--font-heading)] text-xl font-bold text-white\">${grossTurnoverAvoided.toLocaleString()}</p>
-                  <p className="text-xs text-white/50 mt-0.5">{residentsSaved} \u00d7 ${roiSliders.turnoverCost.toLocaleString()}</p>
+                  <p className="text-sm text-white/75 font-semibold mb-2">Gross Turnover Avoided</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">${grossTurnoverAvoided.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/65 font-semibold mb-1">Incentive Spend</p>
-                  <p className="font-[var(--font-heading)] text-xl font-bold text-white\">${totalIncentiveSpend.toLocaleString()}</p>
-                  <p className="text-xs text-white/50 mt-0.5">{residentsAtRisk} \u00d7 ${roiSliders.incentiveCost}</p>
+                  <p className="text-sm text-white/75 font-semibold mb-2">Incentive Spend</p>
+                  <p className="font-[var(--font-heading)] text-2xl font-bold text-white">${incentiveSpend.toLocaleString()}</p>
                 </div>
               </div>
+
+              {/* Assumptions Note */}
+              <p className="mt-6 text-center text-xs text-white/50 leading-relaxed">
+                Assumes 41% retention lift from concierge incentives and $3,200 average turnover cost.
+              </p>
             </div>
           </div>
         </section>
