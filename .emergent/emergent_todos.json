@@ -1,34 +1,22 @@
 [
   {
-    "content": "Phase 2.1: Add portfolio analytics rollup functions to demoData.js",
+    "content": "Update Resident Concierge with Seattle provider marketplace and proper pricing",
     "status": "completed"
   },
   {
-    "content": "Phase 2.2: Update Admin Analytics page with Seattle portfolio computations",
+    "content": "Update Landing Page with product narrative (predict → insights → interventions → measure)",
+    "status": "completed"
+  },
+  {
+    "content": "Comprehensive data consistency verification across all roles",
     "status": "in_progress"
   },
   {
-    "content": "Phase 2.3: Update Admin Dashboard with Seattle portfolio control center",
+    "content": "Final testing pass (screenshots + console logs on all key routes)",
     "status": "pending"
   },
   {
-    "content": "Phase 2.4: Add Retention Opportunities section to Manager Dashboard",
-    "status": "pending"
-  },
-  {
-    "content": "Phase 2.5: Update Resident Concierge with Seattle providers and booking flow",
-    "status": "pending"
-  },
-  {
-    "content": "Phase 2.6: Update Landing Page narrative with product story",
-    "status": "pending"
-  },
-  {
-    "content": "Phase 2.7: Comprehensive data consistency verification across all roles",
-    "status": "pending"
-  },
-  {
-    "content": "Phase 2.8: Final testing and structured report",
+    "content": "Generate structured completion report",
     "status": "pending"
   }
 ]

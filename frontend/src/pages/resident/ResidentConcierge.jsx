@@ -53,7 +53,7 @@ export default function ResidentConcierge() {
       return {
         text: CONCIERGE_RESPONSES.bookCleaning(creditAvailable),
         actions: [
-          { label: "Book Deep Cleaning", handler: () => handleQuickAction("Deep Cleaning", 120) },
+          { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
           { label: "Browse Other Services", handler: () => handleQuickAction("browse") }
         ]
       };
@@ -82,8 +82,9 @@ export default function ResidentConcierge() {
       return {
         text: CONCIERGE_RESPONSES.availableServices,
         actions: [
-          { label: "Book Cleaning", handler: () => handleQuickAction("Deep Cleaning", 120) },
-          { label: "Book AC Service", handler: () => handleQuickAction("AC Tune-up", 85) }
+          { label: `Book Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
+          { label: `Book AC Service ($${SERVICES.acTuneup.basePrice})`, handler: () => handleQuickAction("AC Tune-up", SERVICES.acTuneup.basePrice) },
+          { label: `Book Pet Grooming ($${SERVICES.petGrooming.basePrice})`, handler: () => handleQuickAction("Pet Grooming", SERVICES.petGrooming.basePrice) }
         ]
       };
     }

@@ -1,4 +1,4 @@
-import { ArrowRight, ChartColumnBig, Sparkles } from "lucide-react";
+import { ArrowRight, ChartColumnBig, Sparkles, TrendingUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -164,6 +164,83 @@ export default function LandingPage() {
               </div>
             </CardContent>
           </Card>
+        </motion.section>
+
+        {/* How HappyCo Concierge Works */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.32, ease: "easeOut" }}
+          className="mt-10"
+          data-testid="landing-how-it-works-section"
+        >
+          <div className="rounded-[32px] border border-border/80 bg-card/90 p-8 shadow-[var(--shadow-soft)] lg:p-10">
+            <div className="mx-auto max-w-3xl text-center">
+              <Badge className="mb-4 w-fit bg-teal-600/10 text-teal-700" variant="secondary">
+                Product Overview
+              </Badge>
+              <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground lg:text-4xl">
+                How HappyCo Concierge Works
+              </h2>
+              <p className="mt-4 text-base leading-7 text-muted-foreground">
+                Built on HappyCo's existing operational data to turn resident friction into measurable retention ROI.
+              </p>
+            </div>
+
+            <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-border/70 bg-background p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 text-teal-600">
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="mt-4 font-semibold text-foreground">1. Predict Friction Early</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Operational signals from maintenance history, response times, and sentiment patterns detect resident dissatisfaction months before move-out notices.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 text-teal-600">
+                  <ChartColumnBig className="h-6 w-6" strokeWidth={2} />
+                </div>
+                <h3 className="mt-4 font-semibold text-foreground">2. Turn Signals into Insights</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Risk scores compute from weighted signals showing exactly which friction drivers contribute most. Managers see the why, not just the score.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 text-teal-600">
+                  <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="mt-4 font-semibold text-foreground">3. Deploy Interventions</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Tiered credit offers and service recommendations incentivize re-engagement. Each intervention shows expected ROI before deployment.
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-border/70 bg-background p-6">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-teal-600/10 text-teal-600">
+                  <TrendingUp className="h-6 w-6" strokeWidth={2} />
+                </div>
+                <h3 className="mt-4 font-semibold text-foreground">4. Measure Financial Impact</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  Track retention savings, service revenue, and net ROI across your portfolio. Every intervention ties directly to financial outcomes.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-8 rounded-2xl border border-teal-200 bg-teal-50/50 p-6 text-center">
+              <p className="text-sm font-medium text-slate-700">
+                <strong>Built on HappyCo operational data.</strong> No new integrations. No manual tracking. 
+                Resident friction becomes a measurable, manageable retention strategy.
+              </p>
+            </div>
+          </div>
         </motion.section>
 
         <motion.section 
