@@ -169,6 +169,15 @@ export default function PrivacyPage() {
         </motion.div>
       </main>
 
+      {/* Intellectual Property Footer */}
+      <div className="border-t border-border/60 bg-background py-4">
+        <div className="mx-auto max-w-4xl px-6 lg:px-8">
+          <p className="text-center text-xs text-muted-foreground/70">
+            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+          </p>
+        </div>
+      </div>
+
       {/* Footer */}
       <footer className="border-t border-border/40 bg-background">
         <div className="mx-auto max-w-4xl px-6 py-6 lg:px-8">

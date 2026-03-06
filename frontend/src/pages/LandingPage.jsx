@@ -1011,6 +1011,15 @@ export default function LandingPage() {
         </section>
       </main>
 
+      {/* Intellectual Property Footer */}
+      <div className="border-t border-zinc-200 bg-zinc-50 py-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-zinc-500">
+            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+          </p>
+        </div>
+      </div>
+
       <PublicFooter />
       <CookieNoticeBar />
     </div>

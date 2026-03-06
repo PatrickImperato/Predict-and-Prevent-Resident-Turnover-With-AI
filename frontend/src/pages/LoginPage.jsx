@@ -278,6 +278,15 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+
+      {/* Intellectual Property Footer */}
+      <div className="absolute bottom-0 left-0 right-0 border-t border-zinc-200 bg-background py-3">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-muted-foreground/70">
+            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
