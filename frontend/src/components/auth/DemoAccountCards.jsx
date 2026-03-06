@@ -7,21 +7,21 @@ const accounts = [
     description: "Churn risk and retention interventions",
     email: "manager@riverside.com",
     password: "manager123",
-    readiness: "Auth only",
+    readiness: "Redirects",
   },
   {
     label: "Resident Experience",
     description: "AI concierge and service booking",
     email: "alex.chen@email.com",
     password: "demo123",
-    readiness: "Auth only",
+    readiness: "Redirects",
   },
   {
     label: "HappyCo Admin",
     description: "Portfolio analytics and diagnostics",
     email: "admin@happyco.com",
     password: "admin123",
-    readiness: "Phase 4 ready",
+    readiness: "Shell ready",
   },
 ];
 
@@ -46,7 +46,7 @@ export const DemoAccountCards = ({ onSelect }) => {
                 <p className="mt-1 text-sm text-muted-foreground">{account.description}</p>
               </div>
               <Badge
-                className={account.readiness === "Phase 4 ready" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}
+                className={account.readiness === "Shell ready" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground"}
                 data-testid={`login-demo-account-${account.label.toLowerCase().replace(/\s+/g, "-")}-badge`}
                 variant="secondary"
               >

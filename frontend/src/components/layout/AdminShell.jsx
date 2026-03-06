@@ -4,8 +4,14 @@ import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { AdminTopbar } from "@/components/layout/AdminTopbar";
 
 const TITLES = {
+  "/app/admin": "Dashboard",
+  "/app/admin/dashboard": "Dashboard",
+  "/app/admin/properties": "Properties",
+  "/app/admin/providers": "Providers",
+  "/app/admin/tenants": "Tenants",
+  "/app/admin/analytics": "Analytics",
+  "/app/admin/settings": "Settings",
   "/app/admin/diagnostics": "Diagnostics",
-  "/app/admin": "Diagnostics",
 };
 
 export const AdminShell = () => {
@@ -14,7 +20,7 @@ export const AdminShell = () => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="admin-shell-root">
-      <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col lg:flex-row">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col xl:flex-row">
         <AdminSidebar />
         <div className="flex min-h-screen flex-1 flex-col">
           <AdminTopbar pageTitle={pageTitle} />

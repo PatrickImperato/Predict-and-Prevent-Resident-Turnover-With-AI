@@ -22,7 +22,7 @@ export const LoginForm = ({
   submitting,
 }) => {
   return (
-    <Card className="happyco-card surface-noise border-border/80 bg-card/90" data-testid="login-form-card">
+    <Card className="happyco-card border-border/80 bg-card/96" data-testid="login-form-card">
       <CardHeader className="space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -74,9 +74,8 @@ export const LoginForm = ({
             </div>
           </div>
 
-          <div className="rounded-xl border border-border/80 bg-muted/60 p-4 text-sm text-muted-foreground" data-testid="login-form-foundation-note">
-            Phase 4 only implements environment control, secure cookie auth, and diagnostics. The
-            broader admin experience follows next.
+          <div className="rounded-xl border border-border/80 bg-muted/60 p-4 text-sm text-muted-foreground" data-testid="login-form-phase-note">
+            Admin routes are available now. Manager and resident experiences arrive in a later phase.
           </div>
 
           <Button className="h-11 w-full rounded-xl" data-testid="login-form-submit-button" disabled={submitting} type="submit">

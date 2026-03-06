@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "content": "Update Phase 5 plan with landing, login, admin shell, sidebar routes, and admin auth-gated placeholder pages",
+    "status": "completed"
+  },
+  {
+    "content": "Implement landing page parity and update login flow behavior for admin-only shell access",
+    "status": "completed"
+  },
+  {
+    "content": "Implement shared admin shell navigation and placeholder admin pages/routes",
+    "status": "completed"
+  },
+  {
+    "content": "Verify diagnostics remains functional from sidebar and test auth gating",
+    "status": "in_progress"
+  }
+]
