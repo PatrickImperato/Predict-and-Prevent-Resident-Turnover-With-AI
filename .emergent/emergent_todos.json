@@ -1,34 +1,42 @@
 [
   {
-    "content": "Add lightweight intervention deployment flow with sessionStorage persistence",
-    "status": "completed"
-  },
-  {
-    "content": "Polish Admin Dashboard (add business impact section, strengthen narrative)",
+    "content": "Refine Landing Page - simplify hero, tighten copy, cleaner sections",
     "status": "in_progress"
   },
   {
-    "content": "Polish Admin Analytics (strengthen product narrative in copy)",
+    "content": "Update subtitle everywhere to 'Predict resident churn early'",
     "status": "pending"
   },
   {
-    "content": "Polish Manager Churn Risk (improve explanation copy)",
+    "content": "Polish Admin Dashboard - executive control center feel",
     "status": "pending"
   },
   {
-    "content": "Polish Resident Concierge (provider visibility, credit clarity)",
+    "content": "Polish Admin Analytics - cleaner insights, better chart framing",
     "status": "pending"
   },
   {
-    "content": "Polish Landing Page (final narrative refinement)",
+    "content": "Upgrade Manager Dashboard - tighter onboarding, intervention history",
     "status": "pending"
   },
   {
-    "content": "Final QA pass (all 6 routes, verify consistency)",
+    "content": "Upgrade Manager Churn Risk - clearer ROI explanations",
     "status": "pending"
   },
   {
-    "content": "Generate final structured completion report",
+    "content": "Improve Resident Concierge - provider visibility, booking clarity",
+    "status": "pending"
+  },
+  {
+    "content": "Visual refinement - Linear-inspired polish across all pages",
+    "status": "pending"
+  },
+  {
+    "content": "Full consistency verification - all 6 routes",
+    "status": "pending"
+  },
+  {
+    "content": "Generate final productization report",
     "status": "pending"
   }
 ]
