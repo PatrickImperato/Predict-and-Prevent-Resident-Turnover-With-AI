@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles, CheckCircle, TrendingUp, Zap, BarChart3 } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -19,142 +19,149 @@ export default function LandingPage() {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.24, ease: "easeOut" }}
-        className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md"
+        className="absolute top-0 z-50 w-full border-b border-white/10 bg-slate-900/40 backdrop-blur-md"
       >
-        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-3 lg:px-8">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 lg:px-8">
+          {/* Left: Logo */}
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary" data-testid="landing-brand-mark">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20 text-primary" data-testid="landing-brand-mark">
               <Sparkles className="h-4 w-4" strokeWidth={2} />
             </div>
-            <p className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-foreground">
+            <p className="font-[var(--font-heading)] text-base font-semibold tracking-tight text-white">
               HappyCo Concierge
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Center: Nav Items */}
+          <nav className="hidden items-center gap-6 md:flex">
+            <a href="#insight" className="text-sm font-medium text-white/80 transition-colors hover:text-white">Insight</a>
+            <a href="#detection" className="text-sm font-medium text-white/80 transition-colors hover:text-white">Detection</a>
+            <a href="#concierge" className="text-sm font-medium text-white/80 transition-colors hover:text-white">Concierge</a>
+            <a href="#portfolio" className="text-sm font-medium text-white/80 transition-colors hover:text-white">Portfolio</a>
+            <a href="#roi" className="text-sm font-medium text-white/80 transition-colors hover:text-white">ROI</a>
+          </nav>
+
+          {/* Right: Actions */}
+          <div className="flex items-center gap-4">
+            <Link to="/legal" className="text-sm font-medium text-white/60 transition-colors hover:text-white/80">
+              Legal
+            </Link>
             {session?.app_env === "preview" && (
               <EnvironmentBadge appEnv={session.app_env} dataTestId="landing-environment-badge" />
             )}
-            <Button asChild variant="ghost" size="sm" className="h-8 text-sm" data-testid="landing-view-demo-nav">
-              <Link to="/login">View Live Demo</Link>
-            </Button>
-            <Button asChild size="sm" className="h-8 text-sm" data-testid="landing-sign-in-nav">
-              <Link to="/login">Sign in to demo</Link>
+            <Button asChild size="sm" className="h-9 px-4 text-sm" data-testid="landing-sign-in-nav">
+              <Link to="/login">Sign In</Link>
             </Button>
           </div>
         </div>
       </motion.div>
 
-      <main className="mx-auto max-w-[1400px] px-6 py-16 lg:px-8 lg:py-20">
-        {/* Hero Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.32, delay: 0.08, ease: [0.25, 0.1, 0.25, 1] }}
-          className="mb-20 text-center"
-          data-testid="landing-hero-section"
-        >
-          <Badge
-            className="mb-4 border-border/60 bg-muted/60 text-muted-foreground hover:bg-muted/60"
-            variant="secondary"
-            data-testid="landing-hero-badge"
-          >
-            HappyCo Concierge
-          </Badge>
-          
-          <h1 className="mx-auto max-w-3xl font-[var(--font-heading)] text-5xl font-semibold tracking-[-0.03em] text-foreground lg:text-6xl" data-testid="landing-hero-title">
-            Predict resident churn early
-          </h1>
-          
-          <p className="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Help property managers spot friction sooner, take action earlier, and reduce vacancy using HappyCo operational data.
-          </p>
-          
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg" className="h-10 px-5 text-sm shadow-sm" data-testid="landing-hero-cta">
-              <Link to="/login">
-                View Live Demo
-                <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2} />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-10 px-5 text-sm" data-testid="landing-hero-secondary-cta">
-              <Link to="/login">Sign in to demo</Link>
-            </Button>
-          </div>
+      {/* Hero Section with Building Background */}
+      <section className="relative min-h-[700px] overflow-hidden" data-testid="landing-hero-section">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
+            alt="City skyline"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-800/85"></div>
+        </div>
 
-          {/* Product Visual */}
-          <div className="mx-auto mt-12 max-w-5xl">
-            <div className="rounded-xl border border-border/60 bg-card p-1 shadow-sm">
-              <div className="overflow-hidden rounded-lg border border-border/40 bg-muted/30">
-                <div className="grid gap-px bg-border/30 md:grid-cols-3">
-                  <div className="bg-card p-5">
-                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                      <Zap className="h-4 w-4" strokeWidth={2} />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">Detect Early</p>
-                    <p className="mt-1 text-xs text-muted-foreground">Spot friction 4+ months before move-out</p>
-                  </div>
-                  <div className="bg-card p-5">
-                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                      <TrendingUp className="h-4 w-4" strokeWidth={2} />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">Act Sooner</p>
-                    <p className="mt-1 text-xs text-muted-foreground">Deploy targeted retention interventions</p>
-                  </div>
-                  <div className="bg-card p-5">
-                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                      <BarChart3 className="h-4 w-4" strokeWidth={2} />
-                    </div>
-                    <p className="text-sm font-semibold text-foreground">Measure ROI</p>
-                    <p className="mt-1 text-xs text-muted-foreground">Track savings and service revenue</p>
-                  </div>
+        {/* Hero Content */}
+        <div className="relative mx-auto max-w-[1400px] px-6 pb-24 pt-32 lg:px-8 lg:pb-32 lg:pt-40">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="max-w-3xl"
+          >
+            <Badge
+              className="mb-5 border-primary/30 bg-primary/10 text-primary hover:bg-primary/10"
+              variant="secondary"
+              data-testid="landing-hero-badge"
+            >
+              Retention Intelligence Platform
+            </Badge>
+
+            <h1 className="font-[var(--font-heading)] text-5xl font-semibold tracking-[-0.03em] text-white lg:text-6xl" data-testid="landing-hero-title">
+              Predict and Prevent Resident Churn
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/80">
+              Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Button asChild size="lg" className="h-11 px-6 text-sm shadow-lg" data-testid="landing-hero-cta">
+                <Link to="/login">
+                  View Demo
+                  <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2} />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="h-11 border-white/20 bg-white/10 px-6 text-sm text-white hover:bg-white/20" data-testid="landing-hero-secondary-cta">
+                <Link to="/login">Sign In</Link>
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Proof Metric Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="mt-20 grid gap-5 md:grid-cols-3"
+          >
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                  <DollarSign className="h-5 w-5" strokeWidth={2} />
+                </div>
+                <div>
+                  <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">$4,083</p>
+                  <p className="mt-1 text-sm text-white/60">Avg. turnover cost</p>
                 </div>
               </div>
             </div>
-          </div>
-        </motion.section>
 
-        {/* Proof Metrics */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          className="mb-20"
-        >
-          <div className="mx-auto max-w-4xl">
-            <div className="grid gap-5 md:grid-cols-3">
-              <div className="rounded-lg border border-border/60 bg-card p-5 text-center">
-                <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">35</p>
-                <p className="mt-1 text-sm text-muted-foreground">At-risk residents identified</p>
-              </div>
-              <div className="rounded-lg border border-border/60 bg-card p-5 text-center">
-                <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-teal-600">$82,550</p>
-                <p className="mt-1 text-sm text-muted-foreground">Net retention ROI</p>
-              </div>
-              <div className="rounded-lg border border-border/60 bg-card p-5 text-center">
-                <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">6.55x</p>
-                <p className="mt-1 text-sm text-muted-foreground">Return on investment</p>
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                  <TrendingUp className="h-5 w-5" strokeWidth={2} />
+                </div>
+                <div>
+                  <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">9.6%</p>
+                  <p className="mt-1 text-sm text-white/60">Annual turnover rate</p>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.section>
 
-        {/* How It Works */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          className="mb-20"
-        >
+            <div className="rounded-lg border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary">
+                  <Users className="h-5 w-5" strokeWidth={2} />
+                </div>
+                <div>
+                  <p className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-teal-400">$82,550</p>
+                  <p className="mt-1 text-sm text-white/60">Net retention ROI</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Below the fold sections */}
+      <main className="mx-auto max-w-[1400px] px-6 py-20 lg:px-8">
+        {/* How it works */}
+        <section className="mb-20" id="insight">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
+            <Badge className="mb-4 border-border/60 bg-muted/60 text-muted-foreground" variant="secondary">
               How it works
-            </h2>
-            <p className="mt-3 text-base text-muted-foreground">
+            </Badge>
+            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
               Turn operational signals into early retention action
-            </p>
+            </h2>
           </div>
 
           <div className="mx-auto mt-10 max-w-4xl">
@@ -189,20 +196,11 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* Built on HappyCo Data */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          className="mb-20"
-        >
+        <section className="mb-20" id="detection">
           <div className="mx-auto max-w-3xl rounded-lg border border-border/60 bg-card p-8 text-center">
-            <div className="mx-auto mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-              <CheckCircle className="h-5 w-5" strokeWidth={2} />
-            </div>
             <h3 className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-foreground">
               Built on HappyCo operational data
             </h3>
@@ -210,61 +208,17 @@ export default function LandingPage() {
               No new integrations. No manual tracking. HappyCo Concierge uses existing maintenance history, response patterns, and resident interactions to predict churn risk months before move-out notices.
             </p>
           </div>
-        </motion.section>
-
-        {/* Business Impact */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          className="mb-20"
-        >
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
-              Business impact
-            </h2>
-            <p className="mt-3 text-base text-muted-foreground">
-              Measure retention ROI across your portfolio
-            </p>
-          </div>
-
-          <div className="mx-auto mt-10 max-w-4xl">
-            <div className="grid gap-5 md:grid-cols-3">
-              <div className="rounded-lg border border-border/60 bg-card p-5">
-                <p className="text-xs font-medium text-muted-foreground">Turnover Savings</p>
-                <p className="mt-2 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-teal-600">$92,840</p>
-                <p className="mt-1 text-xs text-muted-foreground">Prevention value</p>
-              </div>
-              <div className="rounded-lg border border-border/60 bg-card p-5">
-                <p className="text-xs font-medium text-muted-foreground">Service Revenue</p>
-                <p className="mt-2 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-teal-600">$2,310</p>
-                <p className="mt-1 text-xs text-muted-foreground">Booking commissions</p>
-              </div>
-              <div className="rounded-lg border border-border/60 bg-card p-5">
-                <p className="text-xs font-medium text-muted-foreground">Credits Deployed</p>
-                <p className="mt-2 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-foreground">$12,600</p>
-                <p className="mt-1 text-xs text-muted-foreground">Investment</p>
-              </div>
-            </div>
-          </div>
-        </motion.section>
+        </section>
 
         {/* Product Previews */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          className="mb-20"
-        >
+        <section className="mb-20" id="concierge">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
+            <Badge className="mb-4 border-border/60 bg-muted/60 text-muted-foreground" variant="secondary">
               Purpose-built for retention
-            </h2>
-            <p className="mt-3 text-base text-muted-foreground">
+            </Badge>
+            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
               Admin oversight, manager workflows, and resident engagement
-            </p>
+            </h2>
           </div>
 
           <div className="mx-auto mt-10 max-w-5xl">
@@ -301,19 +255,13 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </motion.section>
+        </section>
 
         {/* Final CTA */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.32, ease: "easeOut" }}
-          data-testid="landing-cta-section"
-        >
+        <section id="roi">
           <div className="mx-auto max-w-3xl rounded-lg border border-border/60 bg-card p-10 text-center">
             <h2 className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-foreground">
-              Experience the full platform
+              Experience the platform
             </h2>
             <p className="mt-3 text-sm text-muted-foreground">
               Explore admin dashboards, manager workflows, and resident interfaces with Seattle portfolio demo data
@@ -321,16 +269,16 @@ export default function LandingPage() {
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button asChild size="lg" className="h-10 px-5 text-sm shadow-sm" data-testid="landing-cta-primary">
                 <Link to="/login">
-                  View Live Demo
+                  View Demo
                   <ArrowRight className="ml-2 h-4 w-4" strokeWidth={2} />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="h-10 px-5 text-sm" data-testid="landing-cta-secondary">
-                <Link to="/login">Sign in to demo</Link>
+                <Link to="/login">Sign In</Link>
               </Button>
             </div>
           </div>
-        </motion.section>
+        </section>
       </main>
 
       <PublicFooter />
