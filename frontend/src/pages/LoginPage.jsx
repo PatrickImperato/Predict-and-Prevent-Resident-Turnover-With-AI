@@ -92,40 +92,40 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="login-page-root">
-      <div className="grid min-h-screen lg:grid-cols-2">
+      <div className="grid min-h-screen lg:grid-cols-[minmax(0,580px)_minmax(0,1fr)]">
         {/* Left Side: Login Form */}
-        <div className="flex items-center justify-center px-6 py-12 lg:px-12">
+        <div className="flex items-center justify-center bg-background px-8 py-16 lg:px-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
             className="w-full max-w-md"
           >
-            <div className="mb-8">
-              <div className="mb-6 flex items-center gap-2">
+            <div className="mb-10">
+              <div className="mb-8 flex items-center gap-2">
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <Sparkles className="h-5 w-5" strokeWidth={2} />
+                  <Sparkles className="h-5 w-5" strokeWidth={2.5} />
                 </div>
                 <p className="font-[var(--font-heading)] text-lg font-semibold tracking-tight text-foreground">
                   HappyCo Concierge
                 </p>
               </div>
-              <h1 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
+              <h1 className="font-[var(--font-heading)] text-4xl font-semibold tracking-[-0.02em] text-foreground">
                 Welcome back
               </h1>
-              <p className="mt-2 text-sm text-muted-foreground">
+              <p className="mt-3 text-base text-muted-foreground">
                 Sign in to access the platform
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium text-foreground">
                   Email
                 </Label>
                 <Input
                   autoComplete="email"
-                  className="h-10"
+                  className="h-11"
                   data-testid="login-email-input"
                   disabled={submitting}
                   id="email"
@@ -143,7 +143,7 @@ export default function LoginPage() {
                 </Label>
                 <Input
                   autoComplete="current-password"
-                  className="h-10"
+                  className="h-11"
                   data-testid="login-password-input"
                   disabled={submitting}
                   id="password"
@@ -156,7 +156,7 @@ export default function LoginPage() {
               </div>
 
               <Button
-                className="h-10 w-full text-sm"
+                className="h-11 w-full text-sm font-medium"
                 data-testid="login-submit-button"
                 disabled={submitting}
                 type="submit"
@@ -174,38 +174,40 @@ export default function LoginPage() {
             <img
               src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHRlYWx8MTc3Mjc3MTE4Nnww&ixlib=rb-4.1.0&q=85"
               alt="City skyline"
-              className="h-full w-full object-cover opacity-20"
+              className="h-full w-full object-cover"
+              style={{ filter: 'contrast(1.15) brightness(0.7)' }}
             />
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-slate-900/90 to-slate-800/85"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900/97 via-slate-900/95 to-blue-900/92"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent"></div>
           </div>
 
-          <div className="relative flex h-full flex-col justify-between p-12">
+          <div className="relative flex h-full flex-col justify-between p-12 xl:p-16">
             {/* Top: Platform Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
             >
-              <Badge className="mb-5 border-primary/30 bg-primary/10 text-primary" variant="secondary">
+              <Badge className="mb-6 border-primary/20 bg-primary/10 text-primary" variant="secondary">
                 Demo Access
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-white">
+              <h2 className="font-[var(--font-heading)] text-4xl font-semibold leading-tight tracking-[-0.02em] text-white xl:text-5xl">
                 AI Concierge Platform for Multifamily Operations
               </h2>
               
               {/* Summary Metrics */}
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                  <p className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-white">35</p>
-                  <p className="mt-1 text-xs text-white/60">At-risk residents</p>
+              <div className="mt-10 grid gap-5 sm:grid-cols-3">
+                <div className="rounded-xl border border-white/15 bg-white/8 p-5 backdrop-blur-lg">
+                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">35</p>
+                  <p className="mt-2 text-sm font-medium text-white/60">At-risk residents</p>
                 </div>
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                  <p className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-teal-400">$82,550</p>
-                  <p className="mt-1 text-xs text-white/60">Net retention ROI</p>
+                <div className="rounded-xl border border-primary/30 bg-primary/10 p-5 backdrop-blur-lg">
+                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-primary">$82,550</p>
+                  <p className="mt-2 text-sm font-medium text-primary/80">Net retention ROI</p>
                 </div>
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-                  <p className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-white">6.55x</p>
-                  <p className="mt-1 text-xs text-white/60">ROI multiple</p>
+                <div className="rounded-xl border border-white/15 bg-white/8 p-5 backdrop-blur-lg">
+                  <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">6.55x</p>
+                  <p className="mt-2 text-sm font-medium text-white/60">ROI multiple</p>
                 </div>
               </div>
             </motion.div>
@@ -216,10 +218,10 @@ export default function LoginPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
             >
-              <p className="mb-4 text-sm font-medium text-white/80">
-                Select a demo account to auto-fill credentials
+              <p className="mb-5 text-base font-medium text-white/80">
+                Select a demo account to auto fill credentials and explore the product experience.
               </p>
-              <div className="grid gap-3">
+              <div className="space-y-3">
                 {DEMO_ROLES.map((role, index) => {
                   const Icon = role.icon;
                   return (
@@ -227,21 +229,25 @@ export default function LoginPage() {
                       key={role.id}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
+                      transition={{ duration: 0.3, delay: 0.5 + index * 0.08 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="group rounded-lg border border-white/10 bg-white/5 p-4 text-left transition-all hover:border-primary/30 hover:bg-white/10 active:scale-[0.98]"
+                      className="group w-full rounded-xl border border-white/15 bg-white/8 p-5 text-left backdrop-blur-lg transition-all hover:border-primary/30 hover:bg-white/12 active:scale-[0.98]"
                       data-testid={`demo-role-card-${role.id}`}
                     >
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/20 text-primary transition-colors group-hover:bg-primary/30">
-                          <Icon className="h-5 w-5" strokeWidth={2} />
+                      <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-white/10 text-white/80 transition-colors group-hover:bg-primary/20 group-hover:text-primary">
+                          <Icon className="h-6 w-6" strokeWidth={2.5} />
                         </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-white">{role.title}</p>
-                          <p className="mt-1 text-xs text-white/60">{role.description}</p>
-                          <div className="mt-2 space-y-1">
-                            <p className="text-xs text-white/50">Email: {role.email}</p>
-                            <p className="text-xs text-white/50">Pass: {role.password}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-base font-semibold text-white">{role.title}</p>
+                          <p className="mt-1 text-sm text-white/60">{role.description}</p>
+                          <div className="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-xs">
+                            <p className="text-white/50">
+                              <span className="text-white/40">Email:</span> {role.email}
+                            </p>
+                            <p className="text-white/50">
+                              <span className="text-white/40">Pass:</span> {role.password}
+                            </p>
                           </div>
                         </div>
                       </div>
