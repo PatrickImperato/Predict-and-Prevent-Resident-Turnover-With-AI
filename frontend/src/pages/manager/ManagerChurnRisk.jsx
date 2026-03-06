@@ -1,65 +1,63 @@
-import { AlertCircle, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { AlertCircle, TrendingUp, DollarSign, AlertTriangle, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-
-const mockChurnRisk = {
-  high_risk: [
-    {
-      id: "1",
-      name: "Alex Chen",
-      unit: "501",
-      score: 74,
-      level: "High Risk",
-      drivers: [
-        { label: "Maintenance Frequency", weight: 35, value: "6 requests/quarter" },
-        { label: "Sentiment Decline", weight: 25, value: "Negative trend" },
-        { label: "Days to Lease End", weight: 20, value: "90 days" }
-      ],
-      last_interaction: "2 days ago",
-      suggested_intervention: "Priority concierge + $500 credit"
-    },
-    {
-      id: "2",
-      name: "Maria Santos",
-      unit: "312",
-      score: 72,
-      level: "High Risk",
-      drivers: [
-        { label: "Maintenance Frequency", weight: 35, value: "7 requests/quarter" },
-        { label: "Response Time", weight: 20, value: "Avg 3.2 days" },
-        { label: "Sentiment Decline", weight: 25, value: "Moderate concern" }
-      ],
-      last_interaction: "1 day ago",
-      suggested_intervention: "Concierge outreach + $400 credit"
-    }
-  ],
-  medium_risk: [
-    {
-      id: "3",
-      name: "Jordan Lee",
-      unit: "208",
-      score: 68,
-      level: "Medium Risk",
-      drivers: [
-        { label: "Sentiment Decline", weight: 25, value: "Slight concern" },
-        { label: "Service Usage", weight: 15, value: "Below average" }
-      ],
-      last_interaction: "4 days ago",
-      suggested_intervention: "Service recommendations"
-    }
-  ]
-};
+import { AT_RISK_RESIDENTS_WITH_SCORES, PROPERTIES } from "@/lib/demoData";
 
 export default function ManagerChurnRisk() {
+  const [expandedResidentId, setExpandedResidentId] = useState(null);
+  const [appliedInterventions, setAppliedInterventions] = useState(new Set());
+  
+  // Filter residents by risk level
+  const highRiskResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 80);
+  const mediumRiskResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 70 && r.riskScore < 80);
+  const lowRiskResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 60 && r.riskScore < 70);
+  
+  // Calculate projected impact
+  const totalProjectedSavings = AT_RISK_RESIDENTS_WITH_SCORES.reduce((sum, r) => 
+    sum + (r.projectedROI?.expectedSavings || 0), 0
+  );
+  
+  const toggleExpanded = (residentId) => {
+    setExpandedResidentId(expandedResidentId === residentId ? null : residentId);
+  };
+  
+  const handleDeployIntervention = (resident) => {
+    // Mock intervention deployment
+    setAppliedInterventions(prev => new Set([...prev, resident.id]));
+    
+    toast.success("Intervention deployed", {
+      description: `${resident.recommendedIntervention.label} intervention with $${resident.recommendedIntervention.creditOffer} credit sent to ${resident.name}.`
+    });
+  };
+  
+  const getRiskBadgeColor = (score) => {
+    if (score >= 80) return "border-red-200 bg-red-50 text-red-700";
+    if (score >= 70) return "border-amber-200 bg-amber-50 text-amber-700";
+    return "border-slate-200 bg-slate-50 text-slate-700";
+  };
+  
+  const getRiskLabel = (score) => {
+    if (score >= 80) return "High Risk";
+    if (score >= 70) return "Medium Risk";
+    return "Low Risk";
+  };
+  
+  const getProperty = (propertyId) => {
+    return PROPERTIES.find(p => p.id === propertyId);
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
       className="space-y-6"
+      data-testid="manager-churn-risk-page"
     >
       {/* Header */}
       <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -70,7 +68,8 @@ export default function ManagerChurnRisk() {
           At-Risk Residents
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-          Monitor residents with elevated churn risk and deploy targeted retention interventions.
+          Churn prediction powered by HappyCo operational data. Risk scores compute from maintenance frequency, 
+          response times, sentiment signals, and lease timing to identify friction early.
         </p>
       </section>
 
@@ -78,95 +77,234 @@ export default function ManagerChurnRisk() {
       <section className="grid gap-6 md:grid-cols-3">
         <div className="saas-metric-card">
           <p className="metric-label">High Risk</p>
-          <p className="metric-value mt-3 text-red-600">12</p>
+          <p className="metric-value mt-3 text-red-600">{highRiskResidents.length}</p>
           <p className="metric-detail mt-2">Immediate action needed</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Medium Risk</p>
-          <p className="metric-value mt-3 text-amber-600">18</p>
+          <p className="metric-value mt-3 text-amber-600">{mediumRiskResidents.length}</p>
           <p className="metric-detail mt-2">Monitor closely</p>
         </div>
         <div className="saas-metric-card">
-          <p className="metric-label">Projected Impact</p>
-          <p className="metric-value mt-3">$98,080</p>
-          <p className="metric-detail mt-2">If risk mitigated</p>
+          <p className="metric-label">Projected Savings</p>
+          <p className="metric-value mt-3">${totalProjectedSavings.toLocaleString()}</p>
+          <p className="metric-detail mt-2">If all interventions succeed</p>
         </div>
       </section>
 
       {/* High Risk Residents */}
-      <section>
-        <h3 className="mb-4 text-lg font-semibold text-slate-900">High Risk Residents</h3>
-        <div className="space-y-4">
-          {mockChurnRisk.high_risk.map((resident) => (
-            <div key={resident.id} className="saas-card saas-card:hover">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 text-red-600">
-                      <AlertCircle className="h-5 w-5" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
-                      <p className="text-sm text-slate-600">Unit {resident.unit} • {resident.last_interaction}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="mt-6 grid gap-4 md:grid-cols-3">
-                    {resident.drivers.map((driver) => (
-                      <div key={driver.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                        <div className="flex items-center justify-between">
-                          <p className="text-sm font-medium text-slate-900">{driver.label}</p>
-                          <p className="text-xs font-semibold text-teal-600">{driver.weight}%</p>
+      {highRiskResidents.length > 0 && (
+        <section>
+          <h3 className="mb-4 text-lg font-semibold text-slate-900">High Risk Residents</h3>
+          <div className="space-y-4">
+            {highRiskResidents.map((resident) => {
+              const isExpanded = expandedResidentId === resident.id;
+              const isApplied = appliedInterventions.has(resident.id);
+              const property = getProperty(resident.propertyId);
+              
+              return (
+                <motion.div 
+                  key={resident.id} 
+                  className="saas-card saas-card:hover"
+                  data-testid={`resident-card-${resident.id}`}
+                  layout
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 text-red-600">
+                          <AlertCircle className="h-5 w-5" strokeWidth={2} />
                         </div>
-                        <Progress className="mt-3" value={driver.weight} />
-                        <p className="mt-2 text-sm text-slate-700">{driver.value}</p>
+                        <div>
+                          <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
+                          <p className="text-sm text-slate-600">
+                            Unit {resident.unit} • {property?.name} • {resident.frictionSignals.daysToLeaseEnd} days to lease end
+                          </p>
+                        </div>
                       </div>
-                    ))}
+                      
+                      {/* Top 3 Drivers */}
+                      <div className="mt-6 grid gap-4 md:grid-cols-3">
+                        {resident.riskDrivers.slice(0, 3).map((driver) => (
+                          <div key={driver.name} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-medium text-slate-900">{driver.name}</p>
+                              <Badge 
+                                className={`text-xs ${
+                                  driver.severity === 'high' ? 'border-red-200 bg-red-50 text-red-700' :
+                                  driver.severity === 'medium' ? 'border-amber-200 bg-amber-50 text-amber-700' :
+                                  'border-slate-200 bg-slate-50 text-slate-700'
+                                }`}
+                                variant="secondary"
+                              >
+                                {driver.contribution} pts
+                              </Badge>
+                            </div>
+                            <Progress className="mt-3" value={parseFloat(driver.contribution)} />
+                            <p className="mt-2 text-sm text-slate-700">
+                              {driver.name === "Maintenance Frequency" && `${driver.rawValue} requests`}
+                              {driver.name === "Response Time" && `${driver.rawValue}hr avg`}
+                              {driver.name === "Sentiment Decline" && `${driver.rawValue}% negative`}
+                              {driver.name === "Days to Lease End" && `${driver.rawValue} days`}
+                              {driver.name === "Service Non-Adoption" && `${driver.rawValue} bookings`}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Recommended Intervention */}
+                      <div className="mt-4 rounded-lg border border-teal-200 bg-teal-50 p-4">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-slate-900">Recommended: {resident.recommendedIntervention.label} Intervention</p>
+                            <p className="mt-1 text-sm text-slate-700">{resident.recommendedIntervention.rationale}</p>
+                            <p className="mt-2 text-sm font-medium text-teal-700">
+                              Credit offer: ${resident.recommendedIntervention.creditOffer} • Tier {resident.recommendedIntervention.tier}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => toggleExpanded(resident.id)}
+                            className="ml-4 rounded-lg p-2 transition-colors hover:bg-teal-100"
+                            data-testid={`expand-roi-${resident.id}`}
+                          >
+                            {isExpanded ? <ChevronUp className="h-5 w-5 text-teal-700" /> : <ChevronDown className="h-5 w-5 text-teal-700" />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* ROI Explainer (Expanded) */}
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="mt-4 overflow-hidden"
+                          >
+                            <div className="rounded-lg border border-slate-200 bg-slate-50 p-6">
+                              <h5 className="text-sm font-semibold text-slate-900">ROI Impact Projection</h5>
+                              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+                                {resident.projectedROI.explanation}
+                              </p>
+                              
+                              <div className="mt-4 grid gap-4 md:grid-cols-4">
+                                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                                  <p className="text-xs font-medium text-slate-600">Expected Savings</p>
+                                  <p className="mt-1 text-lg font-semibold text-teal-600">
+                                    ${resident.projectedROI.expectedSavings.toLocaleString()}
+                                  </p>
+                                  <p className="mt-1 text-xs text-slate-500">
+                                    {resident.projectedROI.churnReductionRate} retention
+                                  </p>
+                                </div>
+                                
+                                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                                  <p className="text-xs font-medium text-slate-600">Service Revenue</p>
+                                  <p className="mt-1 text-lg font-semibold text-teal-600">
+                                    ${resident.projectedROI.expectedRevenue.toLocaleString()}
+                                  </p>
+                                  <p className="mt-1 text-xs text-slate-500">From bookings</p>
+                                </div>
+                                
+                                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                                  <p className="text-xs font-medium text-slate-600">Credit Cost</p>
+                                  <p className="mt-1 text-lg font-semibold text-slate-900">
+                                    ${resident.projectedROI.totalCost.toLocaleString()}
+                                  </p>
+                                  <p className="mt-1 text-xs text-slate-500">Investment</p>
+                                </div>
+                                
+                                <div className="rounded-lg border border-teal-200 bg-teal-50 p-4">
+                                  <p className="text-xs font-medium text-teal-700">Net ROI</p>
+                                  <p className="mt-1 text-lg font-semibold text-teal-700">
+                                    ${resident.projectedROI.netROI.toLocaleString()}
+                                  </p>
+                                  <p className="mt-1 text-xs font-semibold text-teal-600">
+                                    {resident.projectedROI.roiMultiple}x return
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Score & Action */}
+                    <div className="ml-6 text-right">
+                      <p className="text-4xl font-semibold tracking-tight text-slate-900">{resident.riskScore}</p>
+                      <Badge className={`mt-2 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
+                        {getRiskLabel(resident.riskScore)}
+                      </Badge>
+                      <Button 
+                        className="mt-4 h-9 w-full rounded-lg" 
+                        size="sm"
+                        onClick={() => handleDeployIntervention(resident)}
+                        disabled={isApplied}
+                        data-testid={`deploy-intervention-${resident.id}`}
+                      >
+                        {isApplied ? (
+                          <>
+                            <CheckCircle2 className="mr-2 h-4 w-4" />
+                            Applied
+                          </>
+                        ) : (
+                          "Deploy Intervention"
+                        )}
+                      </Button>
+                    </div>
                   </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-                  <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-                    <p className="text-sm font-medium text-slate-900">Suggested Intervention</p>
-                    <p className="mt-1 text-sm text-slate-700">{resident.suggested_intervention}</p>
+      {/* Medium Risk Residents */}
+      {mediumRiskResidents.length > 0 && (
+        <section>
+          <h3 className="mb-4 text-lg font-semibold text-slate-900">Medium Risk Residents</h3>
+          <div className="space-y-4">
+            {mediumRiskResidents.map((resident) => {
+              const isApplied = appliedInterventions.has(resident.id);
+              const property = getProperty(resident.propertyId);
+              
+              return (
+                <div key={resident.id} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
+                      <p className="mt-1 text-sm text-slate-600">
+                        Unit {resident.unit} • {property?.name}
+                      </p>
+                      <p className="mt-2 text-sm text-slate-700">
+                        Top driver: {resident.topDriver.name} ({resident.topDriver.contribution} pts)
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-2xl font-semibold text-slate-900">{resident.riskScore}</p>
+                      <Badge className={`mt-1 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
+                        Medium
+                      </Badge>
+                      <Button 
+                        className="mt-3 h-8 w-full rounded-lg" 
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDeployIntervention(resident)}
+                        disabled={isApplied}
+                      >
+                        {isApplied ? "Applied" : "Deploy"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
-
-                <div className="ml-6 text-right">
-                  <p className="text-4xl font-semibold tracking-tight text-slate-900">{resident.score}</p>
-                  <Badge className="mt-2 border-red-200 bg-red-50 text-red-700" variant="secondary">
-                    {resident.level}
-                  </Badge>
-                  <Button className="mt-4 h-9 w-full rounded-lg" size="sm">
-                    Deploy Intervention
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Medium Risk */}
-      <section>
-        <h3 className="mb-4 text-lg font-semibold text-slate-900">Medium Risk Residents</h3>
-        <div className="space-y-4">
-          {mockChurnRisk.medium_risk.map((resident) => (
-            <div key={resident.id} className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-lg font-semibold text-slate-900">{resident.name}</h4>
-                  <p className="text-sm text-slate-600">Unit {resident.unit} • {resident.suggested_intervention}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-2xl font-semibold text-slate-900">{resident.score}</p>
-                  <Badge className="mt-1 border-amber-200 bg-amber-50 text-amber-700" variant="secondary">
-                    Medium
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </motion.div>
   );
 }

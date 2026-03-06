@@ -11,6 +11,8 @@ import {
   Users,
 } from "lucide-react";
 
+import { useAuth } from "@/context/AuthContext";
+
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/app/admin/dashboard" },
   { label: "Properties", icon: Building2, path: "/app/admin/properties" },
@@ -21,7 +23,17 @@ const navItems = [
   { label: "Diagnostics", icon: ShieldCheck, path: "/app/admin/diagnostics" },
 ];
 
+const getRoleLabel = (role) => {
+  if (role === "admin") return "Platform Admin";
+  if (role === "manager") return "Property Manager";
+  if (role === "resident") return "Resident";
+  return "User";
+};
+
 export const AdminSidebar = () => {
+  const { session } = useAuth();
+  const roleLabel = getRoleLabel(session?.role);
+
   return (
     <motion.aside
       initial={{ opacity: 0, x: -12 }}

@@ -1,22 +1,22 @@
 [
   {
-    "content": "Update plan.md for residents/providers/analytics operational workflow phase",
-    "status": "in_progress"
+    "content": "Phase 1.5: Test and verify Manager POC flow works correctly",
+    "status": "completed"
   },
   {
-    "content": "Review current seeded data, tenants/providers/analytics placeholders, and relevant backend/frontend files",
+    "content": "Phase 2.1: Update Analytics page to use Seattle portfolio data",
     "status": "pending"
   },
   {
-    "content": "Expand coherent seed model and backend read APIs for residents, providers, and analytics",
+    "content": "Phase 2.2: Update Dashboard page with Seattle portfolio summary",
     "status": "pending"
   },
   {
-    "content": "Implement ResidentProfilePage, ProvidersPage, AnalyticsPage, and tenants list using backend data",
+    "content": "Phase 2.3: Update Resident Concierge to use Seattle services and providers",
     "status": "pending"
   },
   {
-    "content": "Verify reconciliation, run lint/build/tests, and generate testing report iteration_6",
+    "content": "Phase 2.4: Comprehensive UI testing across all roles",
     "status": "pending"
   }
 ]
