@@ -25,20 +25,20 @@ export default function DashboardPage() {
       data-testid="dashboard-page-root"
     >
       {/* Header */}
-      <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
               Seattle Portfolio
             </Badge>
-            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
+            <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
               Portfolio Control Center
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
               Real-time retention intelligence across Ballard Commons, Capitol Hill Residences, and Bellevue Skyline Towers.
             </p>
           </div>
-          <Button asChild className="h-10 rounded-lg shadow-sm">
+          <Button asChild className="h-9 px-4 text-sm shadow-sm">
             <Link to="/app/admin/analytics">
               View Analytics
               <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.75} />

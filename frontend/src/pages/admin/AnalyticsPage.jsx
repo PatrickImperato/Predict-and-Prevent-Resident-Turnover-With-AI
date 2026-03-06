@@ -21,14 +21,14 @@ export default function AdminAnalytics() {
       data-testid="admin-analytics-page"
     >
       {/* Header */}
-      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
           Portfolio Analytics
         </Badge>
-        <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
+        <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           Seattle Portfolio Performance
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Track retention ROI, churn prevention effectiveness, and service revenue across Ballard Commons, 
           Capitol Hill Residences, and Bellevue Skyline Towers.
         </p>

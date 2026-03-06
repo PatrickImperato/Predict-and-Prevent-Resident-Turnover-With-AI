@@ -48,14 +48,14 @@ export default function ManagerDashboard() {
       data-testid="manager-dashboard-root"
     >
       {/* Header */}
-      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+      <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
           Seattle Portfolio
         </Badge>
-        <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
+        <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           Retention Operations Workspace
         </h2>
-        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
           Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact across your properties.
         </p>
       </section>

@@ -97,11 +97,11 @@ export default function ManagerChurnRisk() {
       data-testid="manager-churn-risk-page"
     >
       {/* Header */}
-      <section className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-red-200 bg-red-50 text-red-700 hover:bg-red-50" variant="secondary">
           Churn Risk Analysis
         </Badge>
-        <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-foreground">
+        <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           At-Risk Residents
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
