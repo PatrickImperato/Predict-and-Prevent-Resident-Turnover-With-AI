@@ -33,6 +33,7 @@ import ResidentMaintenance from "@/pages/resident/ResidentMaintenance";
 import LandingPage from "@/pages/LandingPage";
 import LegalPage from "@/pages/LegalPage";
 import LoginPage from "@/pages/LoginPage";
+import PrivacyPage from "@/pages/PrivacyPage";
 
 function RootRoute() {
   const { loading, session } = useAuth();
@@ -62,6 +63,7 @@ function AppRoutes() {
       <Route path="/" element={<RootRoute />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/legal" element={<LegalPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
 
       <Route element={<AdminRoute />}>
         {/* Admin Routes */}
