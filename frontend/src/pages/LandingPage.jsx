@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, AlertCircle, Target, MessageSquare, Gift, CheckCircle2, Building2 } from "lucide-react";
+import { ArrowRight, Sparkles, TrendingUp, Users, DollarSign, AlertCircle, Target, MessageSquare, Gift, CheckCircle2, Building2, TrendingDown, Wrench, CreditCard, Mail, Calendar, BarChart2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { PublicFooter } from "@/components/public/PublicFooter";
 import { CookieNoticeBar } from "@/components/public/CookieNoticeBar";
 
-// Property-specific data
+// Property-specific data - RICH DIFFERENTIATION
 const PROPERTIES = {
   riverside: {
     id: 'riverside',
@@ -16,17 +16,19 @@ const PROPERTIES = {
     units: 250,
     atRisk: 35,
     avgScore: 6.8,
-    maintenanceVolume: 'High (8.3 req/unit)',
+    maintenanceVolume: 'High (8.3 req/unit/mo)',
     engagementPattern: 'Declining (-22%)',
-    paymentPattern: 'Stable',
-    topResidents: ['Unit 402', 'Unit 318', 'Unit 527'],
+    paymentPattern: 'Stable (98% on-time)',
+    topResidents: ['Unit 402 - Williams', 'Unit 318 - Chen', 'Unit 527 - Rodriguez'],
     scores: [8.9, 8.8, 8.7],
     interventionWindow: '7-10 days',
     retentionRate: 62,
     roi: 82550,
     roiMultiple: '6.55x',
     retainedCount: 22,
-    trend: '+18% vs target'
+    trend: '+18% vs target',
+    renewalRisk: 'Concentrated in high-maintenance units',
+    profile: 'Largest operational burden, high service friction'
   },
   parkview: {
     id: 'parkview',
@@ -34,17 +36,19 @@ const PROPERTIES = {
     units: 180,
     atRisk: 22,
     avgScore: 7.2,
-    maintenanceVolume: 'Moderate (5.1 req/unit)',
-    engagementPattern: 'Stable',
-    paymentPattern: 'Strong',
-    topResidents: ['Unit 204', 'Unit 512', 'Unit 318'],
+    maintenanceVolume: 'Moderate (5.1 req/unit/mo)',
+    engagementPattern: 'Stable (+2%)',
+    paymentPattern: 'Strong (99.5% on-time)',
+    topResidents: ['Unit 204 - Thompson', 'Unit 512 - Martinez', 'Unit 318 - Lee'],
     scores: [8.4, 8.2, 8.1],
     interventionWindow: '10-14 days',
     retentionRate: 68,
     roi: 67800,
     roiMultiple: '7.2x',
     retainedCount: 15,
-    trend: '+24% vs target'
+    trend: '+24% vs target',
+    renewalRisk: 'Distributed across building',
+    profile: 'Mid-sized, moderate friction, healthier retention mix'
   },
   summit: {
     id: 'summit',
@@ -52,17 +56,71 @@ const PROPERTIES = {
     units: 320,
     atRisk: 48,
     avgScore: 6.5,
-    maintenanceVolume: 'Very High (9.7 req/unit)',
+    maintenanceVolume: 'Very High (9.7 req/unit/mo)',
     engagementPattern: 'Declining (-28%)',
-    paymentPattern: 'At Risk',
-    topResidents: ['Unit 1205', 'Unit 824', 'Unit 503'],
+    paymentPattern: 'At Risk (91% on-time)',
+    topResidents: ['Unit 1205 - Anderson', 'Unit 824 - Garcia', 'Unit 503 - Kim'],
     scores: [9.2, 9.0, 8.9],
     interventionWindow: '5-7 days',
     retentionRate: 58,
     roi: 98200,
     roiMultiple: '5.8x',
     retainedCount: 28,
-    trend: '+12% vs target'
+    trend: '+12% vs target',
+    renewalRisk: 'Payment sensitivity, high dispersion',
+    profile: 'Largest unit count, payment and service dual pressure'
+  }
+};
+
+// Friction tab scenarios - MEANINGFUL DIFFERENCES
+const FRICTION_SCENARIOS = {
+  maintenance: {
+    id: 'maintenance',
+    label: 'High Maintenance',
+    riskTrend: { current: 35, data: [12, 18, 22, 28, 32, 35], change: '+12% vs last month', severity: 'high' },
+    signals: [
+      { label: 'Avg. response time', value: '4.2 days', status: 'warning' },
+      { label: 'Open requests', value: '8.3 per unit', status: 'critical' },
+      { label: 'Satisfaction drop', value: '-22%', status: 'critical' }
+    ],
+    intervention: { priority: 'High priority', count: 18, window: 'Deploy within 7 days for 68% retention lift' },
+    impact: {
+      turnoverCost: '$142,905',
+      retention: '62%',
+      avoidance: '$88,601'
+    }
+  },
+  engagement: {
+    id: 'engagement',
+    label: 'Low Engagement',
+    riskTrend: { current: 28, data: [15, 18, 21, 24, 26, 28], change: '+8% vs last month', severity: 'moderate' },
+    signals: [
+      { label: 'Portal usage', value: '12% decline', status: 'warning' },
+      { label: 'Event attendance', value: '3.2 per year', status: 'warning' },
+      { label: 'Service bookings', value: '-31%', status: 'critical' }
+    ],
+    intervention: { priority: 'Medium priority', count: 12, window: 'Early outreach within 14 days for 55% retention lift' },
+    impact: {
+      turnoverCost: '$114,324',
+      retention: '55%',
+      avoidance: '$62,878'
+    }
+  },
+  payments: {
+    id: 'payments',
+    label: 'Late Payments',
+    riskTrend: { current: 22, data: [8, 11, 14, 17, 20, 22], change: '+14% vs last month', severity: 'urgent' },
+    signals: [
+      { label: 'Late payment rate', value: '8.5%', status: 'critical' },
+      { label: 'Avg. days late', value: '12 days', status: 'warning' },
+      { label: 'Financial stress signals', value: 'High', status: 'critical' }
+    ],
+    intervention: { priority: 'Urgent priority', count: 22, window: 'Deploy within 5 days with financial support for 72% retention lift' },
+    impact: {
+      turnoverCost: '$89,826',
+      retention: '72%',
+      avoidance: '$64,675'
+    }
   }
 };
 
@@ -81,18 +139,13 @@ export default function LandingPage() {
   const netROI = costAvoidance - creditSpend;
   const roiMultiple = creditSpend > 0 ? (costAvoidance / creditSpend).toFixed(2) : "0.00";
 
-  const insightTabs = [
-    { id: "maintenance", label: "High Maintenance" },
-    { id: "engagement", label: "Low Engagement" },
-    { id: "payments", label: "Late Payments" }
-  ];
-
+  const selectedScenario = FRICTION_SCENARIOS[insightTab];
   const selectedProperty = PROPERTIES[detectionProperty];
 
   return (
-    <div className="min-h-screen bg-background" data-testid="landing-page-root">
+    <div className="min-h-screen bg-zinc-50" data-testid="landing-page-root">
       {/* Hero Section */}
-      <section className="relative min-h-[680px] lg:min-h-[700px] overflow-hidden" data-testid="landing-hero-section">
+      <section className="relative min-h-[720px] lg:min-h-[740px] overflow-hidden" data-testid="landing-hero-section">
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHx0ZWFsfDE3NzI3NzExODZ8MA&ixlib=rb-4.1.0&q=85"
@@ -113,7 +166,6 @@ export default function LandingPage() {
         >
           <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
             <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
-              {/* Left: Logo - Linked */}
               <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80" data-testid="landing-brand-link">
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 text-primary">
                   <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -123,7 +175,6 @@ export default function LandingPage() {
                 </p>
               </Link>
 
-              {/* Center: Nav Items in Pill */}
               <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-0.5 rounded-full border border-white/6 bg-white/[0.02] px-1.5 py-1.5 backdrop-blur-[3px] lg:flex">
                 <a href="#insight" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Insight</a>
                 <a href="#detection" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Detection</a>
@@ -132,7 +183,6 @@ export default function LandingPage() {
                 <a href="#roi" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">ROI</a>
               </nav>
 
-              {/* Right: Actions */}
               <div className="flex items-center gap-2 sm:gap-3">
                 <Link to="/legal" className="text-sm font-medium text-white/40 transition-colors hover:text-white/60">
                   Legal
@@ -147,7 +197,7 @@ export default function LandingPage() {
 
         {/* Hero Content */}
         <div className="relative h-full flex flex-col">
-          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-20 pb-28 sm:px-6 lg:px-8 lg:pt-24 lg:pb-32">
+          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-20 pb-32 sm:px-6 lg:px-8 lg:pt-24 lg:pb-40">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -162,11 +212,11 @@ export default function LandingPage() {
                 Predict and Prevent <span className="text-primary">Resident Churn</span>
               </h1>
 
-              <p className="mt-5 max-w-[520px] text-[16px] sm:text-[17px] leading-[1.6] text-white/65">
+              <p className="mt-5 max-w-[520px] text-[16px] sm:text-[17px] leading-[1.6] text-white/70">
                 Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
               </p>
 
-              <div className="mt-6 flex flex-wrap items-center gap-2.5">
+              <div className="mt-7 flex flex-wrap items-center gap-2.5">
                 <Button asChild size="lg" className="h-11 rounded-full bg-primary px-5 text-[15px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-hero-cta">
                   <Link to="/login">
                     View Demo
@@ -180,15 +230,15 @@ export default function LandingPage() {
             </motion.div>
           </div>
 
-          {/* Proof Cards - Anchored to Bottom */}
+          {/* Proof Cards - MORE SPACE FROM CTA */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
-            className="absolute bottom-10 left-0 right-0 px-4 sm:px-6 lg:px-8"
+            className="absolute bottom-12 left-0 right-0 px-4 sm:px-6 lg:px-8"
           >
             <div className="mx-auto grid max-w-[1400px] gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 sm:p-4 backdrop-blur-[3px]">
+              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
                     <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -200,7 +250,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-3.5 sm:p-4 backdrop-blur-[3px]">
+              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
                     <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -212,7 +262,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-3.5 sm:p-4 backdrop-blur-[3px]">
+              <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-4 backdrop-blur-[3px]">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
                     <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
@@ -228,131 +278,137 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Below the fold */}
-      <main className="bg-background">
-        {/* Insight Section */}
-        <section className="scroll-mt-16 border-b border-border/40 bg-gradient-to-b from-background to-muted/20 py-16 sm:py-20 lg:py-24" id="insight">
+      {/* Below the fold - BETTER CONTRAST */}
+      <main className="bg-zinc-50">
+        {/* Insight Section - INTERACTIVE SCENARIOS */}
+        <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="insight">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-border/60 bg-background text-[12px] text-muted-foreground" variant="secondary">
+              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[12px] text-zinc-700 font-medium" variant="secondary">
                 Churn Prediction
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
                 Identify at-risk residents before they leave
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Track friction drivers across maintenance, engagement, and payment patterns to predict churn risk
               </p>
             </div>
 
             {/* Tabs */}
             <div className="mt-8 flex justify-center">
-              <div className="inline-flex gap-1 rounded-full border border-border/60 bg-muted/30 p-1">
-                {insightTabs.map(tab => (
+              <div className="inline-flex gap-1 rounded-full border border-zinc-200 bg-zinc-50 p-1">
+                {Object.values(FRICTION_SCENARIOS).map(scenario => (
                   <button
-                    key={tab.id}
-                    onClick={() => setInsightTab(tab.id)}
-                    className={`rounded-full px-3 sm:px-4 py-1.5 text-[13px] font-medium transition-all ${
-                      insightTab === tab.id
-                        ? 'bg-background text-foreground shadow-sm'
-                        : 'text-muted-foreground hover:text-foreground'
+                    key={scenario.id}
+                    onClick={() => setInsightTab(scenario.id)}
+                    className={`rounded-full px-3 sm:px-4 py-2 text-[13px] font-semibold transition-all ${
+                      insightTab === scenario.id
+                        ? 'bg-white text-zinc-900 shadow-sm'
+                        : 'text-zinc-600 hover:text-zinc-900'
                     }`}
-                    data-testid={`insight-tab-${tab.id}`}
+                    data-testid={`insight-tab-${scenario.id}`}
                   >
-                    {tab.label}
+                    {scenario.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Content Grid */}
+            {/* Content Grid - DYNAMIC BY SCENARIO */}
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="rounded-xl border border-border/60 bg-card p-5">
+              <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-destructive rotate-180" />
-                  <p className="text-sm font-semibold text-foreground">Risk Trend</p>
+                  <TrendingDown className={`h-4 w-4 ${
+                    selectedScenario.riskTrend.severity === 'urgent' ? 'text-red-600' :
+                    selectedScenario.riskTrend.severity === 'high' ? 'text-orange-600' : 'text-amber-600'
+                  }`} />
+                  <p className="text-sm font-semibold text-zinc-900">Risk Trend</p>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-end justify-between">
-                    <span className="text-xs text-muted-foreground">This month</span>
-                    <span className="font-[var(--font-heading)] text-2xl font-semibold text-destructive">35</span>
+                    <span className="text-xs text-zinc-600">This month</span>
+                    <span className={`font-[var(--font-heading)] text-2xl font-semibold ${
+                      selectedScenario.riskTrend.severity === 'urgent' ? 'text-red-600' :
+                      selectedScenario.riskTrend.severity === 'high' ? 'text-orange-600' : 'text-amber-600'
+                    }`}>{selectedScenario.riskTrend.current}</span>
                   </div>
                   <div className="h-16 flex items-end gap-1">
-                    {[12, 18, 22, 28, 32, 35].map((val, i) => (
-                      <div key={i} className="flex-1 bg-destructive/20 rounded-t" style={{ height: `${(val / 35) * 100}%` }}></div>
+                    {selectedScenario.riskTrend.data.map((val, i) => (
+                      <div key={i} className={`flex-1 rounded-t ${
+                        selectedScenario.riskTrend.severity === 'urgent' ? 'bg-red-200' :
+                        selectedScenario.riskTrend.severity === 'high' ? 'bg-orange-200' : 'bg-amber-200'
+                      }`} style={{ height: `${(val / selectedScenario.riskTrend.current) * 100}%` }}></div>
                     ))}
                   </div>
-                  <p className="text-xs text-muted-foreground">+12% vs last month</p>
+                  <p className="text-xs text-zinc-600">{selectedScenario.riskTrend.change}</p>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border/60 bg-card p-5">
+              <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-orange-500" />
-                  <p className="text-sm font-semibold text-foreground">Top Signals</p>
+                  <AlertCircle className="h-4 w-4 text-orange-600" />
+                  <p className="text-sm font-semibold text-zinc-900">Top Signals</p>
                 </div>
                 <div className="space-y-2.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Avg. response time</span>
-                    <span className="font-semibold text-foreground">4.2 days</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Open requests</span>
-                    <span className="font-semibold text-foreground">8.3 per unit</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">Satisfaction drop</span>
-                    <span className="font-semibold text-destructive">-22%</span>
-                  </div>
+                  {selectedScenario.signals.map((signal, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs">
+                      <span className="text-zinc-600">{signal.label}</span>
+                      <span className={`font-semibold ${
+                        signal.status === 'critical' ? 'text-red-700' :
+                        signal.status === 'warning' ? 'text-amber-700' : 'text-zinc-900'
+                      }`}>{signal.value}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border/60 bg-card p-5">
+              <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
                 <div className="mb-3 flex items-center gap-2">
                   <Target className="h-4 w-4 text-primary" />
-                  <p className="text-sm font-semibold text-foreground">Intervention Window</p>
+                  <p className="text-sm font-semibold text-zinc-900">Intervention Window</p>
                 </div>
                 <div className="space-y-2.5">
                   <div className="rounded-lg bg-primary/10 px-3 py-2">
-                    <p className="text-xs font-medium text-primary">High priority</p>
-                    <p className="mt-0.5 text-lg font-semibold text-foreground">18 residents</p>
+                    <p className="text-xs font-medium text-primary">{selectedScenario.intervention.priority}</p>
+                    <p className="mt-0.5 text-lg font-semibold text-zinc-900">{selectedScenario.intervention.count} residents</p>
                   </div>
-                  <p className="text-xs text-muted-foreground">Deploy within 7 days for 68% retention lift</p>
+                  <p className="text-xs text-zinc-600">{selectedScenario.intervention.window}</p>
                 </div>
               </div>
             </div>
 
-            {/* Impact Strip */}
-            <div className="mt-6 rounded-xl border border-border/60 bg-slate-900 p-5 sm:p-6 text-white">
+            {/* Impact Strip - DYNAMIC BY SCENARIO */}
+            <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900 p-5 sm:p-6 text-white shadow-lg">
               <div className="grid gap-6 sm:grid-cols-3">
                 <div>
-                  <p className="text-xs text-white/50">Potential turnover cost</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold">$142,905</p>
+                  <p className="text-xs text-white/60 font-medium">Potential turnover cost</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-white">{selectedScenario.impact.turnoverCost}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/50">Est. retention with intervention</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-primary">62%</p>
+                  <p className="text-xs text-white/60 font-medium">Est. retention with intervention</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-primary">{selectedScenario.impact.retention}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/50">Net cost avoidance</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-primary">$88,601</p>
+                  <p className="text-xs text-white/60 font-medium">Net cost avoidance</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-xl sm:text-2xl font-semibold text-primary">{selectedScenario.impact.avoidance}</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Detection Section */}
-        <section className="scroll-mt-16 border-b border-border/40 py-16 sm:py-20 lg:py-24" id="detection">
+        {/* Detection Section - PREMIUM QUALITY */}
+        <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="detection">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-border/60 bg-muted/60 text-[12px] text-muted-foreground" variant="secondary">
+              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[12px] text-zinc-700 font-medium" variant="secondary">
                 Risk Scoring
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
                 Precision scoring across your portfolio
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Multi-signal churn risk model calibrated to property operations data
               </p>
             </div>
@@ -363,10 +419,10 @@ export default function LandingPage() {
                 <button
                   key={prop.id}
                   onClick={() => setDetectionProperty(prop.id)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                  className={`rounded-full px-4 py-2 text-sm font-semibold transition-all ${
                     detectionProperty === prop.id
                       ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'border border-border/60 bg-card text-foreground hover:bg-muted'
+                      : 'border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50'
                   }`}
                   data-testid={`detection-property-${prop.id}`}
                 >
@@ -377,88 +433,92 @@ export default function LandingPage() {
 
             <div className="mt-8 grid gap-4 lg:grid-cols-2">
               {/* Scoring Model */}
-              <div className="rounded-xl border border-border/60 bg-card p-6">
-                <h3 className="mb-4 text-sm font-semibold text-foreground">Scoring Model</h3>
-                <div className="space-y-3">
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-5 text-sm font-semibold text-zinc-900">Scoring Model</h3>
+                <div className="space-y-4">
                   <div>
-                    <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Maintenance friction</span>
-                      <span className="font-semibold text-foreground">35%</span>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="font-medium text-zinc-700">Maintenance friction</span>
+                      <span className="font-semibold text-zinc-900">35%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
-                      <div className="h-full w-[35%] rounded-full bg-destructive"></div>
+                    <div className="h-2 w-full rounded-full bg-zinc-100">
+                      <div className="h-full w-[35%] rounded-full bg-red-500"></div>
                     </div>
                   </div>
                   <div>
-                    <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Engagement signals</span>
-                      <span className="font-semibold text-foreground">25%</span>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="font-medium text-zinc-700">Engagement signals</span>
+                      <span className="font-semibold text-zinc-900">25%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
+                    <div className="h-2 w-full rounded-full bg-zinc-100">
                       <div className="h-full w-[25%] rounded-full bg-orange-500"></div>
                     </div>
                   </div>
                   <div>
-                    <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Payment patterns</span>
-                      <span className="font-semibold text-foreground">20%</span>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="font-medium text-zinc-700">Payment patterns</span>
+                      <span className="font-semibold text-zinc-900">20%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
-                      <div className="h-full w-[20%] rounded-full bg-yellow-500"></div>
+                    <div className="h-2 w-full rounded-full bg-zinc-100">
+                      <div className="h-full w-[20%] rounded-full bg-amber-500"></div>
                     </div>
                   </div>
                   <div>
-                    <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">Tenure & history</span>
-                      <span className="font-semibold text-foreground">20%</span>
+                    <div className="mb-2 flex items-center justify-between text-xs">
+                      <span className="font-medium text-zinc-700">Tenure & history</span>
+                      <span className="font-semibold text-zinc-900">20%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-muted">
+                    <div className="h-2 w-full rounded-full bg-zinc-100">
                       <div className="h-full w-[20%] rounded-full bg-blue-500"></div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Results - Property Specific */}
-              <div className="rounded-xl border border-border/60 bg-card p-6">
-                <h3 className="mb-4 text-sm font-semibold text-foreground">{selectedProperty.name} Results</h3>
+              {/* Results - PROPERTY RICH */}
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 text-sm font-semibold text-zinc-900">{selectedProperty.name}</h3>
                 <div className="mb-4 grid grid-cols-3 gap-3">
-                  <div className="rounded-lg border border-border/60 bg-background p-3">
-                    <p className="text-xs text-muted-foreground">Total units</p>
-                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-foreground">{selectedProperty.units}</p>
+                  <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                    <p className="text-xs text-zinc-600 font-medium">Total units</p>
+                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-zinc-900">{selectedProperty.units}</p>
                   </div>
-                  <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3">
-                    <p className="text-xs text-muted-foreground">At risk</p>
-                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-destructive">{selectedProperty.atRisk}</p>
+                  <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+                    <p className="text-xs text-zinc-600 font-medium">At risk</p>
+                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-red-700">{selectedProperty.atRisk}</p>
                   </div>
-                  <div className="rounded-lg border border-border/60 bg-background p-3">
-                    <p className="text-xs text-muted-foreground">Avg. score</p>
-                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-foreground">{selectedProperty.avgScore}</p>
+                  <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3">
+                    <p className="text-xs text-zinc-600 font-medium">Avg. score</p>
+                    <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-zinc-900">{selectedProperty.avgScore}</p>
                   </div>
                 </div>
                 
                 {/* Property-specific context */}
-                <div className="mb-4 space-y-2 text-xs">
+                <div className="mb-4 space-y-2.5 text-xs bg-zinc-50 rounded-lg p-3 border border-zinc-200">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Maintenance:</span>
-                    <span className="font-medium text-foreground">{selectedProperty.maintenanceVolume}</span>
+                    <span className="text-zinc-600 font-medium">Maintenance:</span>
+                    <span className="font-semibold text-zinc-900">{selectedProperty.maintenanceVolume}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Engagement:</span>
-                    <span className="font-medium text-foreground">{selectedProperty.engagementPattern}</span>
+                    <span className="text-zinc-600 font-medium">Engagement:</span>
+                    <span className="font-semibold text-zinc-900">{selectedProperty.engagementPattern}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Payment:</span>
-                    <span className="font-medium text-foreground">{selectedProperty.paymentPattern}</span>
+                    <span className="text-zinc-600 font-medium">Payment:</span>
+                    <span className="font-semibold text-zinc-900">{selectedProperty.paymentPattern}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-600 font-medium">Renewal risk:</span>
+                    <span className="font-semibold text-zinc-900 text-right flex-1 ml-2">{selectedProperty.renewalRisk}</span>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-muted-foreground">High-risk residents</p>
+                  <p className="text-xs font-semibold text-zinc-700">High-risk residents</p>
                   {selectedProperty.topResidents.map((unit, i) => (
-                    <div key={i} className="flex items-center justify-between rounded-lg border border-border/40 bg-background px-3 py-2 text-xs">
-                      <span className="font-medium text-foreground">{unit}</span>
-                      <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-destructive">Score: {selectedProperty.scores[i]}</span>
+                    <div key={i} className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs">
+                      <span className="font-medium text-zinc-900">{unit}</span>
+                      <span className="rounded-full bg-red-100 px-2 py-0.5 font-semibold text-red-700">Score: {selectedProperty.scores[i]}</span>
                     </div>
                   ))}
                 </div>
@@ -467,73 +527,98 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Concierge Section */}
-        <section className="scroll-mt-16 border-b border-border/40 bg-muted/20 py-16 sm:py-20 lg:py-24" id="concierge">
+        {/* Concierge Section - PREMIUM UPGRADE */}
+        <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="concierge">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-border/60 bg-background text-[12px] text-muted-foreground" variant="secondary">
+              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[12px] text-zinc-700 font-medium" variant="secondary">
                 Retention Actions
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
                 Automated concierge interventions
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Deploy tiered credit offers matched to friction drivers with full resident experience
               </p>
             </div>
 
-            <div className="mt-10 grid gap-6 sm:grid-cols-2">
-              {/* Channels */}
-              <div className="rounded-xl border border-border/60 bg-card p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-primary" />
-                  <h3 className="text-sm font-semibold text-foreground">Delivery Channels</h3>
+            <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              {/* Channels - PREMIUM */}
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <div className="mb-5 flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <MessageSquare className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-zinc-900">Delivery Channels</h3>
                 </div>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between rounded-lg border border-border/40 bg-background px-4 py-3">
-                    <span className="text-sm text-foreground">Resident mobile app</span>
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <div className="flex items-center justify-between rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <CheckCircle2 className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-semibold text-zinc-900">Resident mobile app</span>
+                    </div>
+                    <Badge className="border-primary/20 bg-primary/10 text-primary text-xs" variant="secondary">Primary</Badge>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-border/40 bg-background px-4 py-3">
-                    <span className="text-sm text-foreground">Email notification</span>
-                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <div className="flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <Mail className="h-4 w-4 text-zinc-500" />
+                      <span className="text-sm font-medium text-zinc-900">Email notification</span>
+                    </div>
+                    <CheckCircle2 className="h-4 w-4 text-zinc-400" />
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-border/40 bg-muted px-4 py-3">
-                    <span className="text-sm text-muted-foreground">SMS delivery</span>
-                    <span className="text-xs text-muted-foreground">Coming soon</span>
+                  <div className="flex items-center justify-between rounded-lg border border-dashed border-zinc-300 bg-white px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <MessageSquare className="h-4 w-4 text-zinc-400" />
+                      <span className="text-sm font-medium text-zinc-500">SMS delivery</span>
+                    </div>
+                    <span className="text-xs text-zinc-500">Coming soon</span>
                   </div>
                 </div>
               </div>
 
-              {/* Intervention Flow */}
-              <div className="rounded-xl border border-border/60 bg-card p-6">
-                <div className="mb-4 flex items-center gap-2">
-                  <Gift className="h-5 w-5 text-primary" />
-                  <h3 className="text-sm font-semibold text-foreground">Intervention Flow</h3>
+              {/* Intervention Flow - STRUCTURED */}
+              <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <div className="mb-5 flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10">
+                    <Gift className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-zinc-900">Intervention Flow</h3>
                 </div>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">1</div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Risk detected</p>
-                      <p className="text-xs text-muted-foreground">Score threshold triggered</p>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-xs font-bold text-red-700">1</div>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-semibold text-zinc-900">Risk detected</p>
+                      <p className="text-xs text-zinc-600">Score threshold triggered</p>
                     </div>
+                    <AlertCircle className="h-4 w-4 text-red-600 mt-1" />
                   </div>
-                  <div className="ml-4 h-6 w-px bg-border"></div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">2</div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Credit allocated</p>
-                      <p className="text-xs text-muted-foreground">Tiered by risk level</p>
+                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-amber-100 text-xs font-bold text-amber-700">2</div>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-semibold text-zinc-900">Credit allocated</p>
+                      <p className="text-xs text-zinc-600">Tiered by risk level ($75-$250)</p>
                     </div>
+                    <CreditCard className="h-4 w-4 text-amber-600 mt-1" />
                   </div>
-                  <div className="ml-4 h-6 w-px bg-border"></div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">3</div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-foreground">Resident engagement</p>
-                      <p className="text-xs text-muted-foreground">Book service or redeem</p>
+                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">3</div>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-semibold text-zinc-900">Resident engagement</p>
+                      <p className="text-xs text-zinc-600">Book service or redeem credit</p>
                     </div>
+                    <Calendar className="h-4 w-4 text-blue-600 mt-1" />
+                  </div>
+                  <div className="ml-4 h-8 w-px bg-zinc-200"></div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">4</div>
+                    <div className="flex-1 pt-1">
+                      <p className="text-sm font-semibold text-zinc-900">Risk reduced</p>
+                      <p className="text-xs text-zinc-600">Retention probability increased</p>
+                    </div>
+                    <TrendingUp className="h-4 w-4 text-primary mt-1" />
                   </div>
                 </div>
               </div>
@@ -541,30 +626,30 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Portfolio Section */}
-        <section className="scroll-mt-16 border-b border-border/40 py-16 sm:py-20 lg:py-24" id="portfolio">
+        {/* Portfolio Section - ANALYTICAL UPGRADE */}
+        <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="portfolio">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-border/60 bg-muted/60 text-[12px] text-muted-foreground" variant="secondary">
+              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[12px] text-zinc-700 font-medium" variant="secondary">
                 Portfolio Analytics
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
                 Retention performance across properties
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-muted-foreground">
+              <p className="mx-auto mt-3 max-w-2xl text-[15px] text-zinc-600 leading-relaxed">
                 Measure impact, compare properties, and track ROI trends
               </p>
             </div>
 
             {/* Toggle */}
             <div className="mt-8 flex justify-center">
-              <div className="inline-flex gap-1 rounded-full border border-border/60 bg-muted/30 p-1">
+              <div className="inline-flex gap-1 rounded-full border border-zinc-200 bg-zinc-50 p-1">
                 <button
                   onClick={() => setPortfolioView('single')}
-                  className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition-all ${
+                  className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-all ${
                     portfolioView === 'single'
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'bg-white text-zinc-900 shadow-sm'
+                      : 'text-zinc-600 hover:text-zinc-900'
                   }`}
                   data-testid="portfolio-view-single"
                 >
@@ -572,10 +657,10 @@ export default function LandingPage() {
                 </button>
                 <button
                   onClick={() => setPortfolioView('compare')}
-                  className={`rounded-full px-4 py-1.5 text-[13px] font-medium transition-all ${
+                  className={`rounded-full px-4 py-2 text-[13px] font-semibold transition-all ${
                     portfolioView === 'compare'
-                      ? 'bg-background text-foreground shadow-sm'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? 'bg-white text-zinc-900 shadow-sm'
+                      : 'text-zinc-600 hover:text-zinc-900'
                   }`}
                   data-testid="portfolio-view-compare"
                 >
@@ -586,50 +671,64 @@ export default function LandingPage() {
 
             {portfolioView === 'single' ? (
               <div className="mt-8">
-                <p className="mb-4 text-center text-sm text-muted-foreground">{PROPERTIES.riverside.name}</p>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-xl border border-border/60 bg-card p-5">
-                    <p className="text-xs text-muted-foreground">Net retention ROI</p>
+                <p className="mb-5 text-center text-sm font-medium text-zinc-700">{PROPERTIES.riverside.name} Performance</p>
+                <div className="grid gap-4 sm:grid-cols-3 mb-6">
+                  <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                    <p className="text-xs text-zinc-600 font-medium">Net retention ROI</p>
                     <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-primary">${PROPERTIES.riverside.roi.toLocaleString()}</p>
-                    <p className="mt-1 text-xs font-medium text-muted-foreground">{PROPERTIES.riverside.trend}</p>
+                    <p className="mt-1 text-xs font-medium text-primary">{PROPERTIES.riverside.trend}</p>
                   </div>
-                  <div className="rounded-xl border border-border/60 bg-card p-5">
-                    <p className="text-xs text-muted-foreground">Retained residents</p>
-                    <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-foreground">{PROPERTIES.riverside.retainedCount}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{PROPERTIES.riverside.retentionRate}% retention rate</p>
+                  <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                    <p className="text-xs text-zinc-600 font-medium">Retained residents</p>
+                    <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-zinc-900">{PROPERTIES.riverside.retainedCount}</p>
+                    <p className="mt-1 text-xs text-zinc-600">{PROPERTIES.riverside.retentionRate}% retention rate</p>
                   </div>
-                  <div className="rounded-xl border border-border/60 bg-card p-5">
-                    <p className="text-xs text-muted-foreground">ROI multiple</p>
-                    <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-foreground">{PROPERTIES.riverside.roiMultiple}</p>
+                  <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                    <p className="text-xs text-zinc-600 font-medium">ROI multiple</p>
+                    <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold text-zinc-900">{PROPERTIES.riverside.roiMultiple}</p>
                     <p className="mt-1 text-xs text-primary">{PROPERTIES.riverside.trend}</p>
                   </div>
                 </div>
+                <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                  <p className="text-sm font-semibold text-zinc-900 mb-3">Property Profile</p>
+                  <p className="text-sm text-zinc-600 leading-relaxed">{PROPERTIES.riverside.profile}</p>
+                </div>
               </div>
             ) : (
-              <div className="mt-8 space-y-3">
+              <div className="mt-8 space-y-4">
                 {Object.values(PROPERTIES).map((prop) => (
-                  <div key={prop.id} className="rounded-xl border border-border/60 bg-card p-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <Building2 className="h-5 w-5 flex-shrink-0 text-muted-foreground" />
-                        <div>
-                          <p className="text-sm font-semibold text-foreground">{prop.name}</p>
-                          <p className="text-xs text-muted-foreground">{prop.units} units · {prop.retentionRate}% retention</p>
+                  <div key={prop.id} className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex items-start gap-3">
+                          <Building2 className="h-5 w-5 flex-shrink-0 text-zinc-500 mt-0.5" />
+                          <div>
+                            <p className="text-sm font-semibold text-zinc-900">{prop.name}</p>
+                            <p className="text-xs text-zinc-600 mt-0.5">{prop.units} units · {prop.retentionRate}% retention</p>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+                          <div className="text-right">
+                            <p className="text-xs text-zinc-600 font-medium">At risk</p>
+                            <p className="mt-0.5 text-sm font-semibold text-red-700">{prop.atRisk}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-zinc-600 font-medium">ROI</p>
+                            <p className="mt-0.5 text-sm font-semibold text-primary">${prop.roi.toLocaleString()}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-zinc-600 font-medium">Multiple</p>
+                            <p className="mt-0.5 text-sm font-semibold text-zinc-900">{prop.roiMultiple}</p>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-                        <div>
-                          <p className="text-xs text-muted-foreground">At risk</p>
-                          <p className="mt-0.5 text-sm font-semibold text-destructive">{prop.atRisk}</p>
+                      {/* Bar comparison */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-zinc-600 font-medium w-20">Retention:</span>
+                        <div className="flex-1 h-2 bg-zinc-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-primary rounded-full" style={{ width: `${prop.retentionRate}%` }}></div>
                         </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">ROI</p>
-                          <p className="mt-0.5 text-sm font-semibold text-primary">${prop.roi.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-muted-foreground">Multiple</p>
-                          <p className="mt-0.5 text-sm font-semibold text-foreground">{prop.roiMultiple}</p>
-                        </div>
+                        <span className="text-xs font-semibold text-zinc-900 w-12 text-right">{prop.retentionRate}%</span>
                       </div>
                     </div>
                   </div>
@@ -639,52 +738,51 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ROI Section - RESTRUCTURED: Big Number First */}
+        {/* ROI Section - BETTER FIT */}
         <section className="scroll-mt-16 relative overflow-hidden py-16 sm:py-20 lg:py-24" id="roi">
           <div className="absolute inset-0 bg-slate-900"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-slate-900/40 to-slate-900/20"></div>
           
           <div className="relative mx-auto max-w-[1100px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-primary/20 bg-primary/10 text-[12px] text-primary" variant="secondary">
+              <Badge className="mb-3 border-primary/20 bg-primary/10 text-[12px] text-primary font-medium" variant="secondary">
                 ROI Calculator
               </Badge>
               <h2 className="font-[var(--font-heading)] text-2xl sm:text-3xl font-semibold tracking-tight text-white">
                 Model your retention economics
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-white/65">
+              <p className="mx-auto mt-2 max-w-2xl text-sm text-white/70">
                 Adjust assumptions to project ROI for your portfolio
               </p>
             </div>
 
             {/* BIG NUMBER FIRST */}
-            <div className="mt-10 rounded-xl border border-primary/20 bg-primary/10 p-8 text-center backdrop-blur-sm">
-              <p className="text-sm text-white/70">Projected Net ROI</p>
-              <p className="mt-3 font-[var(--font-heading)] text-5xl sm:text-6xl font-semibold text-primary" data-testid="roi-result">
+            <div className="mt-8 rounded-xl border border-primary/20 bg-primary/10 p-6 sm:p-8 text-center backdrop-blur-sm">
+              <p className="text-sm text-white/70 font-medium">Projected Net ROI</p>
+              <p className="mt-2 font-[var(--font-heading)] text-4xl sm:text-5xl font-semibold text-primary" data-testid="roi-result">
                 ${netROI.toLocaleString()}
               </p>
-              <p className="mt-3 text-sm text-white/70">{roiMultiple}x return on credit investment</p>
+              <p className="mt-2 text-sm text-white/70">{roiMultiple}x return on credit investment</p>
             </div>
 
             {/* FORMULA SECOND */}
-            <div className="mt-8 flex flex-wrap justify-center gap-2 text-sm">
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-white/70">Units × Risk %</span>
+            <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs sm:text-sm">
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Units × Risk %</span>
               <span className="text-white/40">×</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-white/70">Retention Rate</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Retention</span>
               <span className="text-white/40">×</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-white/70">Turnover Cost</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Turnover Cost</span>
               <span className="text-white/40">−</span>
-              <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-white/70">Credit Spend</span>
+              <span className="rounded-full border border-white/10 bg-white/5 px-2.5 sm:px-3 py-1 sm:py-1.5 text-white/70">Credit Spend</span>
             </div>
 
             {/* SLIDERS THIRD */}
-            <div className="mt-8 rounded-xl border border-white/10 bg-white/[0.03] p-6 sm:p-8 backdrop-blur-sm">
-              <div className="space-y-6">
-                {/* Units Slider */}
+            <div className="mt-6 rounded-xl border border-white/10 bg-white/[0.03] p-5 sm:p-6 backdrop-blur-sm">
+              <div className="space-y-5">
                 <div>
                   <div className="mb-2 flex items-center justify-between">
                     <label className="text-sm font-medium text-white">Total Units</label>
-                    <span className="font-[var(--font-heading)] text-lg font-semibold text-white">{roiSliders.units}</span>
+                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">{roiSliders.units}</span>
                   </div>
                   <input
                     type="range"
@@ -698,11 +796,10 @@ export default function LandingPage() {
                   />
                 </div>
 
-                {/* Risk % Slider */}
                 <div>
                   <div className="mb-2 flex items-center justify-between">
                     <label className="text-sm font-medium text-white">At-Risk %</label>
-                    <span className="font-[var(--font-heading)] text-lg font-semibold text-white">{roiSliders.riskPct}%</span>
+                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">{roiSliders.riskPct}%</span>
                   </div>
                   <input
                     type="range"
@@ -716,11 +813,10 @@ export default function LandingPage() {
                   />
                 </div>
 
-                {/* Credit Cost Slider */}
                 <div>
                   <div className="mb-2 flex items-center justify-between">
                     <label className="text-sm font-medium text-white">Credit per Resident</label>
-                    <span className="font-[var(--font-heading)] text-lg font-semibold text-white">${roiSliders.creditCost}</span>
+                    <span className="font-[var(--font-heading)] text-base font-semibold text-white">${roiSliders.creditCost}</span>
                   </div>
                   <input
                     type="range"
@@ -736,26 +832,26 @@ export default function LandingPage() {
               </div>
 
               {/* DERIVED METRICS FOURTH */}
-              <div className="mt-8 grid gap-4 border-t border-white/10 pt-6 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="mt-6 grid gap-3 border-t border-white/10 pt-5 grid-cols-2 lg:grid-cols-4">
                 <div>
-                  <p className="text-xs text-white/50">At-risk residents</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-white">{atRiskUnits}</p>
+                  <p className="text-xs text-white/60 font-medium">At-risk</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">{atRiskUnits}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/50">Est. retained (62%)</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-white">{retainedUnits}</p>
+                  <p className="text-xs text-white/60 font-medium">Retained</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">{retainedUnits}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/50">Cost avoidance</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-primary">${costAvoidance.toLocaleString()}</p>
+                  <p className="text-xs text-white/60 font-medium">Avoidance</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-primary">${costAvoidance.toLocaleString()}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-white/50">Credit spend</p>
-                  <p className="mt-1 font-[var(--font-heading)] text-xl font-semibold text-white">${creditSpend.toLocaleString()}</p>
+                  <p className="text-xs text-white/60 font-medium">Credit</p>
+                  <p className="mt-1 font-[var(--font-heading)] text-lg font-semibold text-white">${creditSpend.toLocaleString()}</p>
                 </div>
               </div>
 
-              <p className="mt-6 text-center text-xs text-white/40">
+              <p className="mt-5 text-center text-xs text-white/50">
                 Assumes 62% retention rate and $4,083 avg. turnover cost
               </p>
             </div>
@@ -763,12 +859,12 @@ export default function LandingPage() {
         </section>
 
         {/* Final CTA */}
-        <section className="border-t border-border/40 py-16 sm:py-20">
+        <section className="border-t border-zinc-200 bg-white py-16 sm:py-20">
           <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
-            <h2 className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-foreground">
+            <h2 className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-zinc-900">
               Ready to see the platform?
             </h2>
-            <p className="mt-3 text-sm text-muted-foreground">
+            <p className="mt-3 text-sm text-zinc-600 leading-relaxed">
               Explore admin dashboards, manager workflows, and resident interfaces with Seattle portfolio demo data
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
