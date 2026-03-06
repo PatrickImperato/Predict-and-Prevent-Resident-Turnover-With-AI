@@ -1,10 +1,10 @@
 [
   {
-    "content": "Update plan.md with Phase 3 implementation architecture decisions",
+    "content": "Implement frontend diagnostics-first admin shell and login flow",
     "status": "completed"
   },
   {
-    "content": "Produce Phase 3 implementation architecture blueprint without full code",
-    "status": "completed"
+    "content": "Lint, test, and fix issues for Phase 4 foundation",
+    "status": "in_progress"
   }
 ]
