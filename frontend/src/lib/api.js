@@ -17,6 +17,19 @@ export const authApi = {
   logout: () => apiClient.post("/auth/logout"),
 };
 
+export const publicApi = {
+  getOverview: () => apiClient.get("/public/overview"),
+};
+
+export const dashboardApi = {
+  getOverview: () => apiClient.get("/admin/dashboard"),
+};
+
+export const propertiesApi = {
+  getList: () => apiClient.get("/admin/properties"),
+  getDetail: (propertyId) => apiClient.get(`/admin/properties/${propertyId}`),
+};
+
 export const diagnosticsApi = {
   getRuntime: () => apiClient.get("/diagnostics/runtime"),
   getSession: () => apiClient.get("/diagnostics/session"),

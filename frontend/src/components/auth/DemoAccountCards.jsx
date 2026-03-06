@@ -4,21 +4,21 @@ import { Button } from "@/components/ui/button";
 const accounts = [
   {
     label: "Property Manager",
-    description: "Churn risk and retention interventions",
-    email: "manager@riverside.com",
+    description: "Flagship property manager for The Metropolitan at Riverside",
+    email: "sarah.mitchell@riverside.com",
     password: "manager123",
     readiness: "Redirects",
   },
   {
     label: "Resident Experience",
-    description: "AI concierge and service booking",
+    description: "Alex Chen resident example with AI concierge history",
     email: "alex.chen@email.com",
     password: "demo123",
     readiness: "Redirects",
   },
   {
     label: "HappyCo Admin",
-    description: "Portfolio analytics and diagnostics",
+    description: "Portfolio dashboard, properties, diagnostics",
     email: "admin@happyco.com",
     password: "admin123",
     readiness: "Shell ready",

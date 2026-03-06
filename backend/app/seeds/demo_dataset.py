@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+import uuid
 
 from app.core.config import AppConfig
 from app.services.auth_service import hash_password
 from app.seeds.constants import (
+    CHURN_WEIGHTS,
     DEMO_DATASET_ID,
+    FLAGSHIP_PROPERTY_ID,
     PLATFORM_SETTINGS_ID,
     PROPERTY_IDS,
     RESIDENT_IDS,
@@ -13,17 +16,489 @@ from app.seeds.constants import (
 )
 
 
+SEED_NAMESPACE = uuid.UUID("bf25a1db-5947-4b4e-bbe5-24ff27ea38a9")
+
+
 def _now() -> datetime:
     return datetime.now(timezone.utc)
+
+
+def _deterministic_uuid(seed_key: str) -> str:
+    return str(uuid.uuid5(SEED_NAMESPACE, seed_key))
+
+
+def _months_back(now: datetime, offset: int) -> str:
+    year = now.year
+    month = now.month - offset
+    while month <= 0:
+        month += 12
+        year -= 1
+    return f"{year:04d}-{month:02d}"
+
+
+def _build_flagship_units(now: datetime, alex_resident_id: str) -> list[dict]:
+    units: list[dict] = []
+    vacant_units = {"1005", "1006", "1007", "1008", "1009", "1010"}
+
+    assigned_map = {
+        "501": alex_resident_id,
+        "504": _deterministic_uuid("resident-nora-bennett"),
+        "509": _deterministic_uuid("resident-damien-cross"),
+        "608": _deterministic_uuid("resident-ivy-thompson"),
+        "610": _deterministic_uuid("resident-ethan-ross"),
+        "704": _deterministic_uuid("resident-paige-cooper"),
+        "706": _deterministic_uuid("resident-leo-turner"),
+        "802": _deterministic_uuid("resident-maya-reed"),
+        "903": _deterministic_uuid("resident-owen-price"),
+    }
+
+    for floor in range(1, 11):
+        for unit_index in range(1, 11):
+            number = f"{floor}{unit_index:02d}"
+            is_occupied = number not in vacant_units
+            units.append(
+                {
+                    "id": _deterministic_uuid(f"unit-{number}"),
+                    "seedKey": f"unit-{number}",
+                    "datasetId": DEMO_DATASET_ID,
+                    "propertyId": FLAGSHIP_PROPERTY_ID,
+                    "number": number,
+                    "status": "occupied" if is_occupied else "vacant",
+                    "assignedResidentId": assigned_map.get(number),
+                    "occupantLabel": (
+                        "Alex Chen"
+                        if number == "501"
+                        else f"Resident {number}" if is_occupied else None
+                    ),
+                    "bedrooms": 1 if unit_index <= 4 else 2,
+                    "bathrooms": 1 if unit_index <= 6 else 2,
+                    "squareFeet": 640 + (unit_index * 35),
+                    "unitAgeYears": 18 + (floor // 3),
+                    "createdAt": now - timedelta(days=500),
+                    "updatedAt": now,
+                }
+            )
+    return units
+
+
+def _tracked_resident_definitions(now: datetime) -> list[dict]:
+    return [
+        {
+            "id": RESIDENT_IDS["alex"],
+            "seedKey": "resident-alex-chen",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": USER_IDS["resident"],
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Alex Chen",
+            "unit": "501",
+            "email": "alex.chen@email.com",
+            "phone": "(555) 210-4501",
+            "riskScore": 80,
+            "riskTier": "high",
+            "isQaResident": True,
+            "tags": ["QA Example", "Flagship Resident"],
+            "moveInDate": now - timedelta(days=420),
+            "lastInteractionAt": now - timedelta(days=1),
+            "createdAt": now - timedelta(days=415),
+            "updatedAt": now,
+        },
+        {
+            "id": RESIDENT_IDS["maria"],
+            "seedKey": "resident-maria-santos",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["lakeside"],
+            "fullName": "Maria Santos",
+            "unit": "312",
+            "email": "maria.santos@example.com",
+            "phone": "(555) 210-4488",
+            "riskScore": 74,
+            "riskTier": "high",
+            "isQaResident": False,
+            "tags": ["Retention Outreach"],
+            "moveInDate": now - timedelta(days=260),
+            "lastInteractionAt": now - timedelta(days=5),
+            "createdAt": now - timedelta(days=252),
+            "updatedAt": now,
+        },
+        {
+            "id": RESIDENT_IDS["james"],
+            "seedKey": "resident-james-wilson",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "fullName": "James Wilson",
+            "unit": "205",
+            "email": "james.wilson@example.com",
+            "phone": "(555) 210-4433",
+            "riskScore": 68,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Watchlist"],
+            "moveInDate": now - timedelta(days=180),
+            "lastInteractionAt": now - timedelta(days=9),
+            "createdAt": now - timedelta(days=174),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-nora-bennett"),
+            "seedKey": "resident-nora-bennett",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Nora Bennett",
+            "unit": "504",
+            "email": "nora.bennett@example.com",
+            "phone": "(555) 210-4404",
+            "riskScore": 77,
+            "riskTier": "high",
+            "isQaResident": False,
+            "tags": ["Repeat HVAC"],
+            "moveInDate": now - timedelta(days=320),
+            "lastInteractionAt": now - timedelta(days=3),
+            "createdAt": now - timedelta(days=312),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-damien-cross"),
+            "seedKey": "resident-damien-cross",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Damien Cross",
+            "unit": "509",
+            "email": "damien.cross@example.com",
+            "phone": "(555) 210-4409",
+            "riskScore": 72,
+            "riskTier": "high",
+            "isQaResident": False,
+            "tags": ["Noise complaints"],
+            "moveInDate": now - timedelta(days=210),
+            "lastInteractionAt": now - timedelta(days=4),
+            "createdAt": now - timedelta(days=200),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-ivy-thompson"),
+            "seedKey": "resident-ivy-thompson",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Ivy Thompson",
+            "unit": "608",
+            "email": "ivy.thompson@example.com",
+            "phone": "(555) 210-4608",
+            "riskScore": 69,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Slow response"],
+            "moveInDate": now - timedelta(days=290),
+            "lastInteractionAt": now - timedelta(days=7),
+            "createdAt": now - timedelta(days=282),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-ethan-ross"),
+            "seedKey": "resident-ethan-ross",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Ethan Ross",
+            "unit": "610",
+            "email": "ethan.ross@example.com",
+            "phone": "(555) 210-4610",
+            "riskScore": 66,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Low engagement"],
+            "moveInDate": now - timedelta(days=170),
+            "lastInteractionAt": now - timedelta(days=10),
+            "createdAt": now - timedelta(days=164),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-paige-cooper"),
+            "seedKey": "resident-paige-cooper",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Paige Cooper",
+            "unit": "704",
+            "email": "paige.cooper@example.com",
+            "phone": "(555) 210-4704",
+            "riskScore": 64,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Service friction"],
+            "moveInDate": now - timedelta(days=150),
+            "lastInteractionAt": now - timedelta(days=11),
+            "createdAt": now - timedelta(days=144),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-leo-turner"),
+            "seedKey": "resident-leo-turner",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Leo Turner",
+            "unit": "706",
+            "email": "leo.turner@example.com",
+            "phone": "(555) 210-4706",
+            "riskScore": 61,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Repeat plumbing"],
+            "moveInDate": now - timedelta(days=130),
+            "lastInteractionAt": now - timedelta(days=12),
+            "createdAt": now - timedelta(days=122),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-maya-reed"),
+            "seedKey": "resident-maya-reed",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Maya Reed",
+            "unit": "802",
+            "email": "maya.reed@example.com",
+            "phone": "(555) 210-4802",
+            "riskScore": 57,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Low app engagement"],
+            "moveInDate": now - timedelta(days=110),
+            "lastInteractionAt": now - timedelta(days=13),
+            "createdAt": now - timedelta(days=103),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-owen-price"),
+            "seedKey": "resident-owen-price",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "fullName": "Owen Price",
+            "unit": "903",
+            "email": "owen.price@example.com",
+            "phone": "(555) 210-4903",
+            "riskScore": 53,
+            "riskTier": "low",
+            "isQaResident": False,
+            "tags": ["Stable"],
+            "moveInDate": now - timedelta(days=95),
+            "lastInteractionAt": now - timedelta(days=15),
+            "createdAt": now - timedelta(days=89),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-ben-flores"),
+            "seedKey": "resident-ben-flores",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["lakeside"],
+            "fullName": "Ben Flores",
+            "unit": "214",
+            "email": "ben.flores@example.com",
+            "phone": "(555) 210-4214",
+            "riskScore": 63,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Follow-up pending"],
+            "moveInDate": now - timedelta(days=220),
+            "lastInteractionAt": now - timedelta(days=8),
+            "createdAt": now - timedelta(days=214),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("resident-chloe-adams"),
+            "seedKey": "resident-chloe-adams",
+            "datasetId": DEMO_DATASET_ID,
+            "userId": None,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "fullName": "Chloe Adams",
+            "unit": "618",
+            "email": "chloe.adams@example.com",
+            "phone": "(555) 210-4618",
+            "riskScore": 60,
+            "riskTier": "medium",
+            "isQaResident": False,
+            "tags": ["Escalation watch"],
+            "moveInDate": now - timedelta(days=200),
+            "lastInteractionAt": now - timedelta(days=8),
+            "createdAt": now - timedelta(days=192),
+            "updatedAt": now,
+        },
+    ]
+
+
+def _build_score_history(now: datetime, residents: list[dict]) -> tuple[list[dict], list[dict]]:
+    prediction_history: list[dict] = []
+    score_history: list[dict] = []
+
+    base_scores = {
+        "Alex Chen": [48, 52, 58, 64, 71, 80],
+        "Maria Santos": [61, 64, 69, 74],
+        "James Wilson": [54, 58, 63, 68],
+        "Nora Bennett": [55, 59, 63, 67],
+        "Damien Cross": [52, 56, 61, 65],
+        "Ivy Thompson": [51, 55, 59, 63],
+        "Ethan Ross": [48, 51, 57, 62],
+        "Paige Cooper": [49, 52, 58, 64],
+        "Leo Turner": [47, 50, 56, 61],
+        "Maya Reed": [45, 48, 53, 57],
+        "Owen Price": [41, 45, 49, 53],
+        "Ben Flores": [52, 56, 60, 63],
+        "Chloe Adams": [50, 54, 57, 60],
+    }
+
+    for resident in residents:
+        history = base_scores.get(resident["fullName"], [44, 49, 55])
+        history_points = len(history)
+        for index, score in enumerate(history):
+            is_latest = index == history_points - 1
+            point_time = now - timedelta(days=(history_points - index) * 7)
+            score_history.append(
+                {
+                    "id": _deterministic_uuid(f"score-history-{resident['id']}-{index}"),
+                    "seedKey": f"score-history-{resident['id']}-{index}",
+                    "datasetId": DEMO_DATASET_ID,
+                    "residentId": resident["id"],
+                    "residentName": resident["fullName"],
+                    "propertyId": resident["propertyId"],
+                    "score": score,
+                    "riskTier": resident["riskTier"],
+                    "asOfDate": point_time,
+                    "createdAt": point_time,
+                    "updatedAt": point_time,
+                }
+            )
+            if is_latest:
+                if resident["fullName"] == "Alex Chen":
+                    drivers = [
+                        {
+                            "label": "Maintenance Frequency",
+                            "weight": 30,
+                            "impactScore": 24,
+                            "signalValue": "3 requests in 45 days",
+                            "narrative": "Three maintenance requests in six weeks made Alex feel the apartment keeps fighting him.",
+                        },
+                        {
+                            "label": "Resolution Time",
+                            "weight": 20,
+                            "impactScore": 14,
+                            "signalValue": "4.2 day average close time",
+                            "narrative": "Resolution time drifted above four days, increasing friction and uncertainty.",
+                        },
+                        {
+                            "label": "Repeat Issues",
+                            "weight": 15,
+                            "impactScore": 12,
+                            "signalValue": "AC issue repeated twice",
+                            "narrative": "The same cooling issue reopened twice, signaling the root cause was never fully fixed.",
+                        },
+                        {
+                            "label": "Negative Sentiment",
+                            "weight": 15,
+                            "impactScore": 13,
+                            "signalValue": "-2.4 sentiment",
+                            "narrative": "Alex's messages turned shorter and more negative after the last delay.",
+                        },
+                        {
+                            "label": "Unit Age",
+                            "weight": 10,
+                            "impactScore": 8,
+                            "signalValue": "21-year-old unit systems",
+                            "narrative": "Older in-unit systems have created repeat comfort issues over time.",
+                        },
+                        {
+                            "label": "Low Engagement",
+                            "weight": 10,
+                            "impactScore": 9,
+                            "signalValue": "reply rate down 18%",
+                            "narrative": "Alex stopped responding to follow-up prompts until friction was acknowledged directly.",
+                        },
+                    ]
+                    prediction_history.append(
+                        {
+                            "id": _deterministic_uuid(f"prediction-{resident['id']}-latest"),
+                            "seedKey": f"prediction-{resident['id']}-latest",
+                            "datasetId": DEMO_DATASET_ID,
+                            "residentId": resident["id"],
+                            "residentName": resident["fullName"],
+                            "propertyId": resident["propertyId"],
+                            "score": score,
+                            "scoreChange": 9,
+                            "riskTier": resident["riskTier"],
+                            "isLatest": True,
+                            "driverSummary": "Maintenance frequency and slower resolution are now the dominant leading indicators for Alex Chen.",
+                            "scoreExplanation": "The score increased after another delayed AC follow-up and more negative SMS tone. AI outreach is positioned to reduce friction before a move-out decision becomes explicit.",
+                            "signalSummary": {
+                                "maintenanceCount": 3,
+                                "negativeSentimentScore": "-2.4",
+                                "avgResolutionTimeLabel": "4.2 days",
+                                "repeatIssueCount": 2,
+                            },
+                            "drivers": drivers,
+                            "createdAt": point_time,
+                            "updatedAt": point_time,
+                        }
+                    )
+                else:
+                    prediction_history.append(
+                        {
+                            "id": _deterministic_uuid(f"prediction-{resident['id']}-latest"),
+                            "seedKey": f"prediction-{resident['id']}-latest",
+                            "datasetId": DEMO_DATASET_ID,
+                            "residentId": resident["id"],
+                            "residentName": resident["fullName"],
+                            "propertyId": resident["propertyId"],
+                            "score": score,
+                            "scoreChange": score - history[-2] if len(history) > 1 else 0,
+                            "riskTier": resident["riskTier"],
+                            "isLatest": True,
+                            "driverSummary": f"{resident['fullName']} is trending upward on maintenance-driven churn signals.",
+                            "scoreExplanation": "Recent service friction and softer engagement pushed the latest score upward.",
+                            "signalSummary": {
+                                "maintenanceCount": 2,
+                                "negativeSentimentScore": "-1.6",
+                                "avgResolutionTimeLabel": "3.1 days",
+                                "repeatIssueCount": 1,
+                            },
+                            "drivers": [
+                                {
+                                    "label": "Maintenance Frequency",
+                                    "weight": 30,
+                                    "impactScore": min(24, max(10, score // 3)),
+                                    "signalValue": "2 recent requests",
+                                    "narrative": "Service frequency remains elevated enough to monitor closely.",
+                                },
+                                {
+                                    "label": "Resolution Time",
+                                    "weight": 20,
+                                    "impactScore": 12,
+                                    "signalValue": "3.1 day average close time",
+                                    "narrative": "Slower close times continue to add friction.",
+                                },
+                                {
+                                    "label": "Negative Sentiment",
+                                    "weight": 15,
+                                    "impactScore": 9,
+                                    "signalValue": "Mildly negative replies",
+                                    "narrative": "Message tone remains a meaningful leading indicator.",
+                                },
+                            ],
+                            "createdAt": point_time,
+                            "updatedAt": point_time,
+                        }
+                    )
+    return prediction_history, score_history
 
 
 def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
     now = _now()
     dataset_id = DEMO_DATASET_ID
-
-    lakeside_created = now - timedelta(days=180)
-    downtown_created = now - timedelta(days=160)
-    metropolitan_created = now - timedelta(days=140)
 
     platform_settings = [
         {
@@ -36,6 +511,7 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "proactive_retention_enabled": True,
             "demoModeEnabled": config.demo_mode_enabled,
             "environment": config.app_env,
+            "churnWeights": CHURN_WEIGHTS,
             "createdAt": now - timedelta(days=30),
             "updatedAt": now,
         }
@@ -59,11 +535,11 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
         },
         {
             "id": USER_IDS["manager"],
-            "seedKey": "user-manager-demoa",
+            "seedKey": "user-sarah-mitchell",
             "datasetId": dataset_id,
-            "email": "manager@riverside.com",
+            "email": "sarah.mitchell@riverside.com",
             "passwordHash": hash_password("manager123"),
-            "displayName": "Property Manager",
+            "displayName": "Sarah Mitchell",
             "role": "manager",
             "isSuperAdmin": False,
             "isDemo": True,
@@ -96,6 +572,8 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "datasetId": dataset_id,
             "name": "Lakeside Commons",
             "code": "LC-001",
+            "managerUserId": None,
+            "overview": "Portfolio context property with lighter demo depth.",
             "address": {
                 "street": "1550 Lakeview Avenue",
                 "city": "Seattle",
@@ -107,7 +585,7 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "occupiedUnits": 88,
             "occupancyRate": 91.7,
             "status": "active",
-            "createdAt": lakeside_created,
+            "createdAt": now - timedelta(days=180),
             "updatedAt": now,
         },
         {
@@ -116,6 +594,8 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "datasetId": dataset_id,
             "name": "Downtown Tower",
             "code": "DT-002",
+            "managerUserId": None,
+            "overview": "Portfolio context property with retention watchlist data.",
             "address": {
                 "street": "221 Market Street",
                 "city": "Austin",
@@ -127,7 +607,7 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "occupiedUnits": 119,
             "occupancyRate": 93.0,
             "status": "active",
-            "createdAt": downtown_created,
+            "createdAt": now - timedelta(days=160),
             "updatedAt": now,
         },
         {
@@ -136,6 +616,8 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "datasetId": dataset_id,
             "name": "The Metropolitan at Riverside",
             "code": "MR-003",
+            "managerUserId": USER_IDS["manager"],
+            "overview": "Flagship property with unit-level structure, resident assignment, churn signals, AI concierge communications, interventions, credits, and revenue linkage.",
             "address": {
                 "street": "901 Riverside Drive",
                 "city": "Denver",
@@ -147,74 +629,604 @@ def build_demo_seed_documents(config: AppConfig) -> dict[str, list[dict]]:
             "occupiedUnits": 94,
             "occupancyRate": 94.0,
             "status": "active",
-            "createdAt": metropolitan_created,
+            "createdAt": now - timedelta(days=140),
             "updatedAt": now,
         },
     ]
 
-    residents = [
+    units = _build_flagship_units(now, RESIDENT_IDS["alex"])
+    residents = _tracked_resident_definitions(now)
+    prediction_history, score_history = _build_score_history(now, residents)
+
+    providers = [
         {
-            "id": RESIDENT_IDS["alex"],
-            "seedKey": "resident-alex-chen",
+            "id": _deterministic_uuid("provider-riverside-home-services"),
+            "seedKey": "provider-riverside-home-services",
             "datasetId": dataset_id,
-            "userId": USER_IDS["resident"],
+            "name": "Riverside Home Services",
+            "serviceCategories": ["HVAC", "Handyman"],
+            "coverageProperties": [PROPERTY_IDS["metropolitan"], PROPERTY_IDS["downtown"]],
+            "coveragePercent": 88,
+            "fulfillmentRate": 95,
+            "status": "active",
+            "createdAt": now - timedelta(days=120),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("provider-freshnest-cleaning"),
+            "seedKey": "provider-freshnest-cleaning",
+            "datasetId": dataset_id,
+            "name": "FreshNest Cleaning",
+            "serviceCategories": ["Cleaning", "Turnover Prep"],
+            "coverageProperties": [PROPERTY_IDS["metropolitan"], PROPERTY_IDS["lakeside"]],
+            "coveragePercent": 85,
+            "fulfillmentRate": 94,
+            "status": "active",
+            "createdAt": now - timedelta(days=118),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("provider-rapid-response-plumbing"),
+            "seedKey": "provider-rapid-response-plumbing",
+            "datasetId": dataset_id,
+            "name": "Rapid Response Plumbing",
+            "serviceCategories": ["Plumbing", "Leak Mitigation"],
+            "coverageProperties": [PROPERTY_IDS["metropolitan"], PROPERTY_IDS["lakeside"], PROPERTY_IDS["downtown"]],
+            "coveragePercent": 82,
+            "fulfillmentRate": 89,
+            "status": "active",
+            "createdAt": now - timedelta(days=116),
+            "updatedAt": now,
+        },
+    ]
+
+    services = [
+        {
+            "id": _deterministic_uuid("service-cleaning"),
+            "seedKey": "service-cleaning",
+            "datasetId": dataset_id,
+            "name": "Cleaning",
+            "createdAt": now - timedelta(days=140),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("service-hvac"),
+            "seedKey": "service-hvac",
+            "datasetId": dataset_id,
+            "name": "HVAC",
+            "createdAt": now - timedelta(days=140),
+            "updatedAt": now,
+        },
+    ]
+
+    service_vendors = [
+        {
+            "id": _deterministic_uuid("service-vendor-riverside-homeservices"),
+            "seedKey": "service-vendor-riverside-homeservices",
+            "datasetId": dataset_id,
+            "providerId": providers[0]["id"],
             "propertyId": PROPERTY_IDS["metropolitan"],
-            "fullName": "Alex Chen",
-            "unit": "501",
-            "email": "alex.chen@email.com",
-            "phone": "(555) 210-4501",
-            "riskScore": 80,
-            "riskTier": "high",
-            "isQaResident": True,
-            "tags": ["QA Example", "Flagship Resident"],
-            "moveInDate": now - timedelta(days=420),
-            "lastInteractionAt": now - timedelta(days=2),
-            "createdAt": metropolitan_created + timedelta(days=5),
+            "serviceCategory": "HVAC",
+            "createdAt": now - timedelta(days=100),
             "updatedAt": now,
         },
         {
-            "id": RESIDENT_IDS["maria"],
-            "seedKey": "resident-maria-santos",
+            "id": _deterministic_uuid("service-vendor-freshnest-cleaning"),
+            "seedKey": "service-vendor-freshnest-cleaning",
             "datasetId": dataset_id,
-            "userId": None,
+            "providerId": providers[1]["id"],
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "serviceCategory": "Cleaning",
+            "createdAt": now - timedelta(days=100),
+            "updatedAt": now,
+        },
+    ]
+
+    property_settings = [
+        {
+            "id": _deterministic_uuid(f"property-settings-{property_id}"),
+            "seedKey": f"property-settings-{property_id}",
+            "datasetId": dataset_id,
+            "propertyId": property_id,
+            "predictiveModelEnabled": True,
+            "createdAt": now - timedelta(days=90),
+            "updatedAt": now,
+        }
+        for property_id in PROPERTY_IDS.values()
+    ]
+
+    property_economics = [
+        {
+            "id": _deterministic_uuid("property-economics-lakeside"),
+            "seedKey": "property-economics-lakeside",
+            "datasetId": dataset_id,
             "propertyId": PROPERTY_IDS["lakeside"],
-            "fullName": "Maria Santos",
-            "unit": "312",
-            "email": "maria.santos@example.com",
-            "phone": "(555) 210-4488",
-            "riskScore": 74,
-            "riskTier": "high",
-            "isQaResident": False,
-            "tags": ["Retention Outreach"],
-            "moveInDate": now - timedelta(days=260),
-            "lastInteractionAt": now - timedelta(days=6),
-            "createdAt": lakeside_created + timedelta(days=7),
+            "estimatedTurnoverCost": 6200,
+            "estimatedAnnualRoi": 28600,
+            "creditsInvestedPerMonth": 240,
+            "avoidedTurnoversPerYear": 3,
+            "monthlyServiceRevenueProjection": 1680,
+            "createdAt": now - timedelta(days=60),
             "updatedAt": now,
         },
         {
-            "id": RESIDENT_IDS["james"],
-            "seedKey": "resident-james-wilson",
+            "id": _deterministic_uuid("property-economics-downtown"),
+            "seedKey": "property-economics-downtown",
             "datasetId": dataset_id,
-            "userId": None,
             "propertyId": PROPERTY_IDS["downtown"],
-            "fullName": "James Wilson",
-            "unit": "205",
-            "email": "james.wilson@example.com",
-            "phone": "(555) 210-4433",
-            "riskScore": 68,
-            "riskTier": "medium",
-            "isQaResident": False,
-            "tags": ["Watchlist"],
-            "moveInDate": now - timedelta(days=180),
-            "lastInteractionAt": now - timedelta(days=12),
-            "createdAt": downtown_created + timedelta(days=5),
+            "estimatedTurnoverCost": 6400,
+            "estimatedAnnualRoi": 31800,
+            "creditsInvestedPerMonth": 300,
+            "avoidedTurnoversPerYear": 4,
+            "monthlyServiceRevenueProjection": 1900,
+            "createdAt": now - timedelta(days=60),
             "updatedAt": now,
         },
+        {
+            "id": _deterministic_uuid("property-economics-metropolitan"),
+            "seedKey": "property-economics-metropolitan",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "estimatedTurnoverCost": 6500,
+            "estimatedAnnualRoi": 37000,
+            "creditsInvestedPerMonth": 500,
+            "avoidedTurnoversPerYear": 5,
+            "monthlyServiceRevenueProjection": 2000,
+            "createdAt": now - timedelta(days=60),
+            "updatedAt": now,
+        },
+    ]
+
+    property_metrics = [
+        {
+            "id": _deterministic_uuid("property-metrics-lakeside-current"),
+            "seedKey": "property-metrics-lakeside-current",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["lakeside"],
+            "isLatest": True,
+            "atRiskResidents": 7,
+            "avgChurnScore": 55,
+            "providerCoveragePercent": 81,
+            "fulfillmentRate": 91,
+            "retentionRoi": 148430,
+            "aiEngagementRate": 72,
+            "createdAt": now - timedelta(days=20),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("property-metrics-downtown-current"),
+            "seedKey": "property-metrics-downtown-current",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "isLatest": True,
+            "atRiskResidents": 6,
+            "avgChurnScore": 52,
+            "providerCoveragePercent": 79,
+            "fulfillmentRate": 88,
+            "retentionRoi": 133470,
+            "aiEngagementRate": 69,
+            "createdAt": now - timedelta(days=20),
+            "updatedAt": now,
+        },
+        {
+            "id": _deterministic_uuid("property-metrics-metropolitan-current"),
+            "seedKey": "property-metrics-metropolitan-current",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "isLatest": True,
+            "atRiskResidents": 12,
+            "avgChurnScore": 58,
+            "providerCoveragePercent": 85,
+            "fulfillmentRate": 94,
+            "retentionRoi": 214553,
+            "aiEngagementRate": 78,
+            "createdAt": now - timedelta(days=20),
+            "updatedAt": now,
+        },
+    ]
+
+    monthly_revenue = []
+    revenue_templates = {
+        PROPERTY_IDS["lakeside"]: [(4820, 240), (4680, 210), (4510, 180), (4390, 165)],
+        PROPERTY_IDS["downtown"]: [(5635, 300), (5490, 280), (5320, 240), (5210, 225)],
+        PROPERTY_IDS["metropolitan"]: [(7469, 500), (7180, 350), (6920, 420), (6680, 280)],
+    }
+    for property_id, values in revenue_templates.items():
+        for offset, (gross, credits) in enumerate(values):
+            month = _months_back(now, offset)
+            monthly_revenue.append(
+                {
+                    "id": _deterministic_uuid(f"monthly-revenue-{property_id}-{month}"),
+                    "seedKey": f"monthly-revenue-{property_id}-{month}",
+                    "datasetId": dataset_id,
+                    "propertyId": property_id,
+                    "month": month,
+                    "grossRevenue": gross,
+                    "creditsIssued": credits,
+                    "netRevenue": gross - credits,
+                    "bookingsCompleted": 18 + offset,
+                    "isCurrentMonth": offset == 0,
+                    "createdAt": now - timedelta(days=35 - (offset * 9)),
+                    "updatedAt": now,
+                }
+            )
+
+    maintenance_history = [
+        {
+            "id": _deterministic_uuid("maintenance-alex-ac-1"),
+            "seedKey": "maintenance-alex-ac-1",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "unitNumber": "501",
+            "issueType": "HVAC",
+            "issueTitle": "AC cooling issue reopened",
+            "description": "Alex reported that the AC was still blowing warm air overnight.",
+            "status": "closed",
+            "openedAt": now - timedelta(days=33),
+            "resolvedAt": now - timedelta(days=29),
+            "resolutionSummary": "Vendor replaced the failing capacitor after the second visit.",
+            "resolutionDays": 4,
+            "repeatIssue": True,
+            "createdAt": now - timedelta(days=33),
+            "updatedAt": now - timedelta(days=29),
+        },
+        {
+            "id": _deterministic_uuid("maintenance-alex-dishwasher"),
+            "seedKey": "maintenance-alex-dishwasher",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "unitNumber": "501",
+            "issueType": "Appliance",
+            "issueTitle": "Dishwasher leak follow-up",
+            "description": "Leak returned under the lower rack after initial repair.",
+            "status": "closed",
+            "openedAt": now - timedelta(days=21),
+            "resolvedAt": now - timedelta(days=16),
+            "resolutionSummary": "Seal replaced and flooring dried by preferred vendor.",
+            "resolutionDays": 5,
+            "repeatIssue": True,
+            "createdAt": now - timedelta(days=21),
+            "updatedAt": now - timedelta(days=16),
+        },
+        {
+            "id": _deterministic_uuid("maintenance-alex-vent"),
+            "seedKey": "maintenance-alex-vent",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "unitNumber": "501",
+            "issueType": "Ventilation",
+            "issueTitle": "Bedroom vent noise and airflow imbalance",
+            "description": "Resident noted loud vent rattle and low overnight airflow.",
+            "status": "open",
+            "openedAt": now - timedelta(days=5),
+            "resolvedAt": None,
+            "resolutionSummary": "Awaiting second technician window after first pass reduced but did not remove noise.",
+            "resolutionDays": 0,
+            "repeatIssue": False,
+            "createdAt": now - timedelta(days=5),
+            "updatedAt": now - timedelta(days=1),
+        },
+        {
+            "id": _deterministic_uuid("maintenance-maria-plumbing"),
+            "seedKey": "maintenance-maria-plumbing",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["lakeside"],
+            "residentId": RESIDENT_IDS["maria"],
+            "unitNumber": "312",
+            "issueType": "Plumbing",
+            "issueTitle": "Kitchen sink backup",
+            "description": "Water pooled after disposal jam.",
+            "status": "closed",
+            "openedAt": now - timedelta(days=12),
+            "resolvedAt": now - timedelta(days=10),
+            "resolutionSummary": "Trap cleared and disposal reset.",
+            "resolutionDays": 2,
+            "repeatIssue": False,
+            "createdAt": now - timedelta(days=12),
+            "updatedAt": now - timedelta(days=10),
+        },
+        {
+            "id": _deterministic_uuid("maintenance-james-elevator-noise"),
+            "seedKey": "maintenance-james-elevator-noise",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "residentId": RESIDENT_IDS["james"],
+            "unitNumber": "205",
+            "issueType": "Noise",
+            "issueTitle": "Hallway elevator noise complaint",
+            "description": "Resident reported late-night vibration and hallway noise.",
+            "status": "closed",
+            "openedAt": now - timedelta(days=18),
+            "resolvedAt": now - timedelta(days=13),
+            "resolutionSummary": "Lift contractor rebalanced evening cycle timing.",
+            "resolutionDays": 5,
+            "repeatIssue": False,
+            "createdAt": now - timedelta(days=18),
+            "updatedAt": now - timedelta(days=13),
+        },
+    ]
+
+    concierge_messages = [
+        {
+            "id": _deterministic_uuid("message-alex-1"),
+            "seedKey": "message-alex-1",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "channel": "sms",
+            "channelLabel": "AI concierge • SMS",
+            "direction": "outbound",
+            "body": "Hi Alex — I saw the AC follow-up slipped again. I’m pushing the vendor now and can line up a cleaning credit so tonight is a little easier.",
+            "createdAt": now - timedelta(days=4, hours=3),
+            "updatedAt": now - timedelta(days=4, hours=3),
+        },
+        {
+            "id": _deterministic_uuid("message-alex-2"),
+            "seedKey": "message-alex-2",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "channel": "sms",
+            "channelLabel": "Resident reply",
+            "direction": "inbound",
+            "body": "Appreciate it. Mostly just need someone to actually close the loop this time.",
+            "createdAt": now - timedelta(days=4, hours=2),
+            "updatedAt": now - timedelta(days=4, hours=2),
+        },
+        {
+            "id": _deterministic_uuid("message-alex-3"),
+            "seedKey": "message-alex-3",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "channel": "sms",
+            "channelLabel": "AI concierge • SMS",
+            "direction": "outbound",
+            "body": "Totally fair. I booked a senior HVAC tech for tomorrow morning and added a $150 home refresh credit you can use this week.",
+            "createdAt": now - timedelta(days=3, hours=18),
+            "updatedAt": now - timedelta(days=3, hours=18),
+        },
+        {
+            "id": _deterministic_uuid("message-alex-4"),
+            "seedKey": "message-alex-4",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "channel": "sms",
+            "channelLabel": "AI concierge • SMS",
+            "direction": "outbound",
+            "body": "Checking back in — I can also send FreshNest after the repair window if you want the space reset before the weekend.",
+            "createdAt": now - timedelta(days=2, hours=6),
+            "updatedAt": now - timedelta(days=2, hours=6),
+        },
+    ]
+
+    interventions_log = [
+        {
+            "id": _deterministic_uuid("intervention-alex-credit"),
+            "seedKey": "intervention-alex-credit",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "interventionType": "credit",
+            "title": "Issued home refresh credit",
+            "detail": "AI concierge issued a proactive $150 cleaning credit after repeated AC delays.",
+            "status": "completed",
+            "happenedAt": now - timedelta(days=3),
+            "createdAt": now - timedelta(days=3),
+            "updatedAt": now - timedelta(days=3),
+        },
+        {
+            "id": _deterministic_uuid("intervention-alex-vendor-escalation"),
+            "seedKey": "intervention-alex-vendor-escalation",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "interventionType": "vendor_escalation",
+            "title": "Escalated HVAC vendor dispatch",
+            "detail": "Senior tech visit scheduled within 18 hours of the second complaint.",
+            "status": "completed",
+            "happenedAt": now - timedelta(days=2),
+            "createdAt": now - timedelta(days=2),
+            "updatedAt": now - timedelta(days=2),
+        },
+        {
+            "id": _deterministic_uuid("intervention-alex-follow-up"),
+            "seedKey": "intervention-alex-follow-up",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "interventionType": "follow_up",
+            "title": "Post-repair sentiment check",
+            "detail": "AI concierge sent a conversational follow-up after the appointment to confirm friction was reduced.",
+            "status": "completed",
+            "happenedAt": now - timedelta(days=1),
+            "createdAt": now - timedelta(days=1),
+            "updatedAt": now - timedelta(days=1),
+        },
+    ]
+
+    discount_impacts = [
+        {
+            "id": _deterministic_uuid("credit-alex-cleaning"),
+            "seedKey": "credit-alex-cleaning",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "title": "Home refresh credit",
+            "amount": 150,
+            "financialOutcome": "Reduced churn friction after repeat HVAC issue",
+            "createdAt": now - timedelta(days=3),
+            "updatedAt": now - timedelta(days=3),
+        },
+        {
+            "id": _deterministic_uuid("credit-alex-filters"),
+            "seedKey": "credit-alex-filters",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "title": "Air quality follow-up credit",
+            "amount": 85,
+            "financialOutcome": "Offset inconvenience while ventilation issue remained open",
+            "createdAt": now - timedelta(days=1),
+            "updatedAt": now - timedelta(days=1),
+        },
+    ]
+
+    offers = [
+        {
+            "id": _deterministic_uuid("offer-alex-cleaning"),
+            "seedKey": "offer-alex-cleaning",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "title": "Complimentary apartment refresh",
+            "status": "accepted",
+            "createdAt": now - timedelta(days=3),
+            "updatedAt": now - timedelta(days=3),
+        },
+        {
+            "id": _deterministic_uuid("offer-alex-priority-hvac"),
+            "seedKey": "offer-alex-priority-hvac",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "title": "Priority HVAC technician visit",
+            "status": "accepted",
+            "createdAt": now - timedelta(days=2),
+            "updatedAt": now - timedelta(days=2),
+        },
+    ]
+
+    bookings = [
+        {
+            "id": _deterministic_uuid("booking-alex-cleaning"),
+            "seedKey": "booking-alex-cleaning",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "providerId": providers[1]["id"],
+            "serviceName": "Apartment refresh cleaning",
+            "status": "completed",
+            "scheduledFor": now - timedelta(days=1),
+            "createdAt": now - timedelta(days=3),
+            "updatedAt": now - timedelta(days=1),
+        },
+        {
+            "id": _deterministic_uuid("booking-alex-hvac"),
+            "seedKey": "booking-alex-hvac",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "providerId": providers[0]["id"],
+            "serviceName": "Priority HVAC tune-up",
+            "status": "completed",
+            "scheduledFor": now - timedelta(days=2),
+            "createdAt": now - timedelta(days=4),
+            "updatedAt": now - timedelta(days=2),
+        },
+        {
+            "id": _deterministic_uuid("booking-maria-cleaning"),
+            "seedKey": "booking-maria-cleaning",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["lakeside"],
+            "residentId": RESIDENT_IDS["maria"],
+            "providerId": providers[1]["id"],
+            "serviceName": "Move-in touch-up cleaning",
+            "status": "scheduled",
+            "scheduledFor": now + timedelta(days=2),
+            "createdAt": now - timedelta(days=1),
+            "updatedAt": now - timedelta(days=1),
+        },
+        {
+            "id": _deterministic_uuid("booking-james-handyman"),
+            "seedKey": "booking-james-handyman",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "residentId": RESIDENT_IDS["james"],
+            "providerId": providers[0]["id"],
+            "serviceName": "Noise mitigation inspection",
+            "status": "completed",
+            "scheduledFor": now - timedelta(days=10),
+            "createdAt": now - timedelta(days=11),
+            "updatedAt": now - timedelta(days=10),
+        },
+    ]
+
+    receipts = [
+        {
+            "id": _deterministic_uuid("receipt-alex-cleaning"),
+            "seedKey": "receipt-alex-cleaning",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "bookingId": _deterministic_uuid("booking-alex-cleaning"),
+            "amount": 220,
+            "createdAt": now - timedelta(days=1),
+            "updatedAt": now - timedelta(days=1),
+        },
+        {
+            "id": _deterministic_uuid("receipt-alex-hvac"),
+            "seedKey": "receipt-alex-hvac",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "residentId": RESIDENT_IDS["alex"],
+            "bookingId": _deterministic_uuid("booking-alex-hvac"),
+            "amount": 145,
+            "createdAt": now - timedelta(days=2),
+            "updatedAt": now - timedelta(days=2),
+        },
+        {
+            "id": _deterministic_uuid("receipt-james-handyman"),
+            "seedKey": "receipt-james-handyman",
+            "datasetId": dataset_id,
+            "propertyId": PROPERTY_IDS["downtown"],
+            "residentId": RESIDENT_IDS["james"],
+            "bookingId": _deterministic_uuid("booking-james-handyman"),
+            "amount": 165,
+            "createdAt": now - timedelta(days=10),
+            "updatedAt": now - timedelta(days=10),
+        },
+    ]
+
+    consent_records = [
+        {
+            "id": _deterministic_uuid("consent-alex-sms"),
+            "seedKey": "consent-alex-sms",
+            "datasetId": dataset_id,
+            "residentId": RESIDENT_IDS["alex"],
+            "propertyId": PROPERTY_IDS["metropolitan"],
+            "channel": "sms",
+            "status": "granted",
+            "createdAt": now - timedelta(days=300),
+            "updatedAt": now - timedelta(days=300),
+        }
     ]
 
     return {
         "platform_settings": platform_settings,
         "users": users,
         "properties": properties,
+        "units": units,
+        "property_settings": property_settings,
+        "property_economics": property_economics,
+        "property_metrics": property_metrics,
         "residents": residents,
+        "providers": providers,
+        "services": services,
+        "service_vendors": service_vendors,
+        "maintenance_history": maintenance_history,
+        "churn_prediction_history": prediction_history,
+        "churn_score_history": score_history,
+        "concierge_messages": concierge_messages,
+        "interventions_log": interventions_log,
+        "discount_impacts": discount_impacts,
+        "offers": offers,
+        "bookings": bookings,
+        "monthly_revenue": monthly_revenue,
+        "receipts": receipts,
+        "consent_records": consent_records,
     }

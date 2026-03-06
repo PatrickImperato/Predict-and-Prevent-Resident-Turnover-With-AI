@@ -108,7 +108,7 @@ class HappyCoConciergeTester:
             "POST", 
             "auth/login",
             200,
-            data={"email": "manager@riverside.com", "password": "manager123"}
+            data={"email": "sarah.mitchell@riverside.com", "password": "manager123"}
         )
 
     def test_resident_login(self):
@@ -215,6 +215,33 @@ class HappyCoConciergeTester:
             200
         )
 
+    def test_dashboard_endpoint(self):
+        """Test dashboard endpoint (admin required)"""
+        return self.run_test(
+            "Dashboard Endpoint (Admin)",
+            "GET",
+            "admin/dashboard",
+            200
+        )
+
+    def test_properties_endpoint(self):
+        """Test properties endpoint (admin required)"""  
+        return self.run_test(
+            "Properties Endpoint (Admin)",
+            "GET",
+            "admin/properties",
+            200
+        )
+
+    def test_public_overview_endpoint(self):
+        """Test public overview endpoint (no auth required)"""
+        return self.run_test(
+            "Public Overview Endpoint",
+            "GET", 
+            "public/overview",
+            200
+        )
+
     def run_admin_flow(self):
         """Run full admin authentication and diagnostics flow"""
         print("\n" + "="*60)
@@ -251,6 +278,11 @@ class HappyCoConciergeTester:
         self.test_preview_reset_incorrect_phrase()  # Test incorrect phrase first
         self.test_preview_reset_correct_phrase()    # Then test correct phrase
         
+        # Test dashboard and properties endpoints (NEW)
+        self.test_dashboard_endpoint()
+        self.test_properties_endpoint()
+        self.test_public_overview_endpoint()
+        
         # Test logout
         self.test_logout()
         
@@ -276,6 +308,15 @@ class HappyCoConciergeTester:
             "Manager Access Diagnostics (Should Fail)",
             "GET",
             "diagnostics/runtime",
+            403,
+            should_pass=True  # We expect 403 status
+        )
+        
+        # Test that manager cannot access admin dashboard
+        self.run_test(
+            "Manager Access Dashboard (Should Fail)",
+            "GET",
+            "admin/dashboard", 
             403,
             should_pass=True  # We expect 403 status
         )

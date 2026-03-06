@@ -14,6 +14,7 @@ KNOWN_COLLECTIONS = [
     "users",
     "auth_sessions",
     "properties",
+    "units",
     "residents",
     "bookings",
     "providers",
@@ -34,6 +35,7 @@ KNOWN_COLLECTIONS = [
     "churn_score_history",
     "discount_impacts",
     "interventions_log",
+    "concierge_messages",
     "audit_events",
     "seed_metadata",
 ]
@@ -41,13 +43,21 @@ KNOWN_COLLECTIONS = [
 DATASET_TRACKED_COLLECTIONS = [
     "users",
     "properties",
+    "units",
     "residents",
     "providers",
+    "offers",
     "platform_settings",
     "property_settings",
+    "property_economics",
+    "property_metrics",
     "maintenance_history",
-    "maintenance_tickets",
     "monthly_revenue",
+    "churn_prediction_history",
+    "churn_score_history",
+    "discount_impacts",
+    "interventions_log",
+    "concierge_messages",
 ]
 
 
@@ -132,11 +142,7 @@ async def get_collections_diagnostics(
     ]
 
     seed_health = "healthy"
-    if any(missing_dataset_id_counts.values()):
-        seed_health = "warning"
-    if collection_counts.get("platform_settings", 0) < 1 or collection_counts.get("users", 0) < 3:
-        seed_health = "warning"
-    if missing_required_properties:
+    if any(missing_dataset_id_counts.values()) or missing_required_properties:
         seed_health = "warning"
 
     return {

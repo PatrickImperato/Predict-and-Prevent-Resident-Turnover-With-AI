@@ -1,6 +1,7 @@
 DEMO_DATASET_ID = "demoA"
 SEED_METADATA_NAME = "demoA-preview-seed"
 PREVIEW_RESET_CONFIRMATION_PHRASE = "RESET PREVIEW"
+FLAGSHIP_PROPERTY_ID = "a4f7603e-dda0-4c44-b382-e159f8c773be"
 
 PLATFORM_SETTINGS_ID = "4d08dbfe-f133-4aea-9255-6d0b17fabfc4"
 
@@ -13,7 +14,7 @@ USER_IDS = {
 PROPERTY_IDS = {
     "lakeside": "8af7a333-e11e-4a1d-bbe4-7bca4ace4d9d",
     "downtown": "0cb4337d-0b19-42fb-b067-5a113fbe6628",
-    "metropolitan": "a4f7603e-dda0-4c44-b382-e159f8c773be",
+    "metropolitan": FLAGSHIP_PROPERTY_ID,
 }
 
 RESIDENT_IDS = {
@@ -28,9 +29,43 @@ REQUIRED_PROPERTY_NAMES = [
     "The Metropolitan at Riverside",
 ]
 
+CHURN_WEIGHTS = [
+    {
+        "label": "Maintenance Frequency",
+        "weight": 30,
+        "description": "Repeated maintenance volume is the strongest leading indicator of churn risk.",
+    },
+    {
+        "label": "Resolution Time",
+        "weight": 20,
+        "description": "Longer time to close requests compounds resident frustration.",
+    },
+    {
+        "label": "Repeat Issues",
+        "weight": 15,
+        "description": "Repeat failures show unresolved friction inside the unit experience.",
+    },
+    {
+        "label": "Negative Sentiment",
+        "weight": 15,
+        "description": "Conversation tone helps detect dissatisfaction before a notice is given.",
+    },
+    {
+        "label": "Unit Age",
+        "weight": 10,
+        "description": "Older unit condition can amplify friction when service quality drops.",
+    },
+    {
+        "label": "Low Engagement",
+        "weight": 10,
+        "description": "Reduced response and lower concierge engagement often precede move-out intent.",
+    },
+]
+
 MANAGED_COLLECTIONS = [
     "users",
     "properties",
+    "units",
     "residents",
     "bookings",
     "providers",
@@ -51,6 +86,7 @@ MANAGED_COLLECTIONS = [
     "churn_score_history",
     "discount_impacts",
     "interventions_log",
+    "concierge_messages",
     "audit_events",
     "seed_metadata",
 ]

@@ -21,6 +21,32 @@ def _utc_now() -> datetime:
     return datetime.now(timezone.utc)
 
 
+INSERT_ORDER = [
+    "platform_settings",
+    "users",
+    "properties",
+    "units",
+    "property_settings",
+    "property_economics",
+    "property_metrics",
+    "residents",
+    "providers",
+    "services",
+    "service_vendors",
+    "maintenance_history",
+    "churn_prediction_history",
+    "churn_score_history",
+    "concierge_messages",
+    "interventions_log",
+    "discount_impacts",
+    "offers",
+    "bookings",
+    "monthly_revenue",
+    "receipts",
+    "consent_records",
+]
+
+
 async def _update_seed_metadata(
     db: AsyncIOMotorDatabase,
     *,
@@ -78,8 +104,7 @@ async def run_preview_seed(
         for collection_name in MANAGED_COLLECTIONS:
             await db[collection_name].delete_many({})
 
-        insert_order = ["platform_settings", "users", "properties", "residents"]
-        for collection_name in insert_order:
+        for collection_name in INSERT_ORDER:
             documents = seed_documents.get(collection_name, [])
             if documents:
                 await db[collection_name].insert_many(documents, ordered=True)
@@ -108,7 +133,7 @@ async def run_preview_seed(
         )
         return metadata
     except Exception as exc:
-        metadata = await _update_seed_metadata(
+        await _update_seed_metadata(
             db,
             action=action,
             actor_email=actor_email,

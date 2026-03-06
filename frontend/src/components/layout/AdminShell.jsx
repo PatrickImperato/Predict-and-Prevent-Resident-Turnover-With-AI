@@ -16,7 +16,9 @@ const TITLES = {
 
 export const AdminShell = () => {
   const location = useLocation();
-  const pageTitle = TITLES[location.pathname] || "Admin";
+  const pageTitle = location.pathname.startsWith("/app/admin/properties/")
+    ? "Property Detail"
+    : TITLES[location.pathname] || "Admin";
 
   return (
     <div className="min-h-screen bg-background" data-testid="admin-shell-root">

@@ -8,10 +8,12 @@ import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import DashboardPage from "@/pages/admin/DashboardPage";
 import DiagnosticsPage from "@/pages/admin/DiagnosticsPage";
 import PropertiesPage from "@/pages/admin/PropertiesPage";
+import PropertyDetailPage from "@/pages/admin/PropertyDetailPage";
 import ProvidersPage from "@/pages/admin/ProvidersPage";
 import SettingsPage from "@/pages/admin/SettingsPage";
 import TenantsPage from "@/pages/admin/TenantsPage";
 import LandingPage from "@/pages/LandingPage";
+import LegalPage from "@/pages/LegalPage";
 import LoginPage from "@/pages/LoginPage";
 
 function RootRoute() {
@@ -33,12 +35,14 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<RootRoute />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/legal" element={<LegalPage />} />
 
       <Route element={<AdminRoute />}>
         <Route path="/app/admin" element={<AdminShell />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="properties" element={<PropertiesPage />} />
+          <Route path="properties/:propertyId" element={<PropertyDetailPage />} />
           <Route path="providers" element={<ProvidersPage />} />
           <Route path="tenants" element={<TenantsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
