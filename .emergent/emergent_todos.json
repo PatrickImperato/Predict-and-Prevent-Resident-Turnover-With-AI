@@ -1,34 +1,34 @@
 [
   {
-    "content": "Fix authentication - remove restriction that only allows admin logins",
-    "status": "completed"
-  },
-  {
-    "content": "Verify seeded credentials match LoginPage constants",
-    "status": "completed"
-  },
-  {
-    "content": "Create shared calculation helpers for ROI, occupancy, risk tiers",
-    "status": "completed"
-  },
-  {
-    "content": "Add error boundaries and empty states across key pages",
+    "content": "1. Canonical API Response Layer - Create shared backend response shapes for properties, residents, providers, analytics",
     "status": "in_progress"
   },
   {
-    "content": "Verify all nav links and routes work correctly",
+    "content": "2. Route Guard and Fallback Pass - Unauthorized redirects, 404 pages, empty states, disabled actions",
     "status": "pending"
   },
   {
-    "content": "Test authentication flow for all 3 roles",
+    "content": "3. Auth Polish Pass - Role switcher clarity, failed login states, logout confirmation, session timeout",
     "status": "pending"
   },
   {
-    "content": "Cross-verify data consistency across experiences",
+    "content": "4. Property Manager Action Model - Define manager review/action/approval structure",
     "status": "pending"
   },
   {
-    "content": "Final stability check and testing",
+    "content": "5. Alex Journey Backbone Rebuild - Timeline, intervention history, communication, services, credits",
+    "status": "pending"
+  },
+  {
+    "content": "6. Notification and Event Logging Layer - Internal event system for all actions",
+    "status": "pending"
+  },
+  {
+    "content": "7. Global Settings Logic Pass - Risk thresholds, intervention rules, provider routing",
+    "status": "pending"
+  },
+  {
+    "content": "8. Final Consistency Test Matrix - Structured QA across all roles",
     "status": "pending"
   }
 ]
