@@ -20,10 +20,6 @@ export const AdminTopbar = ({ pageTitle }) => {
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
-          <EnvironmentBadge appEnv={session.app_env} dataTestId="admin-topbar-environment-badge" />
-          <Badge className="rounded-full bg-muted px-3 py-1 text-muted-foreground" data-testid="admin-topbar-layout-badge" variant="secondary">
-            Shared shell
-          </Badge>
           <AdminUserMenu />
         </div>
       </div>

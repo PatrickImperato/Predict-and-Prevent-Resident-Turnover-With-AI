@@ -20,7 +20,6 @@ const navItems = [
   { label: "Tenants", icon: Users, path: "/app/admin/tenants" },
   { label: "Analytics", icon: ChartColumnBig, path: "/app/admin/analytics" },
   { label: "Settings", icon: Settings2, path: "/app/admin/settings" },
-  { label: "Diagnostics", icon: ShieldCheck, path: "/app/admin/diagnostics" },
 ];
 
 const getRoleLabel = (role) => {

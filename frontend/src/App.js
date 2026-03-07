@@ -8,7 +8,6 @@ import { useAuth } from "@/context/AuthContext";
 // Admin pages
 import AnalyticsPage from "@/pages/admin/AnalyticsPage";
 import DashboardPage from "@/pages/admin/DashboardPage";
-import DiagnosticsPage from "@/pages/admin/DiagnosticsPage";
 import PropertiesPage from "@/pages/admin/PropertiesPage";
 import PropertyDetailPage from "@/pages/admin/PropertyDetailPage";
 import ProvidersPage from "@/pages/admin/ProvidersPage";
@@ -76,7 +75,6 @@ function AppRoutes() {
           <Route path="tenants" element={<TenantsPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="settings" element={<SettingsPage />} />
-          <Route path="diagnostics" element={<DiagnosticsPage />} />
         </Route>
 
         {/* Manager Routes */}

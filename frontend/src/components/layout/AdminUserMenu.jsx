@@ -39,11 +39,6 @@ export const AdminUserMenu = () => {
           </p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="gap-2 rounded-lg" data-testid="admin-topbar-user-menu-role-item">
-          <ShieldCheck className="h-4 w-4" strokeWidth={1.75} />
-          {session.is_super_admin ? "Super-admin" : session.role || "Admin session"}
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
         <DropdownMenuItem
           className="gap-2 rounded-lg text-foreground"
           data-testid="admin-topbar-user-menu-sign-out"
