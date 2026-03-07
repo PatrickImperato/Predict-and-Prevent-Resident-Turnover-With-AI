@@ -229,44 +229,44 @@ export default function LoginPage() {
         </div>
 
         {/* Right Side: Demo Access */}
-        <div className="hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 lg:flex flex-col justify-center px-16">
+        <div className="hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 lg:flex flex-col justify-center px-16 py-16">
           <div className="max-w-lg">
-            <Badge className="mb-5 border-teal-400 bg-teal-500/20 text-teal-300 hover:bg-teal-500/20" variant="secondary">
+            <Badge className="mb-3 border-teal-400 bg-teal-500/20 text-teal-300 hover:bg-teal-500/20" variant="secondary">
               Demo Access
             </Badge>
-            <h2 className="font-[var(--font-heading)] text-5xl font-semibold tracking-[-0.03em] text-white">
+            <h2 className="font-[var(--font-heading)] text-[2.75rem] font-semibold leading-tight tracking-[-0.03em] text-white">
               AI Concierge Platform for Multifamily Operations
             </h2>
 
             {/* Platform Metrics */}
-            <div className="mt-10 grid grid-cols-3 gap-6">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-                <p className="text-sm font-medium text-slate-400">Avg. turnover cost</p>
-                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">
+            <div className="mt-5 grid grid-cols-3 gap-3">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
+                <p className="text-xs font-medium text-slate-400">Avg. turnover cost</p>
+                <p className="mt-1.5 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-white">
                   $3,800
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-                <p className="text-sm font-medium text-slate-400">Annual turnover rate</p>
-                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-teal-400">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
+                <p className="text-xs font-medium text-slate-400">Annual turnover rate</p>
+                <p className="mt-1.5 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-teal-400">
                   10–15%
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
-                <p className="text-sm font-medium text-slate-400">Portfolio ROI example</p>
-                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-teal-400">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
+                <p className="text-xs font-medium text-slate-400">Portfolio ROI example</p>
+                <p className="mt-1.5 font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-teal-400">
                   $496K
                 </p>
               </div>
             </div>
 
             {/* Demo Roles */}
-            <div className="mt-12">
-              <p className="text-[15px] font-semibold text-white">
+            <div className="mt-5">
+              <p className="text-[14px] font-semibold text-white">
                 Select a demo account to auto-fill credentials and explore the product experience.
               </p>
               
-              <div className="mt-6 space-y-4">
+              <div className="mt-4 space-y-2.5">
                 {DEMO_ROLES.map((role, index) => {
                   const Icon = role.icon;
                   const isSelected = selectedRole === role.id;
@@ -278,23 +278,23 @@ export default function LoginPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className={`w-full rounded-2xl border p-6 text-left backdrop-blur-sm transition-all active:scale-[0.98] ${
+                      className={`w-full rounded-2xl border p-4 text-left backdrop-blur-sm transition-all active:scale-[0.98] ${
                         isSelected 
                           ? "border-teal-500 bg-teal-500/10" 
                           : "border-white/10 bg-white/5 hover:border-teal-500/50 hover:bg-white/10"
                       }`}
                       data-testid={`demo-role-${role.id}`}
                     >
-                      <div className="flex items-start gap-4">
-                        <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl ${
+                      <div className="flex items-start gap-3.5">
+                        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl ${
                           isSelected ? "bg-teal-500/30 text-teal-300" : "bg-teal-500/20 text-teal-400"
                         }`}>
-                          <Icon className="h-6 w-6" strokeWidth={2} />
+                          <Icon className="h-5 w-5" strokeWidth={2} />
                         </div>
                         <div className="flex-1">
-                          <p className="text-lg font-semibold text-white">{role.title}</p>
-                          <p className="mt-1 text-[14px] text-slate-400">{role.description}</p>
-                          <div className="mt-3 flex items-center gap-4 text-[13px]">
+                          <p className="text-base font-semibold text-white">{role.title}</p>
+                          <p className="mt-0.5 text-[13px] text-slate-400">{role.description}</p>
+                          <div className="mt-2 flex items-center gap-3 text-xs">
                             <p className="text-slate-500">Email: <span className="text-slate-300">{role.email}</span></p>
                             <p className="text-slate-500">Pass: <span className="text-slate-300">{role.password}</span></p>
                           </div>
@@ -307,8 +307,8 @@ export default function LoginPage() {
             </div>
 
             {/* Footer Note */}
-            <div className="mt-12 rounded-xl border border-white/10 bg-white/5 p-5">
-              <p className="text-[13px] leading-relaxed text-slate-400">
+            <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-3.5">
+              <p className="text-xs leading-relaxed text-slate-400">
                 © Tima Travel Media LLC. All rights reserved. Proprietary concept demonstration. 
                 HappyCo is a trademark of HappyCo, Inc.
               </p>
