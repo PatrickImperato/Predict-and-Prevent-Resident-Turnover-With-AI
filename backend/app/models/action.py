@@ -1,6 +1,6 @@
-"""Manager action models."""
+"""Manager action models with stronger typing."""
 from datetime import datetime
-from typing import Optional, Dict, Any, Literal
+from typing import Optional, Dict, Any, List
 from pydantic import BaseModel, Field
 
 
@@ -23,24 +23,29 @@ class ActionType:
     MANAGER_OVERRIDE = "manager_override"
 
 
-class ManagerActionBase(BaseModel):
-    """Base manager action model."""
+class InterventionDetail(BaseModel):
+    """Detailed intervention record."""
+    interventionId: str
     residentId: str
     residentName: str
     propertyId: str
     propertyName: str
-    actionType: str = Field(..., description="Type of action")
-    status: str = Field(default=ActionStatus.RECOMMENDED, description="Current status")
-    tier: int = Field(..., ge=1, le=3, description="Intervention tier (1-3)")
+    unit: Optional[str] = None
+    tier: int
     tierLabel: str
     creditAmount: int
     riskScore: int
     topDriver: str
-    expectedSavings: int
-    expectedRevenue: int
-    netROI: int
-    roiMultiple: float
-    
+    status: str
+    deployedBy: Optional[str] = None
+    deployedByEmail: Optional[str] = None
+    deployedAt: datetime
+    reason: Optional[str] = None
+    expectedSavings: Optional[int] = None
+    expectedRevenue: Optional[int] = None
+    netROI: Optional[int] = None
+    roiMultiple: Optional[float] = None
+
 
 class DeployInterventionRequest(BaseModel):
     """Request to deploy an intervention."""
@@ -60,5 +65,5 @@ class DeployInterventionResponse(BaseModel):
 
 class ManagerActionsListResponse(BaseModel):
     """Response for manager actions list."""
-    actions: list[Dict[str, Any]]
+    actions: List[Dict[str, Any]]
     summary: Dict[str, Any]

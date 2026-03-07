@@ -1,9 +1,8 @@
 import axios from "axios";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API_BASE_URL = `${BACKEND_URL}/api`;
+const API_BASE_URL = process.env.REACT_APP_BACKEND_URL || "";
 
-export const apiClient = axios.create({
+const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
   headers: {
@@ -11,32 +10,42 @@ export const apiClient = axios.create({
   },
 });
 
-export const authApi = {
-  getSession: () => apiClient.get("/auth/session"),
-  login: (payload) => apiClient.post("/auth/login", payload),
-  logout: () => apiClient.post("/auth/logout"),
-};
+// Auth endpoints
+const login = (credentials) => api.post("/api/auth/login", credentials);
+const logout = () => api.post("/api/auth/logout");
+const getSession = () => api.get("/api/auth/session");
 
-export const publicApi = {
-  getOverview: () => apiClient.get("/public/overview"),
-};
+// Admin endpoints
+const getAdminDashboard = () => api.get("/api/admin/dashboard");
+const getProperties = () => api.get("/api/admin/properties");
+const getPropertyDetail = (propertyId) => api.get(`/api/admin/properties/${propertyId}`);
+const getProviders = () => api.get("/api/admin/providers");
+const getTenants = () => api.get("/api/admin/tenants");
+const getAnalytics = () => api.get("/api/admin/analytics");
 
-export const dashboardApi = {
-  getOverview: () => apiClient.get("/admin/dashboard"),
-};
+// Manager action endpoints
+const deployIntervention = (data) => api.post("/api/manager/actions/deploy-intervention", data);
+const listManagerActions = (limit = 100) => api.get("/api/manager/actions/list", { params: { limit } });
+const getRecentInterventionsForResident = (residentId) => api.get(`/api/manager/actions/recent/${residentId}`);
 
-export const propertiesApi = {
-  getList: () => apiClient.get("/admin/properties"),
-  getDetail: (propertyId) => apiClient.get(`/admin/properties/${propertyId}`),
-};
+// Seed admin
+const triggerPreviewReset = (payload) => api.post("/api/admin/seeds/preview-reset", payload);
 
-export const diagnosticsApi = {
-  getRuntime: () => apiClient.get("/diagnostics/runtime"),
-  getSession: () => apiClient.get("/diagnostics/session"),
-  getCollections: () => apiClient.get("/diagnostics/collections"),
-  getSeeds: () => apiClient.get("/diagnostics/seeds"),
-  getHealth: () => apiClient.get("/diagnostics/health"),
-  runPreviewReset: (payload) => apiClient.post("/admin/seeds/preview-reset", payload),
-};
+export default api;
 
-export { API_BASE_URL };
+export {
+  login,
+  logout,
+  getSession,
+  getAdminDashboard,
+  getProperties,
+  getPropertyDetail,
+  getProviders,
+  getTenants,
+  getAnalytics,
+  deployIntervention,
+  listManagerActions,
+  getRecentInterventionsForResident,
+  triggerPreviewReset,
+  API_BASE_URL,
+};

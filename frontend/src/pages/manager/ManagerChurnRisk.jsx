@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AlertCircle, TrendingUp, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -7,30 +7,53 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CANONICAL_RESIDENTS, CANONICAL_PROPERTIES, getPropertyById } from "@/lib/canonicalData";
-import { interventionHistory } from "@/lib/interventionHistory";
+import { deployIntervention, listManagerActions } from "@/lib/api";
 
 export default function ManagerChurnRisk() {
   const [expandedResidentId, setExpandedResidentId] = useState(null);
-  const [deployedInterventions, setDeployedInterventions] = useState(() => {
-    // Initialize from sessionStorage
-    const deployed = new Set();
-    interventionHistory.getAll().forEach(entry => {
-      deployed.add(entry.residentId);
-    });
-    return deployed;
-  });
+  const [deployedInterventions, setDeployedInterventions] = useState(new Set());
+  const [deploying, setDeploying] = useState(new Set());
+  const [interventionsList, setInterventionsList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Load deployed interventions from backend on mount
+  useEffect(() => {
+    const loadInterventions = async () => {
+      try {
+        const response = await listManagerActions(100);
+        const actions = response.data.actions || [];
+        setInterventionsList(actions);
+        
+        // Track which residents have interventions
+        const deployed = new Set();
+        actions.forEach(action => {
+          deployed.add(action.residentId);
+        });
+        setDeployedInterventions(deployed);
+      } catch (error) {
+        console.error("Failed to load interventions:", error);
+        toast.error("Failed to load interventions", {
+          description: "Unable to fetch deployed interventions from backend.",
+          className: "border-red-200 bg-red-50 text-red-900"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadInterventions();
+  }, []);
   
   // Filter residents by risk level
   const highRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80);
   const mediumRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 70 && r.riskScore < 80);
   const lowRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 70);
   
-  // Calculate projected impact (simple estimate based on risk score)
+  // Calculate projected impact
   const estimateSavings = (riskScore) => {
-    // Higher risk = higher potential savings
-    if (riskScore >= 80) return 3800; // Full turnover cost
-    if (riskScore >= 70) return 2660; // 70% of turnover cost
-    return 1900; // 50% of turnover cost
+    if (riskScore >= 80) return 3800;
+    if (riskScore >= 70) return 2660;
+    return 1900;
   };
   
   const totalProjectedSavings = CANONICAL_RESIDENTS
@@ -41,47 +64,57 @@ export default function ManagerChurnRisk() {
     setExpandedResidentId(expandedResidentId === residentId ? null : residentId);
   };
   
-  const handleDeployIntervention = (resident) => {
+  const handleDeployIntervention = async (resident) => {
     const property = getPropertyById(resident.propertyId);
     const creditAmount = resident.riskScore >= 80 ? 500 : resident.riskScore >= 70 ? 350 : 200;
     const tier = resident.riskScore >= 80 ? 3 : resident.riskScore >= 70 ? 2 : 1;
     const tierLabel = resident.riskScore >= 80 ? "High Priority" : resident.riskScore >= 70 ? "Standard" : "Light Touch";
     const expectedSavings = estimateSavings(resident.riskScore);
-    const expectedRevenue = Math.round(creditAmount * 0.25); // 25% conversion rate
+    const expectedRevenue = Math.round(creditAmount * 0.25);
     const netROI = expectedSavings + expectedRevenue - creditAmount;
     const roiMultiple = ((expectedSavings + expectedRevenue) / creditAmount).toFixed(1);
     
-    // Add to intervention history
-    const deployment = interventionHistory.add({
-      residentId: resident.id,
-      residentName: resident.fullName,
-      propertyId: resident.propertyId,
-      propertyName: property?.shortName || 'Unknown Property',
-      unit: resident.unit,
-      tier: tier,
-      tierLabel: tierLabel,
-      creditAmount: creditAmount,
-      riskScore: resident.riskScore,
-      topDriver: resident.primaryDriver,
-      expectedSavings: expectedSavings,
-      expectedRevenue: expectedRevenue,
-      netROI: netROI,
-      roiMultiple: roiMultiple
-    });
+    // Mark as deploying
+    setDeploying(prev => new Set([...prev, resident.id]));
     
-    if (deployment) {
-      // Update UI state
-      setDeployedInterventions(prev => new Set([...prev, resident.id]));
-      
-      // Show success toast
-      toast.success("Intervention Deployed", {
-        description: `${tierLabel} intervention ($${creditAmount} credit) sent to ${resident.fullName}. Projected ROI: $${netROI.toLocaleString()} (${roiMultiple}x).`,
-        className: "border-teal-200 bg-teal-50 text-teal-900"
+    try {
+      // Call backend API
+      const response = await deployIntervention({
+        residentId: resident.id,
+        tier: tier,
+        creditAmount: creditAmount,
+        reason: `AI-recommended intervention for ${resident.primaryDriver}`
       });
-    } else {
+      
+      if (response.data.success) {
+        // Update UI state
+        setDeployedInterventions(prev => new Set([...prev, resident.id]));
+        setInterventionsList(prev => [response.data.action, ...prev]);
+        
+        // Show success toast
+        toast.success("Intervention Deployed", {
+          description: `${tierLabel} intervention ($${creditAmount} credit) sent to ${resident.fullName}. Projected ROI: $${netROI.toLocaleString()} (${roiMultiple}x). Action persisted to backend.`,
+          className: "border-teal-200 bg-teal-50 text-teal-900",
+          duration: 5000
+        });
+      } else {
+        throw new Error(response.data.message || "Deployment failed");
+      }
+    } catch (error) {
+      console.error("Deployment error:", error);
+      const message = error.response?.data?.detail || error.message || "Unable to deploy intervention";
+      
       toast.error("Deployment Failed", {
-        description: "Unable to deploy intervention. Please try again.",
-        className: "border-red-200 bg-red-50 text-red-900"
+        description: `${message}. Please try again or contact support.`,
+        className: "border-red-200 bg-red-50 text-red-900",
+        duration: 5000
+      });
+    } finally {
+      // Remove from deploying set
+      setDeploying(prev => {
+        const next = new Set(prev);
+        next.delete(resident.id);
+        return next;
       });
     }
   };
@@ -98,6 +131,17 @@ export default function ManagerChurnRisk() {
     return "Low Risk";
   };
 
+  if (loading) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto"></div>
+          <p className="mt-4 text-sm text-muted-foreground">Loading interventions...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 8 }}
@@ -109,13 +153,13 @@ export default function ManagerChurnRisk() {
       {/* Header */}
       <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-red-200 bg-red-50 text-red-700 hover:bg-red-50" variant="secondary">
-          Churn Risk Analysis
+          Turnover Risk Analysis
         </Badge>
         <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           At-Risk Residents
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          Churn prediction powered by HappyCo operational data. Risk scores compute from maintenance frequency, 
+          Turnover prediction powered by HappyCo operational data. Risk scores compute from maintenance frequency, 
           response times, sentiment signals, and lease timing to identify friction early.
         </p>
       </section>
@@ -147,6 +191,7 @@ export default function ManagerChurnRisk() {
             {highRiskResidents.map((resident) => {
               const isExpanded = expandedResidentId === resident.id;
               const isDeployed = deployedInterventions.has(resident.id);
+              const isDeploying = deploying.has(resident.id);
               const property = getPropertyById(resident.propertyId);
               const creditAmount = 500;
               const expectedSavings = estimateSavings(resident.riskScore);
@@ -299,10 +344,15 @@ export default function ManagerChurnRisk() {
                         className="mt-4 h-9 w-full rounded-lg" 
                         size="sm"
                         onClick={() => handleDeployIntervention(resident)}
-                        disabled={isDeployed}
+                        disabled={isDeployed || isDeploying}
                         data-testid={`deploy-intervention-${resident.id}`}
                       >
-                        {isDeployed ? (
+                        {isDeploying ? (
+                          <>
+                            <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent mr-2"></div>
+                            Deploying...
+                          </>
+                        ) : isDeployed ? (
                           <>
                             <CheckCircle2 className="mr-2 h-4 w-4" />
                             Deployed
@@ -327,6 +377,7 @@ export default function ManagerChurnRisk() {
           <div className="space-y-4">
             {mediumRiskResidents.map((resident) => {
               const isDeployed = deployedInterventions.has(resident.id);
+              const isDeploying = deploying.has(resident.id);
               const property = getPropertyById(resident.propertyId);
               
               return (
@@ -351,9 +402,9 @@ export default function ManagerChurnRisk() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleDeployIntervention(resident)}
-                        disabled={isDeployed}
+                        disabled={isDeployed || isDeploying}
                       >
-                        {isDeployed ? "Deployed" : "Deploy"}
+                        {isDeploying ? "Deploying..." : isDeployed ? "Deployed" : "Deploy"}
                       </Button>
                     </div>
                   </div>

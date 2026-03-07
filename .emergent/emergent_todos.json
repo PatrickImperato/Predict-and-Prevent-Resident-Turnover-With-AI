@@ -1,30 +1,18 @@
 [
   {
-    "content": "1. Update landing page headline to 'Resident Turnover'",
-    "status": "completed"
-  },
-  {
-    "content": "2. Register 404/403 pages and add route guards",
-    "status": "completed"
-  },
-  {
-    "content": "3. Session timeout and deep link protection",
-    "status": "completed"
-  },
-  {
-    "content": "4. Wire manager frontend to backend API",
-    "status": "pending"
-  },
-  {
-    "content": "5. Event logging completion with indexes",
-    "status": "pending"
-  },
-  {
-    "content": "6. Documentation and deployment readiness",
-    "status": "pending"
-  },
-  {
-    "content": "7. Full test matrix and verification",
+    "content": "Phase 1: Backend - Event logging in auth, indexes, API hardening",
     "status": "in_progress"
+  },
+  {
+    "content": "Phase 2: Frontend - Wire manager to backend, remove sessionStorage",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 3: Documentation - README, checklists, canonical data reference",
+    "status": "pending"
+  },
+  {
+    "content": "Phase 4: Verification - Test everything, verify persistence, check consistency",
+    "status": "pending"
   }
 ]

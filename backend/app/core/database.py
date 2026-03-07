@@ -1,3 +1,4 @@
+"""Database manager with event collection indexes."""
 from __future__ import annotations
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
@@ -30,28 +31,66 @@ class DatabaseManager:
         return self._database
 
     async def ensure_indexes(self) -> None:
+        """Create all necessary indexes."""
         db = self.database
+        
+        # User indexes
         await db.users.create_index("email", unique=True)
         await db.users.create_index("id", unique=True)
+        
+        # Property indexes
         await db.properties.create_index("id", unique=True)
         await db.properties.create_index("name", unique=True)
+        
+        # Resident indexes
         await db.residents.create_index("id", unique=True)
         await db.residents.create_index([("propertyId", 1), ("unit", 1)])
+        await db.tracked_residents.create_index("residentId", unique=True)
+        await db.tracked_residents.create_index("propertyId")
+        
+        # Unit indexes
         await db.units.create_index("id", unique=True)
         await db.units.create_index([("propertyId", 1), ("number", 1)], unique=True)
+        
+        # Provider indexes
         await db.providers.create_index("id", unique=True)
+        
+        # Booking indexes
         await db.bookings.create_index([("residentId", 1), ("scheduledFor", -1)])
         await db.bookings.create_index([("providerId", 1), ("scheduledFor", -1)])
+        
+        # Metrics indexes
         await db.property_metrics.create_index([("propertyId", 1), ("isLatest", 1)])
         await db.monthly_revenue.create_index([("propertyId", 1), ("month", 1)])
+        
+        # Churn prediction indexes
         await db.churn_prediction_history.create_index([("residentId", 1), ("isLatest", 1)])
         await db.churn_score_history.create_index([("residentId", 1), ("asOfDate", -1)])
+        
+        # Communication indexes
         await db.concierge_messages.create_index([("residentId", 1), ("createdAt", -1)])
+        
+        # Intervention indexes
         await db.interventions_log.create_index([("residentId", 1), ("happenedAt", -1)])
+        await db.interventions.create_index("interventionId", unique=True)
+        await db.interventions.create_index([("residentId", 1), ("deployedAt", -1)])
+        await db.interventions.create_index("status")
+        
+        # Impact indexes
         await db.discount_impacts.create_index([("residentId", 1), ("createdAt", -1)])
+        
+        # Auth session indexes
         await db.auth_sessions.create_index("sessionTokenHash", unique=True)
         await db.auth_sessions.create_index("expiresAt", expireAfterSeconds=0)
+        
+        # Seed metadata indexes
         await db.seed_metadata.create_index("name", unique=True)
+        
+        # EVENT INDEXES - NEW
+        await db.events.create_index([("eventType", 1), ("timestamp", -1)])
+        await db.events.create_index([("userId", 1), ("timestamp", -1)])
+        await db.events.create_index([("resourceType", 1), ("resourceId", 1), ("timestamp", -1)])
+        await db.events.create_index("timestamp", expireAfterSeconds=7776000)  # 90 days retention
 
     def close(self) -> None:
         if self._client is not None:
