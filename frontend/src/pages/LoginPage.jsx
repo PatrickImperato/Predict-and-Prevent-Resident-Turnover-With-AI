@@ -123,7 +123,7 @@ export default function LoginPage() {
 
       <div className="grid h-screen lg:grid-cols-[minmax(0,540px)_minmax(0,1fr)]">
         {/* Left Side: Login Form */}
-        <div className="flex items-center justify-center bg-background px-8 py-12 lg:px-12">
+        <div className="relative flex items-center justify-center bg-background px-8 py-12 lg:px-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -186,6 +186,13 @@ export default function LoginPage() {
               </Button>
             </form>
           </motion.div>
+          
+          {/* Copyright - Anchored to Left Column Bottom */}
+          <div className="absolute bottom-5 left-8 lg:left-12 max-w-[440px]">
+            <p className="text-xs text-muted-foreground/40 leading-relaxed">
+              © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+            </p>
+          </div>
         </div>
 
         {/* Right Side: Demo Access Panel */}
@@ -202,12 +209,13 @@ export default function LoginPage() {
             <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
           </div>
 
-          <div className="relative flex h-full flex-col justify-between p-10 pt-24 xl:p-12 xl:pt-28">
+          <div className="relative flex h-full flex-col justify-center p-10 xl:p-12">
             {/* Top: Platform Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.2 }}
+              className="mb-12"
             >
               <Badge className="mb-4 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary" variant="secondary">
                 Demo Access
@@ -233,14 +241,13 @@ export default function LoginPage() {
               </div>
             </motion.div>
 
-            {/* Bottom: Demo Role Cards - CLEANER STYLING */}
+            {/* Bottom: Demo Role Cards - IMPROVED SPACING */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.4 }}
-              className="pb-4"
             >
-              <p className="mb-3 text-[15px] font-medium text-white/70">
+              <p className="mb-4 text-[15px] font-medium text-white/70">
                 Select a demo account to auto fill credentials and explore the product experience.
               </p>
               <div className="space-y-2.5">
@@ -280,13 +287,6 @@ export default function LoginPage() {
             </motion.div>
           </div>
         </div>
-      </div>
-
-      {/* Copyright - Bottom Left Corner */}
-      <div className="absolute bottom-4 left-4 sm:left-6 lg:left-8">
-        <p className="text-xs text-muted-foreground/40 leading-relaxed max-w-2xl">
-          © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
-        </p>
       </div>
     </div>
   );
