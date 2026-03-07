@@ -268,7 +268,7 @@ export default function LandingPage() {
               </Badge>
 
               <h1 className="font-[var(--font-heading)] text-5xl sm:text-6xl font-semibold leading-[1.08] tracking-[-0.03em] text-white lg:text-[58px]" data-testid="landing-hero-title">
-                Predict and Prevent <span className="text-primary">Resident Churn</span>
+                Predict and Prevent <span className="text-primary">Resident Turnover</span>
               </h1>
 
               <p className="mt-6 max-w-[560px] text-[18px] sm:text-[19px] leading-[1.6] text-white/70">
@@ -347,7 +347,7 @@ export default function LandingPage() {
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <Badge className="mb-4 border-zinc-300 bg-zinc-100 text-[14px] text-zinc-600 font-medium" variant="secondary">
-                Churn Prediction
+                Turnover Prediction
               </Badge>
               <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] font-semibold tracking-tight text-zinc-900">
                 Identify at-risk residents before they leave
@@ -691,7 +691,7 @@ export default function LandingPage() {
                     <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-red-100 text-sm font-bold text-red-700">1</div>
                     <div className="flex-1 pt-1">
                       <p className="text-[15px] font-semibold text-zinc-900 leading-snug">Risk detected</p>
-                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">Churn score threshold exceeded</p>
+                      <p className="mt-0.5 text-[13px] text-zinc-600 leading-relaxed">Turnover risk threshold exceeded</p>
                     </div>
                     <AlertCircle className="h-[22px] w-[22px] text-red-600 mt-1 flex-shrink-0" />
                   </div>

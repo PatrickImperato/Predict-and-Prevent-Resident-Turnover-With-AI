@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, Users, DollarSign } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ const DEMO_ROLES = [
   {
     id: "manager",
     title: "Property Manager",
-    description: "Churn risk and retention interventions",
+    description: "Turnover risk and retention interventions",
     email: "sarah.mitchell@riverside.com",
     password: "manager123",
     icon: TrendingUp
@@ -40,16 +40,35 @@ const DEMO_ROLES = [
 
 export default function LoginPage() {
   const { loading, login, session } = useAuth();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
+
+  // Check for session expiration message
+  useEffect(() => {
+    if (location.state?.sessionExpired) {
+      toast.error("Your session has expired. Please sign in again.", {
+        className: "border-amber-200 bg-amber-50 text-amber-900"
+      });
+    }
+  }, [location]);
 
   if (loading) {
     return <div className="min-h-screen bg-background" data-testid="login-page-loading-state" />;
   }
 
-  // Redirect authenticated users to their role-specific dashboard
+  // Redirect authenticated users to their role-specific dashboard or intended destination
   if (session?.authenticated) {
+    const returnTo = location.state?.from;
+    
+    // If there's a return URL and it's allowed for this role, go there
+    if (returnTo && returnTo !== "/login") {
+      return <Navigate replace to={returnTo} />;
+    }
+    
+    // Otherwise go to role-specific dashboard
     if (session?.role === "admin") {
       return <Navigate replace to="/app/admin/dashboard" />;
     }
@@ -83,11 +102,12 @@ export default function LoginPage() {
         });
       }
       
-      // Navigation happens via RootRoute redirect
+      // Navigation happens via redirect above
     } catch (error) {
-      const message = error?.response?.data?.detail || "Invalid email or password";
+      const message = error?.response?.data?.detail || error?.message || "Invalid email or password. Please check your credentials and try again.";
       toast.error(message, {
-        className: "border-red-200 bg-red-50 text-red-900"
+        className: "border-red-200 bg-red-50 text-red-900",
+        duration: 5000
       });
     } finally {
       setSubmitting(false);
@@ -97,6 +117,7 @@ export default function LoginPage() {
   const handleRoleCardClick = (role) => {
     setEmail(role.email);
     setPassword(role.password);
+    setSelectedRole(role.id);
     toast.message(`${role.title} credentials applied. Click Sign In to continue.`, {
       className: "border-teal-200 bg-teal-50 text-teal-900"
     });
@@ -242,12 +263,13 @@ export default function LoginPage() {
             {/* Demo Roles */}
             <div className="mt-12">
               <p className="text-[15px] font-semibold text-white">
-                Select a demo account to auto fill credentials and explore the product experience.
+                Select a demo account to auto-fill credentials and explore the product experience.
               </p>
               
               <div className="mt-6 space-y-4">
                 {DEMO_ROLES.map((role, index) => {
                   const Icon = role.icon;
+                  const isSelected = selectedRole === role.id;
                   
                   return (
                     <motion.button
@@ -256,11 +278,17 @@ export default function LoginPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-left backdrop-blur-sm transition-all hover:border-teal-500/50 hover:bg-white/10 active:scale-[0.98]"
+                      className={`w-full rounded-2xl border p-6 text-left backdrop-blur-sm transition-all active:scale-[0.98] ${
+                        isSelected 
+                          ? "border-teal-500 bg-teal-500/10" 
+                          : "border-white/10 bg-white/5 hover:border-teal-500/50 hover:bg-white/10"
+                      }`}
                       data-testid={`demo-role-${role.id}`}
                     >
                       <div className="flex items-start gap-4">
-                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-400">
+                        <div className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl ${
+                          isSelected ? "bg-teal-500/30 text-teal-300" : "bg-teal-500/20 text-teal-400"
+                        }`}>
                           <Icon className="h-6 w-6" strokeWidth={2} />
                         </div>
                         <div className="flex-1">

@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import { AppProviders } from "@/components/app/AppProviders";
-import { AdminRoute } from "@/components/app/AdminRoute";
+import { ProtectedRoute } from "@/components/app/ProtectedRoute";
 import { AdminShell } from "@/components/layout/AdminShell";
 import { useAuth } from "@/context/AuthContext";
 
@@ -33,6 +33,8 @@ import LandingPage from "@/pages/LandingPage";
 import LegalPage from "@/pages/LegalPage";
 import LoginPage from "@/pages/LoginPage";
 import PrivacyPage from "@/pages/PrivacyPage";
+import NotFoundPage from "@/pages/NotFoundPage";
+import UnauthorizedPage from "@/pages/UnauthorizedPage";
 
 function RootRoute() {
   const { loading, session } = useAuth();
@@ -63,9 +65,10 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/legal" element={<LegalPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-      <Route element={<AdminRoute />}>
-        {/* Admin Routes */}
+      {/* Admin Routes - Protected */}
+      <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/app/admin" element={<AdminShell />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
@@ -76,8 +79,10 @@ function AppRoutes() {
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="settings" element={<SettingsPage />} />
         </Route>
+      </Route>
 
-        {/* Manager Routes */}
+      {/* Manager Routes - Protected */}
+      <Route element={<ProtectedRoute allowedRoles={["manager", "admin"]} />}>
         <Route path="/app/manager" element={<AdminShell />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<ManagerDashboard />} />
@@ -86,8 +91,10 @@ function AppRoutes() {
           <Route path="providers" element={<ManagerProviders />} />
           <Route path="maintenance" element={<ManagerMaintenance />} />
         </Route>
+      </Route>
 
-        {/* Resident Routes */}
+      {/* Resident Routes - Protected */}
+      <Route element={<ProtectedRoute allowedRoles={["resident", "admin"]} />}>
         <Route path="/app/resident" element={<AdminShell />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<ResidentDashboard />} />
@@ -98,7 +105,8 @@ function AppRoutes() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate replace to="/" />} />
+      {/* 404 Catch-all */}
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

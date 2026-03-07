@@ -1,42 +1,30 @@
 [
   {
-    "content": "1. Database reliability - indexes, validation, integrity checks",
+    "content": "1. Update landing page headline to 'Resident Turnover'",
+    "status": "completed"
+  },
+  {
+    "content": "2. Register 404/403 pages and add route guards",
+    "status": "completed"
+  },
+  {
+    "content": "3. Session timeout and deep link protection",
+    "status": "completed"
+  },
+  {
+    "content": "4. Wire manager frontend to backend API",
+    "status": "pending"
+  },
+  {
+    "content": "5. Event logging completion with indexes",
+    "status": "pending"
+  },
+  {
+    "content": "6. Documentation and deployment readiness",
+    "status": "pending"
+  },
+  {
+    "content": "7. Full test matrix and verification",
     "status": "in_progress"
-  },
-  {
-    "content": "2. Canonical API response layer - strengthen Pydantic models",
-    "status": "pending"
-  },
-  {
-    "content": "3. Route guards and fallbacks - 404, unauthorized, loading/empty states",
-    "status": "pending"
-  },
-  {
-    "content": "4. Session and auth hardening - timeout, logout, deep link protection",
-    "status": "pending"
-  },
-  {
-    "content": "5. Event logging backbone - audit trail for all actions",
-    "status": "pending"
-  },
-  {
-    "content": "6. Manager action model foundation - action states and persistence",
-    "status": "pending"
-  },
-  {
-    "content": "7. Deployment readiness - env vars, build reproducibility",
-    "status": "pending"
-  },
-  {
-    "content": "8. GitHub hygiene - README, checklists, architecture docs",
-    "status": "pending"
-  },
-  {
-    "content": "9. Final consistency test matrix - verify all canonical data",
-    "status": "pending"
-  },
-  {
-    "content": "10. Build and verification pass - run all tests and document",
-    "status": "pending"
   }
 ]
