@@ -248,3 +248,65 @@ export function getResidentById(residentId) {
 export function getProviderById(providerId) {
   return CANONICAL_PROVIDERS.find(p => p.id === providerId);
 }
+
+// ========================================
+// MANAGER-SCOPED DATA HELPERS
+// Sarah Mitchell manages The Metropolitan at Riverside only
+// ========================================
+
+export const SARAH_PROPERTY_ID = PROPERTY_IDS.metropolitan;
+
+// Get Sarah's managed property
+export function getSarahManagedProperty() {
+  return CANONICAL_PROPERTIES.find(p => p.id === SARAH_PROPERTY_ID);
+}
+
+// Get residents for Sarah's property only
+export function getSarahPropertyResidents() {
+  return CANONICAL_RESIDENTS.filter(r => r.propertyId === SARAH_PROPERTY_ID);
+}
+
+// Get providers serving Sarah's property only
+export function getSarahPropertyProviders() {
+  return CANONICAL_PROVIDERS.filter(p => p.properties.includes(SARAH_PROPERTY_ID));
+}
+
+// Get property-level totals for Sarah's property
+export function getSarahPropertyTotals() {
+  const property = getSarahManagedProperty();
+  if (!property) return null;
+  
+  return {
+    propertyId: property.id,
+    propertyName: property.name,
+    totalUnits: property.totalUnits,
+    occupiedUnits: property.occupiedUnits,
+    occupancyRate: property.occupancyRate,
+    atRiskResidents: property.atRiskResidents,
+    creditsInvested: property.creditsInvestedPerMonth,
+    projectedSavings: property.estimatedAnnualROI,
+    avoidedTurnovers: property.avoidedTurnoversPerYear,
+    serviceRevenue: property.monthlyServiceRevenueProjection,
+    providerCoverage: property.providerCoveragePercent
+  };
+}
+
+// ========================================
+// RESIDENT-SCOPED DATA HELPERS  
+// Alex Chen specific data only
+// ========================================
+
+// Get Alex Chen's data
+export function getAlexChenData() {
+  return ALEX_CHEN;
+}
+
+// Get Alex's property
+export function getAlexProperty() {
+  return getPropertyById(ALEX_CHEN.propertyId);
+}
+
+// Get providers serving Alex's property
+export function getAlexPropertyProviders() {
+  return CANONICAL_PROVIDERS.filter(p => p.properties.includes(ALEX_CHEN.propertyId));
+}

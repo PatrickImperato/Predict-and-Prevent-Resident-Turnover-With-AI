@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CANONICAL_RESIDENTS, CANONICAL_PROPERTIES, getPropertyById } from "@/lib/canonicalData";
+import { getSarahPropertyResidents, getSarahManagedProperty, getPropertyById } from "@/lib/canonicalData";
 import { deployIntervention, listManagerActions } from "@/lib/api";
 
 export default function ManagerChurnRisk() {
@@ -15,6 +15,10 @@ export default function ManagerChurnRisk() {
   const [deploying, setDeploying] = useState(new Set());
   const [interventionsList, setInterventionsList] = useState([]);
   const [loading, setLoading] = useState(true);
+  
+  // Get Sarah's property and residents (Property Manager scope)
+  const sarahProperty = getSarahManagedProperty();
+  const sarahResidents = getSarahPropertyResidents();
   
   // Load deployed interventions from backend on mount
   useEffect(() => {
@@ -44,10 +48,10 @@ export default function ManagerChurnRisk() {
     loadInterventions();
   }, []);
   
-  // Filter residents by risk tier (using canonical risk tier field)
-  const highRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "high");
-  const mediumRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "medium");
-  const lowRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "low");
+  // Filter residents by risk tier - Sarah's residents only
+  const highRiskResidents = sarahResidents.filter(r => r.riskTier === "high");
+  const mediumRiskResidents = sarahResidents.filter(r => r.riskTier === "medium");
+  const lowRiskResidents = sarahResidents.filter(r => r.riskTier === "low");
   
   // Calculate projected impact based on canonical risk tier
   const estimateSavings = (resident) => {
@@ -56,7 +60,7 @@ export default function ManagerChurnRisk() {
     return 1900;
   };
   
-  const totalProjectedSavings = CANONICAL_RESIDENTS
+  const totalProjectedSavings = sarahResidents
     .filter(r => r.riskScore >= 60)
     .reduce((sum, r) => sum + estimateSavings(r), 0);
   

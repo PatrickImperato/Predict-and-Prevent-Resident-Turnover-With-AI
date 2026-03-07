@@ -6,9 +6,9 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
-  CANONICAL_RESIDENTS, 
-  CANONICAL_PROPERTIES, 
-  PORTFOLIO_TOTALS,
+  getSarahManagedProperty,
+  getSarahPropertyResidents,
+  getSarahPropertyTotals,
   getPropertyById 
 } from "@/lib/canonicalData";
 import { interventionHistory } from "@/lib/interventionHistory";
@@ -19,30 +19,35 @@ export default function ManagerDashboard() {
     return interventionHistory.getCount() === 0;
   });
   
-  // Use canonical portfolio metrics
+  // Get Sarah's managed property and residents (Property Manager scope)
+  const sarahProperty = getSarahManagedProperty();
+  const sarahResidents = getSarahPropertyResidents();
+  const sarahTotals = getSarahPropertyTotals();
+  
+  // Property Manager metrics (Sarah's property only, NOT portfolio)
   const currentMetrics = {
-    totalAtRisk: PORTFOLIO_TOTALS.totalAtRisk,
-    highRisk: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length,
-    totalCreditsRecommended: PORTFOLIO_TOTALS.totalCreditsInvested,
-    totalProjectedSavings: PORTFOLIO_TOTALS.totalProjectedSavings,
-    netRetentionROI: PORTFOLIO_TOTALS.portfolioROI,
-    roiMultiple: PORTFOLIO_TOTALS.roiMultiple
+    totalAtRisk: sarahProperty.atRiskResidents,
+    highRisk: sarahResidents.filter(r => r.riskTier === "high").length,
+    totalCreditsRecommended: sarahTotals.creditsInvested,
+    totalProjectedSavings: sarahTotals.projectedSavings,
+    netRetentionROI: sarahTotals.projectedSavings - sarahTotals.creditsInvested,
+    roiMultiple: (sarahTotals.projectedSavings / sarahTotals.creditsInvested)
   };
   
   // Get deployed interventions
   const deployedCount = interventionHistory.getCount();
   const deployedCredits = interventionHistory.getTotalCredits();
   
-  // Sort residents by risk score (highest first)
-  const topOpportunities = [...CANONICAL_RESIDENTS]
+  // Sort residents by risk score (highest first) - Sarah's residents only
+  const topOpportunities = [...sarahResidents]
     .filter(r => r.riskScore >= 60)
     .sort((a, b) => b.riskScore - a.riskScore)
     .slice(0, 5);
   
-  // Get risk distribution
-  const highRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length;
-  const mediumRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length;
-  const lowRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length;
+  // Get risk distribution for Sarah's property only
+  const highRisk = sarahResidents.filter(r => r.riskTier === "high").length;
+  const mediumRisk = sarahResidents.filter(r => r.riskTier === "medium").length;
+  const lowRisk = sarahResidents.filter(r => r.riskTier === "low").length;
 
   return (
     <motion.div 
@@ -55,13 +60,13 @@ export default function ManagerDashboard() {
       {/* Header */}
       <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
-          Portfolio Operations
+          Property Manager
         </Badge>
         <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           Retention Operations Workspace
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact across {CANONICAL_PROPERTIES.map(p => p.shortName).join(", ")}.
+          Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact at <span className="font-semibold text-foreground">{sarahProperty.name}</span>.
         </p>
       </section>
 
@@ -305,28 +310,25 @@ export default function ManagerDashboard() {
           </div>
         </div>
 
-        {/* Property Coverage */}
+        {/* Property Overview */}
         <div className="saas-card">
-          <h3 className="mb-6 text-lg font-semibold tracking-tight text-slate-900">Property Coverage</h3>
+          <h3 className="mb-6 text-lg font-semibold tracking-tight text-slate-900">Managed Property</h3>
           <div className="space-y-3">
-            {CANONICAL_PROPERTIES.map((property) => {
-              const propertyResidents = CANONICAL_RESIDENTS.filter(r => r.propertyId === property.id && r.riskScore >= 60);
-              
-              return (
-                <div key={property.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-semibold text-slate-900">{property.shortName}</p>
-                      <p className="text-sm text-slate-600">{property.address.city}, {property.address.state}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xl font-semibold text-slate-900">{propertyResidents.length}</p>
-                      <p className="text-xs text-slate-600">at-risk</p>
-                    </div>
-                  </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-slate-900">{sarahProperty.name}</p>
+                  <p className="text-sm text-slate-600">{sarahProperty.address.street}</p>
+                  <p className="text-sm text-slate-600">{sarahProperty.address.city}, {sarahProperty.address.state} {sarahProperty.address.postalCode}</p>
                 </div>
-              );
-            })}
+                <div className="text-right">
+                  <p className="text-xl font-semibold text-slate-900">{sarahProperty.atRiskResidents}</p>
+                  <p className="text-xs text-slate-600">at-risk</p>
+                  <p className="mt-2 text-sm text-slate-600">{sarahProperty.totalUnits} units</p>
+                  <p className="text-xs text-slate-600">{sarahProperty.occupiedUnits} occupied</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
