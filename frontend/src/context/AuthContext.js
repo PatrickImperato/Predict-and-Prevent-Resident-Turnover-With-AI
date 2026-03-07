@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-import { authApi } from "@/lib/api";
+import { login as apiLogin, logout as apiLogout, getSession } from "@/lib/api";
 
 const fallbackSession = {
   authenticated: false,
@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const refreshSession = async () => {
     try {
-      const response = await authApi.getSession();
+      const response = await getSession();
       setSession(response.data);
       persistSession(response.data);
       return response.data;
@@ -81,14 +81,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (payload) => {
-    const response = await authApi.login(payload);
+    const response = await apiLogin(payload);
     setSession(response.data.session);
     persistSession(response.data.session);
     return response.data;
   };
 
   const logout = async () => {
-    await authApi.logout();
+    await apiLogout();
     setSession((current) => {
       const nextSession = {
         ...current,

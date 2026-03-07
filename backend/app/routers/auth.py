@@ -4,13 +4,9 @@ from pydantic import BaseModel, EmailStr
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from app.core.database import get_database
-from app.middleware.auth_dependencies import (
-    get_config,
-    get_current_session,
-    logout_current_session,
-    require_authenticated_user,
-)
-from app.services.auth_service import SessionManager
+from app.core.config import get_config
+from app.middleware.auth_dependencies import require_authenticated_user
+from app.services.auth_service import authenticate_user, create_session, get_session_response, logout_current_session
 from app.services.event_logger import log_event, EventType
 
 router = APIRouter()
@@ -39,24 +35,25 @@ async def login(
 ):
     """Login endpoint with event logging."""
     config = get_config()
-    sm = SessionManager(config, db)
     
     # Get client info for logging
     ip_address = request.client.host if request.client else None
     user_agent = request.headers.get("user-agent")
     
     try:
-        session_data = await sm.create_session_for_user(
-            credentials.email, credentials.password, response
-        )
+        # Authenticate the user
+        user = await authenticate_user(db, config, credentials.email, credentials.password)
+        
+        # Create session
+        session_data = await create_session(db, config, user, response, request)
         
         # Log successful login
         await log_event(
             db,
             EventType.LOGIN_SUCCESS,
-            user_id=session_data["userId"],
-            user_email=session_data["email"],
-            user_role=session_data["role"],
+            user_id=session_data.get("user_id"),
+            user_email=session_data.get("email"),
+            user_role=session_data.get("role"),
             ip_address=ip_address,
             user_agent=user_agent,
             details={"login_method": "password"}
@@ -64,8 +61,22 @@ async def login(
         
         return LoginResponse(message="Login successful", session=session_data)
         
-    except Exception as e:
+    except HTTPException:
         # Log failed login
+        await log_event(
+            db,
+            EventType.LOGIN_FAILURE,
+            user_email=credentials.email,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            details={
+                "reason": "Invalid credentials",
+                "login_method": "password"
+            }
+        )
+        raise
+    except Exception as e:
+        # Log failed login for unexpected errors
         await log_event(
             db,
             EventType.LOGIN_FAILURE,
@@ -94,7 +105,7 @@ async def logout(
     await log_event(
         db,
         EventType.LOGOUT,
-        user_id=current_user.get("userId"),
+        user_id=current_user.get("id"),
         user_email=current_user.get("email"),
         user_role=current_user.get("role"),
         ip_address=request.client.host if request.client else None,
@@ -107,9 +118,9 @@ async def logout(
 
 @router.get("/session")
 async def get_session(
-    current_session: dict = Depends(get_current_session),
+    request: Request,
+    db: AsyncIOMotorDatabase = Depends(get_database),
 ):
     """Get current session info."""
-    if not current_session:
-        return {"authenticated": False}
-    return current_session
+    config = get_config()
+    return await get_session_response(request, db, config)

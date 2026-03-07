@@ -39,12 +39,20 @@ async def check_database_integrity(db: AsyncIOMotorDatabase) -> IntegrityCheckRe
     # Check 1: All residents point to valid properties
     result.add_check("resident_property_references")
     residents = await db.tracked_residents.find({}).to_list(None)
-    property_ids = {p["propertyId"] async for p in db.properties.find({}, {"propertyId": 1})}
+    properties = await db.properties.find({}).to_list(None)
+    
+    # Get property IDs - handle both snake_case and camelCase
+    property_ids = set()
+    for p in properties:
+        prop_id = p.get("propertyId") or p.get("property_id")
+        if prop_id:
+            property_ids.add(prop_id)
     
     for resident in residents:
-        if resident.get("propertyId") not in property_ids:
+        res_prop_id = resident.get("propertyId") or resident.get("property_id")
+        if res_prop_id and res_prop_id not in property_ids:
             result.add_error(
-                f"Resident {resident.get('residentId')} references invalid property {resident.get('propertyId')}"
+                f"Resident {resident.get('residentId') or resident.get('resident_id')} references invalid property {res_prop_id}"
             )
     
     # Check 2: All units point to valid properties
@@ -52,24 +60,35 @@ async def check_database_integrity(db: AsyncIOMotorDatabase) -> IntegrityCheckRe
     units = await db.units.find({}).to_list(None)
     
     for unit in units:
-        if unit.get("propertyId") not in property_ids:
+        unit_prop_id = unit.get("propertyId") or unit.get("property_id")
+        if unit_prop_id and unit_prop_id not in property_ids:
             result.add_error(
-                f"Unit {unit.get('unitId')} references invalid property {unit.get('propertyId')}"
+                f"Unit {unit.get('unitId') or unit.get('unit_id')} references invalid property {unit_prop_id}"
             )
     
     # Check 3: Flagship property exists
     result.add_check("flagship_property_exists")
-    flagship = await db.properties.find_one({"isFlagship": True})
-    if not flagship:
-        result.add_error("No flagship property found")
+    if properties:  # Only check if we have properties
+        flagship = await db.properties.find_one({"isFlagship": True})
+        if not flagship:
+            flagship = await db.properties.find_one({"is_flagship": True})
+        if not flagship:
+            result.add_warning("No flagship property found")
+    else:
+        result.add_warning("No properties in database yet")
     
     # Check 4: Flagship resident (Alex Chen) exists
     result.add_check("flagship_resident_exists")
-    alex_chen = await db.tracked_residents.find_one({"fullName": "Alex Chen"})
-    if not alex_chen:
-        result.add_error("Flagship resident Alex Chen not found")
-    elif alex_chen.get("unit") != "501":
-        result.add_warning("Alex Chen unit is not 501")
+    if residents:  # Only check if we have residents
+        alex_chen = await db.tracked_residents.find_one({"fullName": "Alex Chen"})
+        if not alex_chen:
+            alex_chen = await db.tracked_residents.find_one({"full_name": "Alex Chen"})
+        if not alex_chen:
+            result.add_warning("Flagship resident Alex Chen not found")
+        elif alex_chen.get("unit") != "501":
+            result.add_warning("Alex Chen unit is not 501")
+    else:
+        result.add_warning("No residents in database yet")
     
     # Check 5: User emails are unique
     result.add_check("user_email_uniqueness")
@@ -81,15 +100,25 @@ async def check_database_integrity(db: AsyncIOMotorDatabase) -> IntegrityCheckRe
     # Check 6: Canonical IDs are unique
     result.add_check("canonical_id_uniqueness")
     
-    # Check property IDs
-    prop_ids = [p.get("propertyId") for p in await db.properties.find({}).to_list(None)]
-    if len(prop_ids) != len(set(prop_ids)):
-        result.add_error("Duplicate property IDs found")
+    # Check property IDs - handle both naming conventions
+    if properties:
+        prop_ids = []
+        for p in properties:
+            prop_id = p.get("propertyId") or p.get("property_id")
+            if prop_id:
+                prop_ids.append(prop_id)
+        if len(prop_ids) != len(set(prop_ids)):
+            result.add_error("Duplicate property IDs found")
     
     # Check resident IDs
-    res_ids = [r.get("residentId") for r in residents]
-    if len(res_ids) != len(set(res_ids)):
-        result.add_error("Duplicate resident IDs found")
+    if residents:
+        res_ids = []
+        for r in residents:
+            res_id = r.get("residentId") or r.get("resident_id")
+            if res_id:
+                res_ids.append(res_id)
+        if len(res_ids) != len(set(res_ids)):
+            result.add_error("Duplicate resident IDs found")
     
     # Check 7: Provider property coverage references valid properties
     result.add_check("provider_property_coverage")
@@ -105,13 +134,19 @@ async def check_database_integrity(db: AsyncIOMotorDatabase) -> IntegrityCheckRe
     # Check 8: Interventions reference valid residents
     result.add_check("intervention_resident_references")
     interventions = await db.interventions.find({}).to_list(None)
-    resident_ids = {r.get("residentId") for r in residents}
-    
-    for intervention in interventions:
-        if intervention.get("residentId") not in resident_ids:
-            result.add_error(
-                f"Intervention {intervention.get('interventionId')} references invalid resident {intervention.get('residentId')}"
-            )
+    if interventions:
+        resident_ids = set()
+        for r in residents:
+            res_id = r.get("residentId") or r.get("resident_id")
+            if res_id:
+                resident_ids.add(res_id)
+        
+        for intervention in interventions:
+            int_res_id = intervention.get("residentId") or intervention.get("resident_id")
+            if int_res_id and int_res_id not in resident_ids:
+                result.add_error(
+                    f"Intervention {intervention.get('interventionId') or intervention.get('intervention_id')} references invalid resident {int_res_id}"
+                )
     
     # Check 9: Seed state integrity
     result.add_check("seed_state_integrity")

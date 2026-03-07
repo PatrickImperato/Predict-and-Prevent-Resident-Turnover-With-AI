@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { propertiesApi } from "@/lib/api";
+import { getPropertyDetail } from "@/lib/api";
 
 export default function PropertyDetailPage() {
   const { propertyId } = useParams();
@@ -22,7 +22,7 @@ export default function PropertyDetailPage() {
   useEffect(() => {
     const loadDetail = async () => {
       try {
-        const response = await propertiesApi.getDetail(propertyId);
+        const response = await getPropertyDetail(propertyId);
         setDetail(response.data);
         setError(null);
       } catch (error) {

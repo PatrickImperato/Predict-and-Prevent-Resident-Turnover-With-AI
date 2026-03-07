@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { propertiesApi } from "@/lib/api";
+import { getProperties } from "@/lib/api";
 
 export default function PropertiesPage() {
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ export default function PropertiesPage() {
   useEffect(() => {
     const loadProperties = async () => {
       try {
-        const response = await propertiesApi.getList();
+        const response = await getProperties();
         setData(response.data);
       } catch (error) {
         toast.error(error?.response?.data?.detail || "Unable to load properties.");
