@@ -1,34 +1,42 @@
 [
   {
-    "content": "1. Canonical API Response Layer - Create shared backend response shapes for properties, residents, providers, analytics",
+    "content": "1. Database reliability - indexes, validation, integrity checks",
     "status": "in_progress"
   },
   {
-    "content": "2. Route Guard and Fallback Pass - Unauthorized redirects, 404 pages, empty states, disabled actions",
+    "content": "2. Canonical API response layer - strengthen Pydantic models",
     "status": "pending"
   },
   {
-    "content": "3. Auth Polish Pass - Role switcher clarity, failed login states, logout confirmation, session timeout",
+    "content": "3. Route guards and fallbacks - 404, unauthorized, loading/empty states",
     "status": "pending"
   },
   {
-    "content": "4. Property Manager Action Model - Define manager review/action/approval structure",
+    "content": "4. Session and auth hardening - timeout, logout, deep link protection",
     "status": "pending"
   },
   {
-    "content": "5. Alex Journey Backbone Rebuild - Timeline, intervention history, communication, services, credits",
+    "content": "5. Event logging backbone - audit trail for all actions",
     "status": "pending"
   },
   {
-    "content": "6. Notification and Event Logging Layer - Internal event system for all actions",
+    "content": "6. Manager action model foundation - action states and persistence",
     "status": "pending"
   },
   {
-    "content": "7. Global Settings Logic Pass - Risk thresholds, intervention rules, provider routing",
+    "content": "7. Deployment readiness - env vars, build reproducibility",
     "status": "pending"
   },
   {
-    "content": "8. Final Consistency Test Matrix - Structured QA across all roles",
+    "content": "8. GitHub hygiene - README, checklists, architecture docs",
+    "status": "pending"
+  },
+  {
+    "content": "9. Final consistency test matrix - verify all canonical data",
+    "status": "pending"
+  },
+  {
+    "content": "10. Build and verification pass - run all tests and document",
     "status": "pending"
   }
 ]
