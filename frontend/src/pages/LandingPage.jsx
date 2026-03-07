@@ -323,14 +323,14 @@ export default function LandingPage() {
                 </div>
 
                 {/* PRIMARY PROOF METRIC - ENHANCED */}
-                <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/[0.12] to-primary/[0.06] p-5 backdrop-blur-[3px] shadow-lg shadow-primary/10">
+                <div className="rounded-xl border-2 border-white bg-gradient-to-br from-primary/[0.12] to-primary/[0.06] p-5 backdrop-blur-[3px] shadow-lg shadow-primary/10">
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/15 text-white">
                       <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
                     </div>
                     <div className="min-w-0">
-                      <p ref={roiRef} className="font-[var(--font-heading)] text-[32px] sm:text-[34px] font-bold leading-none tracking-tight text-primary drop-shadow-sm">{roiValue}</p>
-                      <p className="mt-2 text-[14px] sm:text-[15px] font-semibold text-primary/80">Portfolio ROI example</p>
+                      <p ref={roiRef} className="font-[var(--font-heading)] text-[32px] sm:text-[34px] font-bold leading-none tracking-tight text-white drop-shadow-sm">{roiValue}</p>
+                      <p className="mt-2 text-[14px] sm:text-[15px] font-semibold text-white">Portfolio ROI example</p>
                     </div>
                   </div>
                 </div>

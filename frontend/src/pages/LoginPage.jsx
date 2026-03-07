@@ -220,9 +220,12 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="mt-8">
+            <div className="mt-8 space-y-2">
               <p className="text-[13px] font-medium text-muted-foreground">
                 Demo environment • Concept demonstration
+              </p>
+              <p className="text-xs text-muted-foreground/60">
+                © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
               </p>
             </div>
           </motion.div>
@@ -304,14 +307,6 @@ export default function LoginPage() {
                   );
                 })}
               </div>
-            </div>
-
-            {/* Footer Note */}
-            <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-3.5">
-              <p className="text-xs leading-relaxed text-slate-400">
-                © Tima Travel Media LLC. All rights reserved. Proprietary concept demonstration. 
-                HappyCo is a trademark of HappyCo, Inc.
-              </p>
             </div>
           </div>
         </div>
