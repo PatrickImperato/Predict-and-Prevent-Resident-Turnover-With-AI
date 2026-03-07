@@ -5,7 +5,12 @@ import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { AT_RISK_RESIDENTS_WITH_SCORES, computePortfolioAnalytics, PROPERTIES } from "@/lib/demoData";
+import { 
+  CANONICAL_RESIDENTS, 
+  CANONICAL_PROPERTIES, 
+  PORTFOLIO_TOTALS,
+  getPropertyById 
+} from "@/lib/canonicalData";
 import { interventionHistory } from "@/lib/interventionHistory";
 
 export default function ManagerDashboard() {
@@ -14,30 +19,30 @@ export default function ManagerDashboard() {
     return interventionHistory.getCount() === 0;
   });
   
-  // Compute portfolio metrics
-  const analytics = computePortfolioAnalytics();
-  const currentMetrics = analytics.current;
+  // Use canonical portfolio metrics
+  const currentMetrics = {
+    totalAtRisk: PORTFOLIO_TOTALS.totalAtRisk,
+    highRisk: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length,
+    totalCreditsRecommended: PORTFOLIO_TOTALS.totalCreditsInvested,
+    totalProjectedSavings: PORTFOLIO_TOTALS.totalProjectedSavings,
+    netRetentionROI: PORTFOLIO_TOTALS.portfolioROI,
+    roiMultiple: PORTFOLIO_TOTALS.roiMultiple
+  };
   
   // Get deployed interventions
   const deployedCount = interventionHistory.getCount();
   const deployedCredits = interventionHistory.getTotalCredits();
   
-  // Sort residents by highest ROI impact (projected savings)
-  const opportunitiesByROI = [...AT_RISK_RESIDENTS_WITH_SCORES].sort((a, b) => 
-    (b.projectedROI?.netROI || 0) - (a.projectedROI?.netROI || 0)
-  );
-  
-  // Get top 5 highest ROI opportunities
-  const topOpportunities = opportunitiesByROI.slice(0, 5);
+  // Sort residents by risk score (highest first)
+  const topOpportunities = [...CANONICAL_RESIDENTS]
+    .filter(r => r.riskScore >= 60)
+    .sort((a, b) => b.riskScore - a.riskScore)
+    .slice(0, 5);
   
   // Get risk distribution
-  const highRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 80).length;
-  const mediumRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 70 && r.riskScore < 80).length;
-  const lowRisk = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.riskScore >= 60 && r.riskScore < 70).length;
-  
-  const getProperty = (propertyId) => {
-    return PROPERTIES.find(p => p.id === propertyId);
-  };
+  const highRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length;
+  const mediumRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length;
+  const lowRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length;
 
   return (
     <motion.div 
@@ -50,13 +55,13 @@ export default function ManagerDashboard() {
       {/* Header */}
       <section className="rounded-lg border border-border/60 bg-card p-6 shadow-sm">
         <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
-          Seattle Portfolio
+          Portfolio Operations
         </Badge>
         <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
           Retention Operations Workspace
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact across your properties.
+          Daily workspace for monitoring at-risk residents, deploying retention interventions, and tracking financial impact across {CANONICAL_PROPERTIES.map(p => p.shortName).join(", ")}.
         </p>
       </section>
 
@@ -83,9 +88,9 @@ export default function ManagerDashboard() {
                     
                     <div className="mt-4 grid gap-3 md:grid-cols-2">
                       <div className="rounded-lg border border-teal-200 bg-white p-4">
-                        <p className="text-sm font-semibold text-slate-900">1. Review Highest-ROI Residents</p>
+                        <p className="text-sm font-semibold text-slate-900">1. Review Highest-Risk Residents</p>
                         <p className="mt-1 text-sm text-slate-700">
-                          Opportunities below are sorted by projected net ROI. Start with residents showing the highest financial impact.
+                          Opportunities below are sorted by risk score. Start with residents showing the highest churn risk.
                         </p>
                       </div>
                       
@@ -184,17 +189,17 @@ export default function ManagerDashboard() {
 
             <div className="rounded-lg border border-teal-200 bg-white p-4">
               <p className="text-xs font-medium text-slate-600">ROI Multiple</p>
-              <p className="mt-2 text-2xl font-semibold text-teal-700">{currentMetrics.roiMultiple}x</p>
+              <p className="mt-2 text-2xl font-semibold text-teal-700">{currentMetrics.roiMultiple.toFixed(1)}x</p>
               <p className="mt-1 text-xs text-slate-600">Return on investment</p>
             </div>
           </div>
 
           {/* Highest Impact Residents */}
           <div>
-            <p className="mb-4 text-sm font-semibold text-slate-700">Highest ROI Impact Residents (sorted by projected net ROI)</p>
+            <p className="mb-4 text-sm font-semibold text-slate-700">Highest Risk Residents (sorted by risk score)</p>
             <div className="space-y-3">
               {topOpportunities.map((resident, index) => {
-                const property = getProperty(resident.propertyId);
+                const property = getPropertyById(resident.propertyId);
                 
                 return (
                   <motion.div
@@ -218,44 +223,22 @@ export default function ManagerDashboard() {
                         </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
-                            <p className="font-semibold text-slate-900">{resident.name}</p>
+                            <p className="font-semibold text-slate-900">{resident.fullName}</p>
                             <Badge className="text-xs">{resident.riskScore}</Badge>
                           </div>
                           <p className="mt-1 text-sm text-slate-600">
-                            {property?.name} • Unit {resident.unit} • {resident.frictionSignals.daysToLeaseEnd} days to lease end
+                            {property?.shortName} • Unit {resident.unit} • {resident.communicationChannel} • {resident.status}
                           </p>
                           
-                          {/* Top Drivers */}
+                          {/* Primary Driver */}
                           <div className="mt-3 flex flex-wrap gap-2">
-                            {resident.riskDrivers.slice(0, 2).map((driver) => (
-                              <div key={driver.name} className="flex items-center gap-2 rounded-md bg-slate-100 px-2 py-1">
-                                <p className="text-xs font-medium text-slate-700">{driver.name}</p>
-                                <p className="text-xs font-semibold text-slate-900">{driver.contribution} pts</p>
-                              </div>
-                            ))}
-                          </div>
-
-                          {/* Intervention & ROI */}
-                          <div className="mt-3 flex items-center gap-4 text-sm">
-                            <div>
-                              <p className="text-xs text-slate-600">Recommended</p>
-                              <p className="font-semibold text-slate-900">
-                                {resident.recommendedIntervention.label} • ${resident.recommendedIntervention.creditOffer}
-                              </p>
+                            <div className="flex items-center gap-2 rounded-md bg-slate-100 px-2 py-1">
+                              <p className="text-xs font-medium text-slate-700">Primary Driver</p>
+                              <p className="text-xs font-semibold text-slate-900">{resident.primaryDriver}</p>
                             </div>
-                            <div className="h-4 w-px bg-slate-300"></div>
-                            <div>
-                              <p className="text-xs text-slate-600">Expected Savings</p>
-                              <p className="font-semibold text-teal-600">
-                                ${resident.projectedROI.expectedSavings.toLocaleString()}
-                              </p>
-                            </div>
-                            <div className="h-4 w-px bg-slate-300"></div>
-                            <div>
-                              <p className="text-xs text-slate-600">Net ROI</p>
-                              <p className="font-semibold text-teal-700">
-                                ${resident.projectedROI.netROI.toLocaleString()} ({resident.projectedROI.roiMultiple}x)
-                              </p>
+                            <div className="flex items-center gap-2 rounded-md bg-teal-100 px-2 py-1">
+                              <p className="text-xs font-medium text-teal-700">Risk Tier</p>
+                              <p className="text-xs font-semibold text-teal-900">{resident.riskTier}</p>
                             </div>
                           </div>
                         </div>
@@ -263,7 +246,7 @@ export default function ManagerDashboard() {
 
                       <div className="ml-4">
                         <Button className="h-9 rounded-lg" size="sm">
-                          Deploy
+                          View Details
                         </Button>
                       </div>
                     </Link>
@@ -275,7 +258,7 @@ export default function ManagerDashboard() {
         </div>
       </section>
 
-      {/* Risk Distribution & Quick Stats */}
+      {/* Risk Distribution & Property Coverage */}
       <section className="grid gap-6 md:grid-cols-2">
         {/* Churn Risk Distribution */}
         <div className="saas-card">
@@ -289,7 +272,7 @@ export default function ManagerDashboard() {
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div 
                   className="h-full rounded-full bg-red-500"
-                  style={{ width: `${(highRisk / currentMetrics.totalAtRisk) * 100}%` }}
+                  style={{ width: `${(highRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
                 />
               </div>
             </div>
@@ -302,7 +285,7 @@ export default function ManagerDashboard() {
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div 
                   className="h-full rounded-full bg-amber-500"
-                  style={{ width: `${(mediumRisk / currentMetrics.totalAtRisk) * 100}%` }}
+                  style={{ width: `${(mediumRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
                 />
               </div>
             </div>
@@ -315,7 +298,7 @@ export default function ManagerDashboard() {
               <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div 
                   className="h-full rounded-full bg-slate-400"
-                  style={{ width: `${(lowRisk / currentMetrics.totalAtRisk) * 100}%` }}
+                  style={{ width: `${(lowRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
                 />
               </div>
             </div>
@@ -326,15 +309,15 @@ export default function ManagerDashboard() {
         <div className="saas-card">
           <h3 className="mb-6 text-lg font-semibold tracking-tight text-slate-900">Property Coverage</h3>
           <div className="space-y-3">
-            {PROPERTIES.map((property) => {
-              const propertyResidents = AT_RISK_RESIDENTS_WITH_SCORES.filter(r => r.propertyId === property.id);
+            {CANONICAL_PROPERTIES.map((property) => {
+              const propertyResidents = CANONICAL_RESIDENTS.filter(r => r.propertyId === property.id && r.riskScore >= 60);
               
               return (
                 <div key={property.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-slate-900">{property.name}</p>
-                      <p className="text-sm text-slate-600">{property.neighborhood}</p>
+                      <p className="font-semibold text-slate-900">{property.shortName}</p>
+                      <p className="text-sm text-slate-600">{property.address.city}, {property.address.state}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-semibold text-slate-900">{propertyResidents.length}</p>

@@ -5,33 +5,32 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CountUp } from "@/components/ui/count-up";
+import { ALEX_CHEN, getPropertyById } from "@/lib/canonicalData";
 
-const mockResidentDashboard = {
-  resident: {
-    name: "Alex Chen",
-    unit: "501",
-    email: "alex.chen@email.com"
-  },
-  promotional_credit: {
-    available: 500,
-    expires: "2025-09-30"
-  },
-  quick_services: [
+export default function ResidentDashboard() {
+  // Use Alex Chen from canonical data
+  const resident = ALEX_CHEN;
+  const property = getPropertyById(resident.propertyId);
+  
+  // Credit amount based on risk score (would normally come from backend)
+  const promotionalCredit = 500;
+  const creditExpires = "2025-09-30";
+  
+  // Mock quick services (would normally come from canonical services data)
+  const quickServices = [
     { id: "1", name: "Deep Cleaning", price: 120, duration: "2 hours", icon: Sparkles },
     { id: "2", name: "AC Tune-up", price: 85, duration: "1 hour", icon: Wrench },
     { id: "3", name: "Pet Grooming", price: 65, duration: "1.5 hours", icon: Gift }
-  ],
-  recent_bookings: [
-    { id: "1", service: "Deep Cleaning", date: "2025-03-15", status: "Completed", provider: "CleanPro Services" },
-    { id: "2", service: "AC Maintenance", date: "2025-02-28", status: "Completed", provider: "HVAC Experts" }
-  ],
-  maintenance_requests: [
+  ];
+  
+  const recentBookings = [
+    { id: "1", service: "Deep Cleaning", date: "2025-03-15", status: "Completed", provider: "SparkClean" },
+    { id: "2", service: "AC Maintenance", date: "2025-02-28", status: "Completed", provider: "FixRight HVAC" }
+  ];
+  
+  const maintenanceRequests = [
     { id: "1", issue: "HVAC - Temperature control", date: "2025-03-01", status: "Resolved", resolution_time: "2 days" }
-  ]
-};
-
-export default function ResidentDashboard() {
-  const data = mockResidentDashboard;
+  ];
 
   return (
     <motion.div 
@@ -39,14 +38,15 @@ export default function ResidentDashboard() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
       className="space-y-8"
+      data-testid="resident-dashboard-root"
     >
       {/* Welcome Header */}
       <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
         <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
-          Welcome back, {data.resident.name}
+          Welcome back, {resident.fullName}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          Unit {data.resident.unit} • Your personalized resident experience
+          Unit {resident.unit} • {property?.shortName} • Your personalized resident experience
         </p>
       </section>
 
@@ -67,10 +67,10 @@ export default function ResidentDashboard() {
                   Retention Credit Available
                 </Badge>
                 <p className="font-[var(--font-heading)] text-[36px] font-semibold tracking-tight text-slate-900">
-                  $<CountUp end={data.promotional_credit.available} duration={1000} />
+                  $<CountUp end={promotionalCredit} duration={1000} />
                 </p>
                 <p className="mt-1 text-sm text-slate-700">
-                  Use on any service • Expires {new Date(data.promotional_credit.expires).toLocaleDateString()}
+                  Use on any service • Expires {new Date(creditExpires).toLocaleDateString()}
                 </p>
               </div>
             </div>
@@ -85,7 +85,7 @@ export default function ResidentDashboard() {
       <section>
         <h3 className="mb-6 text-xl font-semibold text-slate-900">Quick Services</h3>
         <div className="grid gap-6 md:grid-cols-3">
-          {data.quick_services.map((service, index) => (
+          {quickServices.map((service, index) => (
             <motion.div
               key={service.id}
               initial={{ opacity: 0, y: 12 }}
@@ -119,7 +119,7 @@ export default function ResidentDashboard() {
             </Button>
           </div>
           <div className="space-y-3">
-            {data.recent_bookings.map((booking) => (
+            {recentBookings.map((booking) => (
               <div key={booking.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                 <div className="flex items-start justify-between">
                   <div>
@@ -145,7 +145,7 @@ export default function ResidentDashboard() {
             </Button>
           </div>
           <div className="space-y-3">
-            {data.maintenance_requests.map((request) => (
+            {maintenanceRequests.map((request) => (
               <div key={request.id} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                 <div className="flex items-start justify-between">
                   <div>

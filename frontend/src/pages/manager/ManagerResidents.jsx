@@ -6,22 +6,26 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-const mockResidents = [
-  { id: "1", name: "Alex Chen", unit: "501", lease_end: "2025-08-15", risk_score: 74, last_interaction: "2 days ago", risk_level: "high" },
-  { id: "2", name: "Maria Santos", unit: "312", lease_end: "2025-06-30", risk_score: 72, last_interaction: "1 day ago", risk_level: "high" },
-  { id: "3", name: "Jordan Lee", unit: "208", lease_end: "2025-09-12", risk_score: 68, last_interaction: "4 days ago", risk_level: "medium" },
-  { id: "4", name: "Taylor Kim", unit: "415", lease_end: "2026-01-20", risk_score: 52, last_interaction: "1 week ago", risk_level: "medium" },
-  { id: "5", name: "Jamie Rodriguez", unit: "102", lease_end: "2025-11-08", risk_score: 38, last_interaction: "3 days ago", risk_level: "low" },
-  { id: "6", name: "Morgan Patel", unit: "304", lease_end: "2026-02-15", risk_score: 24, last_interaction: "1 week ago", risk_level: "low" }
-];
+import { CANONICAL_RESIDENTS, ALEX_CHEN, getPropertyById } from "@/lib/canonicalData";
 
 export default function ManagerResidents() {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredResidents = mockResidents.filter(r => 
-    r.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  const filteredResidents = CANONICAL_RESIDENTS.filter(r => 
+    r.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     r.unit.includes(searchQuery)
+  );
+
+  // Calculate summary metrics
+  const totalResidents = CANONICAL_RESIDENTS.length;
+  const atRisk = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 70).length;
+  const expiringLeases = CANONICAL_RESIDENTS.filter(r => {
+    if (!r.leaseEnd) return false;
+    const daysToExpire = Math.floor((new Date(r.leaseEnd) - new Date()) / (1000 * 60 * 60 * 24));
+    return daysToExpire <= 90 && daysToExpire > 0;
+  }).length;
+  const avgRiskScore = Math.round(
+    CANONICAL_RESIDENTS.reduce((sum, r) => sum + r.riskScore, 0) / totalResidents
   );
 
   return (
@@ -45,23 +49,23 @@ export default function ManagerResidents() {
       <section className="grid gap-6 md:grid-cols-4">
         <div className="saas-metric-card">
           <p className="metric-label">Total Residents</p>
-          <p className="metric-value mt-3">94</p>
-          <p className="metric-detail mt-2">100 total units</p>
+          <p className="metric-value mt-3">{totalResidents}</p>
+          <p className="metric-detail mt-2">Active leases</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">At Risk</p>
-          <p className="metric-value mt-3">12</p>
+          <p className="metric-value mt-3">{atRisk}</p>
           <p className="metric-detail mt-2">High priority</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Expiring Leases</p>
-          <p className="metric-value mt-3">8</p>
+          <p className="metric-value mt-3">{expiringLeases}</p>
           <p className="metric-detail mt-2">Next 90 days</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Avg Risk Score</p>
-          <p className="metric-value mt-3">42</p>
-          <p className="metric-detail mt-2">-5 vs last month</p>
+          <p className="metric-value mt-3">{avgRiskScore}</p>
+          <p className="metric-detail mt-2">Portfolio average</p>
         </div>
       </section>
 
@@ -82,29 +86,57 @@ export default function ManagerResidents() {
               <TableRow className="border-slate-200 bg-slate-50">
                 <TableHead className="text-xs font-semibold text-slate-700">Resident</TableHead>
                 <TableHead className="text-xs font-semibold text-slate-700">Unit</TableHead>
+                <TableHead className="text-xs font-semibold text-slate-700">Property</TableHead>
                 <TableHead className="text-xs font-semibold text-slate-700">Lease End</TableHead>
                 <TableHead className="text-right text-xs font-semibold text-slate-700">Risk Score</TableHead>
-                <TableHead className="text-xs font-semibold text-slate-700">Last Interaction</TableHead>
+                <TableHead className="text-xs font-semibold text-slate-700">Channel</TableHead>
                 <TableHead className="text-right text-xs font-semibold text-slate-700">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredResidents.map((resident) => (
-                <TableRow key={resident.id} className="border-slate-200 hover:bg-slate-50">
-                  <TableCell className="font-medium text-slate-900">{resident.name}</TableCell>
-                  <TableCell className="text-slate-700">{resident.unit}</TableCell>
-                  <TableCell className="text-slate-700">{new Date(resident.lease_end).toLocaleDateString()}</TableCell>
-                  <TableCell className="text-right">
-                    <span className="text-lg font-semibold text-slate-900">{resident.risk_score}</span>
-                  </TableCell>
-                  <TableCell className="text-slate-700">{resident.last_interaction}</TableCell>
-                  <TableCell className="text-right">
-                    <Button size="sm" variant="outline" className="h-8 rounded-lg">
-                      View Profile
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {filteredResidents.map((resident) => {
+                const property = getPropertyById(resident.propertyId);
+                const isAlexChen = resident.id === ALEX_CHEN.id;
+                
+                return (
+                  <TableRow key={resident.id} className={`border-slate-200 hover:bg-slate-50 ${isAlexChen ? 'bg-teal-50/30' : ''}`}>
+                    <TableCell className="font-medium text-slate-900">
+                      <div className="flex items-center gap-2">
+                        {resident.fullName}
+                        {isAlexChen && (
+                          <Badge variant="secondary" className="text-xs bg-teal-100 text-teal-700 border-teal-200">
+                            Flagship
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-slate-700">{resident.unit}</TableCell>
+                    <TableCell className="text-slate-700">{property?.shortName}</TableCell>
+                    <TableCell className="text-slate-700">
+                      {resident.leaseEnd ? new Date(resident.leaseEnd).toLocaleDateString() : resident.status}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <span className={`text-lg font-semibold ${
+                        resident.riskScore >= 80 ? 'text-red-600' :
+                        resident.riskScore >= 70 ? 'text-amber-600' :
+                        'text-slate-900'
+                      }`}>
+                        {resident.riskScore}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="secondary" className="text-xs">
+                        {resident.communicationChannel}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button size="sm" variant="outline" className="h-8 rounded-lg">
+                        View Profile
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>

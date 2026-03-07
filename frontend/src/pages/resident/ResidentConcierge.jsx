@@ -6,14 +6,33 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CONCIERGE_RESPONSES, SERVICES } from "@/lib/demoData";
+import { ALEX_CHEN } from "@/lib/canonicalData";
+
+// Concierge response templates
+const RESPONSES = {
+  greeting: `Hi ${ALEX_CHEN.fullName}! I'm your AI concierge assistant. I can help you book services, request maintenance, or check your retention credits. How can I assist you today?`,
+  bookCleaning: (credit) => `I can help you book a deep cleaning service! You have $${credit} in retention credits available. A standard deep cleaning costs $120 and takes about 2 hours. Would you like me to book this for you?`,
+  scheduleMaintenance: "I can help you submit a maintenance request. What issue are you experiencing? Common categories include HVAC, plumbing, electrical, or general repairs.",
+  checkCredits: (credit) => `You currently have $${credit} in retention credits available. These credits can be used for any service in our marketplace, including cleaning, maintenance, pet care, and more. Credits expire on September 30, 2025.`,
+  availableServices: "Our service marketplace includes: Deep Cleaning ($120), AC Tune-up ($85), Pet Grooming ($65), and many more. All services can be booked with your retention credits. Which service interests you?",
+  fallback: "I'm here to help! You can ask me to: \n\u2022 Book a service from our marketplace\n\u2022 Submit a maintenance request\n\u2022 Check your credit balance\n\u2022 View available services\n\nWhat would you like to do?",
+  bookingConfirmed: (service, price, creditApplied) => `Perfect! I've scheduled your ${service} service. $${creditApplied} in retention credits have been applied. ${price - creditApplied > 0 ? `Remaining balance: $${price - creditApplied}.` : 'Fully covered by your credits!'} You'll receive a confirmation email shortly.`,
+  maintenanceSubmitted: (issue) => `Your ${issue} maintenance request has been submitted successfully. Our maintenance team will contact you within 2 hours to schedule a visit. You'll receive updates via ${ALEX_CHEN.communicationChannel}.`
+};
+
+// Service prices
+const SERVICES = {
+  deepCleaning: { name: "Deep Cleaning", basePrice: 120 },
+  acTuneup: { name: "AC Tune-up", basePrice: 85 },
+  petGrooming: { name: "Pet Grooming", basePrice: 65 }
+};
 
 export default function ResidentConcierge() {
   const [messages, setMessages] = useState([
     {
       id: 1,
       type: "assistant",
-      text: CONCIERGE_RESPONSES.greeting,
+      text: RESPONSES.greeting,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -51,7 +70,7 @@ export default function ResidentConcierge() {
   const generateResponse = (input) => {
     if (input.includes("clean") || input.includes("cleaning")) {
       return {
-        text: CONCIERGE_RESPONSES.bookCleaning(creditAvailable),
+        text: RESPONSES.bookCleaning(creditAvailable),
         actions: [
           { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
           { label: "Browse Other Services", handler: () => handleQuickAction("browse") }
@@ -61,7 +80,7 @@ export default function ResidentConcierge() {
     
     if (input.includes("maintenance") || input.includes("repair") || input.includes("fix")) {
       return {
-        text: CONCIERGE_RESPONSES.scheduleMaintenance,
+        text: RESPONSES.scheduleMaintenance,
         actions: [
           { label: "Report HVAC Issue", handler: () => handleQuickAction("HVAC maintenance") },
           { label: "Report Plumbing Issue", handler: () => handleQuickAction("Plumbing maintenance") }
@@ -71,7 +90,7 @@ export default function ResidentConcierge() {
     
     if (input.includes("credit") || input.includes("balance")) {
       return {
-        text: CONCIERGE_RESPONSES.checkCredits(creditAvailable),
+        text: RESPONSES.checkCredits(creditAvailable),
         actions: [
           { label: "Browse Services", handler: () => handleQuickAction("browse") }
         ]
@@ -80,7 +99,7 @@ export default function ResidentConcierge() {
     
     if (input.includes("service") || input.includes("available")) {
       return {
-        text: CONCIERGE_RESPONSES.availableServices,
+        text: RESPONSES.availableServices,
         actions: [
           { label: `Book Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
           { label: `Book AC Service ($${SERVICES.acTuneup.basePrice})`, handler: () => handleQuickAction("AC Tune-up", SERVICES.acTuneup.basePrice) },
@@ -90,7 +109,7 @@ export default function ResidentConcierge() {
     }
     
     return {
-      text: CONCIERGE_RESPONSES.fallback,
+      text: RESPONSES.fallback,
       actions: [
         { label: "Book a Service", handler: () => handleQuickAction("browse") },
         { label: "Request Maintenance", handler: () => handleQuickAction("maintenance") },
@@ -102,7 +121,8 @@ export default function ResidentConcierge() {
   const handleQuickAction = (action, price) => {
     if (action === "browse") {
       toast.success("Opening services marketplace...", {
-        description: "View all available services and book with your credits"
+        description: "View all available services and book with your credits",
+        className: "border-teal-200 bg-teal-50 text-teal-900"
       });
       return;
     }
@@ -111,7 +131,7 @@ export default function ResidentConcierge() {
       const msg = {
         id: messages.length + 1,
         type: "assistant",
-        text: CONCIERGE_RESPONSES.checkCredits(creditAvailable),
+        text: RESPONSES.checkCredits(creditAvailable),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, msg]);
@@ -122,7 +142,7 @@ export default function ResidentConcierge() {
       const msg = {
         id: messages.length + 1,
         type: "assistant",
-        text: CONCIERGE_RESPONSES.scheduleMaintenance,
+        text: RESPONSES.scheduleMaintenance,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, msg]);
@@ -131,12 +151,13 @@ export default function ResidentConcierge() {
     
     if (action.includes("maintenance")) {
       toast.success("Maintenance request submitted", {
-        description: `Your ${action} request has been received. Our team will contact you within 2 hours.`
+        description: `Your ${action} request has been received. Our team will contact you within 2 hours.`,
+        className: "border-teal-200 bg-teal-50 text-teal-900"
       });
       const msg = {
         id: messages.length + 1,
         type: "assistant",
-        text: CONCIERGE_RESPONSES.maintenanceSubmitted(action.replace(" maintenance", "")),
+        text: RESPONSES.maintenanceSubmitted(action.replace(" maintenance", "")),
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages(prev => [...prev, msg]);
@@ -146,12 +167,13 @@ export default function ResidentConcierge() {
     // Service booking
     const creditApplied = Math.min(price, creditAvailable);
     toast.success("Booking confirmed!", {
-      description: `${action} scheduled • $${creditApplied} credit applied`
+      description: `${action} scheduled • $${creditApplied} credit applied`,
+      className: "border-teal-200 bg-teal-50 text-teal-900"
     });
     const msg = {
       id: messages.length + 1,
       type: "assistant",
-      text: CONCIERGE_RESPONSES.bookingConfirmed(action, price, creditApplied),
+      text: RESPONSES.bookingConfirmed(action, price, creditApplied),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages(prev => [...prev, msg]);
@@ -163,6 +185,7 @@ export default function ResidentConcierge() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
       className="space-y-6"
+      data-testid="resident-concierge-root"
     >
       {/* Header */}
       <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
@@ -192,7 +215,7 @@ export default function ResidentConcierge() {
                         : "border border-slate-200 bg-slate-50 text-slate-900"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed">{msg.text}</p>
+                    <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
                   </div>
                   <p className={`mt-1 text-xs text-slate-500 ${msg.type === "user" ? "text-right" : "text-left"}`}>
                     {msg.timestamp}
@@ -288,6 +311,7 @@ export default function ResidentConcierge() {
             <h4 className="font-semibold text-slate-900">Your Credits</h4>
             <p className="mt-2 text-3xl font-semibold text-slate-900">${creditAvailable}</p>
             <p className="mt-1 text-sm text-slate-700">Available for services</p>
+            <p className="mt-2 text-xs text-slate-600">Expires September 30, 2025</p>
           </div>
         </div>
       </div>
