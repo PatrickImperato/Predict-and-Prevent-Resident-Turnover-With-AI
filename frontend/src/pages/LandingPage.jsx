@@ -212,7 +212,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
         </div>
 
-        {/* STICKY Header */}
+        {/* STICKY Header - ENLARGED */}
         <motion.header
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -223,30 +223,30 @@ export default function LandingPage() {
               : 'bg-transparent'
           }`}
         >
-          <div className="flex h-16 items-center px-4 sm:px-6 lg:px-8">
+          <div className="flex h-20 items-center px-4 sm:px-6 lg:px-8">
             <div className="flex w-full max-w-[1400px] mx-auto items-center justify-between">
-              <Link to="/" className="flex items-center gap-2.5 transition-opacity hover:opacity-80" data-testid="landing-brand-link">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/12 text-primary">
-                  <Sparkles className="h-[18px] w-[18px]" strokeWidth={2.5} />
+              <Link to="/" className="flex items-center gap-3 transition-opacity hover:opacity-80" data-testid="landing-brand-link">
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary/12 text-primary">
+                  <Sparkles className="h-5 w-5" strokeWidth={2.5} />
                 </div>
-                <p className="font-[var(--font-heading)] text-[15px] font-semibold tracking-tight text-white">
+                <p className="font-[var(--font-heading)] text-[17px] font-semibold tracking-tight text-white">
                   HappyCo Concierge
                 </p>
               </Link>
 
-              <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-0.5 rounded-full border border-white/6 bg-white/[0.02] px-1.5 py-1.5 backdrop-blur-[3px] lg:flex">
-                <a href="#insight" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Insight</a>
-                <a href="#detection" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Detection</a>
-                <a href="#concierge" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Concierge</a>
-                <a href="#portfolio" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Portfolio</a>
-                <a href="#roi" className="rounded-full px-3 py-1.5 text-[13px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">ROI</a>
+              <nav className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden items-center gap-1 rounded-full border border-white/6 bg-white/[0.02] px-2 py-2 backdrop-blur-[3px] lg:flex">
+                <a href="#insight" className="rounded-full px-4 py-2 text-[14px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Insight</a>
+                <a href="#detection" className="rounded-full px-4 py-2 text-[14px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Detection</a>
+                <a href="#concierge" className="rounded-full px-4 py-2 text-[14px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Concierge</a>
+                <a href="#portfolio" className="rounded-full px-4 py-2 text-[14px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">Portfolio</a>
+                <a href="#roi" className="rounded-full px-4 py-2 text-[14px] font-medium text-white/55 transition-all hover:bg-white/5 hover:text-white">ROI</a>
               </nav>
 
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Link to="/legal" className="text-sm font-medium text-white/40 transition-colors hover:text-white/60">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <Link to="/legal" className="text-[15px] font-medium text-white/40 transition-colors hover:text-white/60">
                   Legal
                 </Link>
-                <Button asChild size="sm" className="h-9 rounded-full bg-primary px-5 text-[14px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-sign-in-nav">
+                <Button asChild size="sm" className="h-11 rounded-full bg-primary px-7 text-[15px] font-semibold shadow-none hover:bg-primary/90" data-testid="landing-sign-in-nav">
                   <Link to="/login">Sign In</Link>
                 </Button>
               </div>
@@ -256,79 +256,82 @@ export default function LandingPage() {
 
         {/* Hero Content */}
         <div className="relative h-full flex flex-col justify-between" style={{ minHeight: '720px' }}>
-          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-20 sm:px-6 lg:px-8 lg:pt-24">
+          <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 pt-24 sm:px-6 lg:px-8 lg:pt-28">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.15 }}
-              className="max-w-[680px]"
+              className="max-w-[720px]"
             >
-              <Badge className="mb-4 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary hover:bg-primary/8" variant="secondary" data-testid="landing-hero-badge">
+              <Badge className="mb-5 border-primary/15 bg-primary/8 px-3 py-1.5 text-[14px] text-primary hover:bg-primary/8" variant="secondary" data-testid="landing-hero-badge">
                 Retention Intelligence Platform
               </Badge>
 
-              <h1 className="font-[var(--font-heading)] text-4xl sm:text-5xl font-semibold leading-[1.1] tracking-[-0.03em] text-white lg:text-[52px]" data-testid="landing-hero-title">
+              <h1 className="font-[var(--font-heading)] text-5xl sm:text-6xl font-semibold leading-[1.08] tracking-[-0.03em] text-white lg:text-[58px]" data-testid="landing-hero-title">
                 Predict and Prevent <span className="text-primary">Resident Churn</span>
               </h1>
 
-              <p className="mt-5 max-w-[520px] text-[17px] sm:text-[18px] leading-[1.6] text-white/70">
+              <p className="mt-6 max-w-[560px] text-[18px] sm:text-[19px] leading-[1.6] text-white/70">
                 Transform operational data into retention insights. Intervene before residents decide to leave. Measure financial impact across your portfolio.
               </p>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3 mb-32 lg:mb-36">
-                <Button asChild size="lg" className="h-12 rounded-full bg-primary px-6 text-[16px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-hero-cta">
+              <div className="mt-9 flex flex-wrap items-center gap-3 mb-32 lg:mb-36">
+                <Button asChild size="lg" className="h-13 rounded-full bg-primary px-7 text-[17px] font-medium shadow-none hover:bg-primary/90" data-testid="landing-hero-cta">
                   <Link to="/login">
                     Explore Platform
-                    <ArrowRight className="ml-2 h-[17px] w-[17px]" strokeWidth={2.5} />
+                    <ArrowRight className="ml-2 h-[18px] w-[18px]" strokeWidth={2.5} />
                   </Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-white/8 bg-white/[0.02] px-6 text-[16px] font-medium text-white backdrop-blur-sm hover:bg-white/[0.04] hover:border-white/12" data-testid="landing-hero-secondary-cta">
+                <Button asChild size="lg" variant="outline" className="h-13 rounded-full border-white/8 bg-white/[0.02] px-7 text-[17px] font-medium text-white backdrop-blur-sm hover:bg-white/[0.04] hover:border-white/12" data-testid="landing-hero-secondary-cta">
                   <Link to="/login">Sign In</Link>
                 </Button>
               </div>
             </motion.div>
           </div>
 
-          {/* Proof Cards - RESTORED ORIGINAL HERO METRICS */}
+          {/* Proof Cards - LEFT ALIGNED WITH ENHANCED $496K CARD */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.35 }}
             className="pb-14 px-4 sm:px-6 lg:px-8"
           >
-            <div className="mx-auto grid max-w-[1400px] gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-5 backdrop-blur-[3px]">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
-                    <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
-                  </div>
-                  <div className="min-w-0">
-                    <p ref={costRef} className="font-[var(--font-heading)] text-[30px] sm:text-[32px] font-semibold leading-none tracking-tight text-white">{costValue}</p>
-                    <p className="mt-2 text-[13px] sm:text-[14px] font-medium text-white/50">Avg. turnover cost</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-xl border border-white/6 bg-white/[0.02] p-5 backdrop-blur-[3px]">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
-                    <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
-                  </div>
-                  <div className="min-w-0">
-                    <p ref={rateRef} className="font-[var(--font-heading)] text-[30px] sm:text-[32px] font-semibold leading-none tracking-tight text-white">10–{rateValue}%</p>
-                    <p className="mt-2 text-[13px] sm:text-[14px] font-medium text-white/50">Annual turnover rate</p>
+            <div className="mx-auto w-full max-w-[1400px]">
+              <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-3 max-w-[1100px]">
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-5 backdrop-blur-[3px]">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
+                      <DollarSign className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                    </div>
+                    <div className="min-w-0">
+                      <p ref={costRef} className="font-[var(--font-heading)] text-[32px] sm:text-[34px] font-semibold leading-none tracking-tight text-white">{costValue}</p>
+                      <p className="mt-2 text-[14px] sm:text-[15px] font-medium text-white/50">Avg. turnover cost</p>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-5 backdrop-blur-[3px]">
-                <div className="flex items-start gap-3">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-5 backdrop-blur-[3px]">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-white/5 text-white/70">
+                      <TrendingUp className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                    </div>
+                    <div className="min-w-0">
+                      <p ref={rateRef} className="font-[var(--font-heading)] text-[32px] sm:text-[34px] font-semibold leading-none tracking-tight text-white">10–{rateValue}%</p>
+                      <p className="mt-2 text-[14px] sm:text-[15px] font-medium text-white/50">Annual turnover rate</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p ref={roiRef} className="font-[var(--font-heading)] text-[30px] sm:text-[32px] font-semibold leading-none tracking-tight text-primary">{roiValue}</p>
-                    <p className="mt-2 text-[13px] sm:text-[14px] font-medium text-primary/70">Portfolio ROI example</p>
+                </div>
+
+                {/* PRIMARY PROOF METRIC - ENHANCED */}
+                <div className="rounded-xl border-2 border-primary/30 bg-gradient-to-br from-primary/[0.12] to-primary/[0.06] p-5 backdrop-blur-[3px] shadow-lg shadow-primary/10">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                      <Users className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                    </div>
+                    <div className="min-w-0">
+                      <p ref={roiRef} className="font-[var(--font-heading)] text-[32px] sm:text-[34px] font-bold leading-none tracking-tight text-primary drop-shadow-sm">{roiValue}</p>
+                      <p className="mt-2 text-[14px] sm:text-[15px] font-semibold text-primary/80">Portfolio ROI example</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -343,13 +346,13 @@ export default function LandingPage() {
         <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="insight">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[13px] text-zinc-600 font-medium" variant="secondary">
+              <Badge className="mb-4 border-zinc-300 bg-zinc-100 text-[14px] text-zinc-600 font-medium" variant="secondary">
                 Churn Prediction
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+              <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] font-semibold tracking-tight text-zinc-900">
                 Identify at-risk residents before they leave
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[16px] text-zinc-600 leading-relaxed">
+              <p className="mx-auto mt-5 max-w-2xl text-[17px] text-zinc-600 leading-relaxed">
                 Track friction drivers across maintenance, engagement, and payment patterns to predict churn risk
               </p>
             </div>
@@ -471,13 +474,13 @@ export default function LandingPage() {
         <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="detection">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[13px] text-zinc-600 font-medium" variant="secondary">
+              <Badge className="mb-4 border-zinc-300 bg-zinc-100 text-[14px] text-zinc-600 font-medium" variant="secondary">
                 Risk Scoring
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+              <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] font-semibold tracking-tight text-zinc-900">
                 Precision scoring across your portfolio
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[16px] text-zinc-600 leading-relaxed">
+              <p className="mx-auto mt-5 max-w-2xl text-[17px] text-zinc-600 leading-relaxed">
                 Multi-signal churn risk model calibrated to property operations data
               </p>
             </div>
@@ -617,13 +620,13 @@ export default function LandingPage() {
         <section className="scroll-mt-16 border-b border-zinc-200 bg-white py-16 sm:py-20 lg:py-24" id="concierge">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[13px] text-zinc-600 font-medium" variant="secondary">
+              <Badge className="mb-4 border-zinc-300 bg-zinc-100 text-[14px] text-zinc-600 font-medium" variant="secondary">
                 Retention Actions
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+              <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] font-semibold tracking-tight text-zinc-900">
                 Automated concierge interventions
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[16px] text-zinc-600 leading-relaxed">
+              <p className="mx-auto mt-5 max-w-2xl text-[17px] text-zinc-600 leading-relaxed">
                 Deploy tiered credit offers matched to friction drivers with full resident experience
               </p>
             </div>
@@ -741,32 +744,19 @@ export default function LandingPage() {
         <section className="scroll-mt-16 border-b border-zinc-200 bg-zinc-50 py-16 sm:py-20 lg:py-24" id="portfolio">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <Badge className="mb-3 border-zinc-300 bg-zinc-100 text-[13px] text-zinc-600 font-medium" variant="secondary">
+              <Badge className="mb-4 border-zinc-300 bg-zinc-100 text-[14px] text-zinc-600 font-medium" variant="secondary">
                 Portfolio Analytics
               </Badge>
-              <h2 className="font-[var(--font-heading)] text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+              <h2 className="font-[var(--font-heading)] text-4xl sm:text-[44px] font-semibold tracking-tight text-zinc-900">
                 Retention performance across properties
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-[16px] text-zinc-600 leading-relaxed">
+              <p className="mx-auto mt-5 max-w-2xl text-[17px] text-zinc-600 leading-relaxed">
                 Measure impact, compare properties, and track ROI trends
               </p>
             </div>
 
-            {/* Portfolio Insight Panel */}
-            <div className="mt-8 mx-auto max-w-4xl rounded-xl border border-primary/20 bg-primary/5 p-5">
-              <div className="flex items-start gap-3">
-                <Info className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-semibold text-zinc-900 mb-1">Portfolio insight</p>
-                  <p className="text-[13px] text-zinc-700 leading-relaxed">
-                    Operational friction varies significantly across the portfolio. Riverside Towers shows the highest maintenance burden, Parkview Plaza demonstrates the strongest engagement stability, and Summit Ridge carries the largest financial risk exposure.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* Toggle */}
-            <div className="mt-8 flex justify-center">
+            <div className="mt-10 flex justify-center">
               <div className="inline-flex gap-1 rounded-full border border-zinc-200 bg-zinc-50 p-1">
                 <button
                   onClick={() => setPortfolioView('single')}

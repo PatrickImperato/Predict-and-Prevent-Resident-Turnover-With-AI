@@ -26,7 +26,7 @@ export default function LegalPage() {
                 Overview
               </Link>
             </Button>
-            <Button asChild size="sm" className="h-9 rounded-full bg-primary px-5 text-[14px] font-medium shadow-none hover:bg-primary/90">
+            <Button asChild size="sm" className="h-11 rounded-full bg-primary px-7 text-[15px] font-semibold shadow-none hover:bg-primary/90">
               <Link to="/login">Sign In</Link>
             </Button>
           </div>
@@ -252,9 +252,9 @@ export default function LegalPage() {
             </section>
           </div>
 
-          {/* Integrated IP Notice */}
-          <div className="mt-12 pt-8 border-t border-border/40">
-            <p className="text-center text-xs text-muted-foreground/50 leading-relaxed">
+          {/* Copyright - Bottom Left */}
+          <div className="mt-12">
+            <p className="text-xs text-muted-foreground/40 leading-relaxed">
               © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
             </p>
           </div>

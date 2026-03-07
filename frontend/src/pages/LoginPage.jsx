@@ -107,13 +107,13 @@ export default function LoginPage() {
 
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
-              <Link to="/" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link to="/" className="text-[15px] font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Back to Overview
               </Link>
-              <Link to="/legal" className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Link to="/legal" className="text-[15px] font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Legal
               </Link>
-              <Button asChild size="sm" className="h-9 rounded-full bg-primary px-5 text-[14px] font-medium shadow-none hover:bg-primary/90">
+              <Button asChild size="sm" className="h-11 rounded-full bg-primary px-7 text-[15px] font-semibold shadow-none hover:bg-primary/90">
                 <Link to="/login">Sign In</Link>
               </Button>
             </div>
@@ -282,13 +282,11 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Integrated IP Notice - Natural Footer Placement */}
-      <div className="absolute bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm py-3">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="text-center text-xs text-muted-foreground/50 leading-relaxed">
-            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
-          </p>
-        </div>
+      {/* Copyright - Bottom Left Corner */}
+      <div className="absolute bottom-4 left-4 sm:left-6 lg:left-8">
+        <p className="text-xs text-muted-foreground/40 leading-relaxed max-w-2xl">
+          © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+        </p>
       </div>
     </div>
   );

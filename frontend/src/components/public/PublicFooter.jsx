@@ -18,11 +18,12 @@ export const PublicFooter = () => {
             </Link>
           </div>
         </div>
-        <div className="mt-8 pt-6 border-t border-border/30">
-          <p className="text-center text-xs text-muted-foreground/60 leading-relaxed">
-            © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
-          </p>
-        </div>
+      </div>
+      {/* Copyright - Bottom Left Aligned */}
+      <div className="mx-auto max-w-[1400px] px-6 pb-6 lg:px-8">
+        <p className="text-xs text-muted-foreground/50 leading-relaxed">
+          © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
+        </p>
       </div>
     </footer>
   );
