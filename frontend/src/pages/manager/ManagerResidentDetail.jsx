@@ -305,53 +305,253 @@ export default function ManagerResidentDetail() {
 
         {/* Retention Tab */}
         <TabsContent value="retention" className="space-y-6">
+          {/* Retention Intervention Timeline */}
           <div className="saas-card">
-            <h3 className="mb-4 text-lg font-semibold text-foreground">Retention Timeline</h3>
-            <div className="space-y-4">
-              {resident.riskScore >= 70 && (
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-600 mt-0.5" />
+            <h3 className="mb-4 text-lg font-semibold text-foreground">Retention Intervention Timeline</h3>
+            <div className="relative space-y-6 border-l-2 border-slate-200 pl-6">
+              {/* Event 1: Risk Score Increased */}
+              <div className="relative">
+                <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-red-200 bg-red-50">
+                  <AlertTriangle className="h-3 w-3 text-red-600" />
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <div className="flex items-start justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-foreground">High Priority Intervention Recommended</p>
+                      <p className="text-xs text-muted-foreground">Feb 20, 2026</p>
+                      <p className="mt-1 text-sm font-semibold text-foreground">Risk Score Increased to {resident.riskScore}</p>
                       <p className="mt-1 text-sm text-muted-foreground">
-                        Resident has a risk score of {resident.riskScore}, indicating high churn probability. 
-                        Consider deploying High Priority intervention with $500 credit and personalized outreach.
+                        Driver: {resident.primaryDriver}
                       </p>
-                      <div className="mt-3">
-                        <Badge className="text-xs">Primary Driver: {resident.primaryDriver}</Badge>
-                      </div>
                     </div>
+                    <Badge className="border-red-200 bg-red-50 text-red-700" variant="secondary">
+                      High Risk
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Event 2: AI Recommended Intervention */}
+              <div className="relative">
+                <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-blue-200 bg-blue-50">
+                  <MessageSquare className="h-3 w-3 text-blue-600" />
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <p className="text-xs text-muted-foreground">Feb 21, 2026</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">AI Recommended Service Credit</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    System suggested $500 retention credit based on maintenance frequency pattern
+                  </p>
+                </div>
+              </div>
+
+              {/* Event 3: Manager Approved */}
+              <div className="relative">
+                <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-teal-200 bg-teal-50">
+                  <CheckCircle2 className="h-3 w-3 text-teal-600" />
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <p className="text-xs text-muted-foreground">Feb 21, 2026</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">Property Manager Approved $500 Credit</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Approved by Sarah Mitchell • Reason: Maintenance frequency risk mitigation
+                  </p>
+                </div>
+              </div>
+
+              {/* Event 4: AI Notified Resident */}
+              <div className="relative">
+                <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-purple-200 bg-purple-50">
+                  <MessageSquare className="h-3 w-3 text-purple-600" />
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4">
+                  <p className="text-xs text-muted-foreground">Feb 22, 2026</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">AI Concierge Notified Resident</p>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Message sent via {resident.communicationChannel}: "Hey Alex, we added a $500 credit you can use for services."
+                  </p>
+                </div>
+              </div>
+
+              {/* Event 5: Resident Booked Service */}
+              {bookings.length > 0 && (
+                <div className="relative">
+                  <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-emerald-200 bg-emerald-50">
+                    <Calendar className="h-3 w-3 text-emerald-600" />
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                    <p className="text-xs text-muted-foreground">Mar 5, 2026</p>
+                    <p className="mt-1 text-sm font-semibold text-foreground">Resident Booked {bookings[0]?.serviceName}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Service provider: {bookings[0]?.providerName} • Credit applied: $85
+                    </p>
                   </div>
                 </div>
               )}
 
-              {maintenanceHistory.filter(m => m.repeatIssue).length > 0 && (
-                <div className="rounded-lg border border-border bg-card p-4">
-                  <p className="text-sm font-semibold text-foreground">Maintenance Pattern Detected</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {maintenanceHistory.filter(m => m.repeatIssue).length} repeat maintenance issue(s) contributing to risk score.
-                  </p>
+              {/* Event 6: Service Completed */}
+              {bookings.filter(b => b.status === "completed").length > 0 && (
+                <div className="relative">
+                  <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-teal-200 bg-teal-50">
+                    <CheckCircle2 className="h-3 w-3 text-teal-600" />
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-white p-4">
+                    <p className="text-xs text-muted-foreground">Mar 6, 2026</p>
+                    <p className="mt-1 text-sm font-semibold text-foreground">Service Completed</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {bookings[0]?.serviceName} successfully completed • Resident satisfaction tracked
+                    </p>
+                  </div>
                 </div>
               )}
 
-              <div className="rounded-lg border border-border bg-card p-4">
-                <p className="text-sm font-semibold text-foreground">Score History</p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Current score: {resident.riskScore} • Calculated based on {resident.primaryDriver.toLowerCase()}
-                </p>
-              </div>
-
-              {bookings.length > 0 && (
-                <div className="rounded-lg border border-teal-200 bg-teal-50 p-4">
-                  <p className="text-sm font-semibold text-foreground">Positive Engagement</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Resident has completed {bookings.filter(b => b.status === "completed").length} service booking(s), 
-                    showing active participation in property services.
-                  </p>
+              {/* Event 7: Risk Score Dropped */}
+              {bookings.filter(b => b.status === "completed").length > 0 && (
+                <div className="relative">
+                  <div className="absolute -left-[1.6rem] top-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-green-200 bg-green-50">
+                    <CheckCircle2 className="h-3 w-3 text-green-600" />
+                  </div>
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                    <p className="text-xs text-muted-foreground">Mar 8, 2026</p>
+                    <p className="mt-1 text-sm font-semibold text-foreground">Risk Score Dropped to 58</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      16-point improvement after intervention • Churn probability reduced
+                    </p>
+                    <Badge className="mt-2 border-green-200 bg-green-100 text-green-700" variant="secondary">
+                      Intervention Successful
+                    </Badge>
+                  </div>
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Credit Lifecycle */}
+          <div className="saas-card">
+            <h3 className="mb-4 text-lg font-semibold text-foreground">Retention Credit Lifecycle</h3>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-lg border border-slate-200 bg-white p-4">
+                <p className="text-xs font-medium text-muted-foreground">Credit Issued</p>
+                <p className="mt-1 text-sm font-semibold text-foreground">Feb 21, 2026</p>
+                <p className="mt-1 text-xs text-muted-foreground">Reason: Maintenance frequency risk</p>
+                <p className="mt-2 text-2xl font-semibold text-foreground">$500</p>
+              </div>
+              
+              <div className="rounded-lg border border-slate-200 bg-white p-4">
+                <p className="text-xs font-medium text-muted-foreground">Credit Status</p>
+                <div className="mt-2 space-y-2">
+                  {bookings.filter(b => b.status === "completed").length > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Mar 5 - HVAC Tune-up</span>
+                      <span className="font-medium text-foreground">-$85</span>
+                    </div>
+                  )}
+                  {bookings.filter(b => b.status === "completed").length > 1 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Mar 6 - Deep Cleaning</span>
+                      <span className="font-medium text-foreground">-$120</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between border-t border-slate-200 pt-2 text-sm">
+                    <span className="font-medium text-foreground">Remaining</span>
+                    <span className="font-semibold text-foreground">
+                      ${bookings.filter(b => b.status === "completed").length > 0 ? '295' : '500'}
+                    </span>
+                  </div>
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">Expires: Sep 29, 2025</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Resident Communication Log */}
+          <div className="saas-card">
+            <h3 className="mb-4 text-lg font-semibold text-foreground">Resident Communication Log</h3>
+            <div className="space-y-3">
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="h-4 w-4 flex-shrink-0 text-purple-600 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">Feb 22, 2026</p>
+                      <Badge className="text-xs" variant="secondary">AI Concierge</Badge>
+                    </div>
+                    <p className="mt-1 text-sm font-medium text-foreground">Credit notification sent</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      "Hey Alex, we added a $500 credit you can use for services."
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="h-4 w-4 flex-shrink-0 text-purple-600 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">Mar 3, 2026</p>
+                      <Badge className="text-xs" variant="secondary">AI Concierge</Badge>
+                    </div>
+                    <p className="mt-1 text-sm font-medium text-foreground">Credit reminder sent</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      "You still have $500 in credits available. Want help using them?"
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-slate-200 bg-white p-3">
+                <div className="flex items-start gap-3">
+                  <MessageSquare className="h-4 w-4 flex-shrink-0 text-purple-600 mt-0.5" />
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs text-muted-foreground">Mar 4, 2026</p>
+                      <Badge className="text-xs" variant="secondary">AI Concierge</Badge>
+                    </div>
+                    <p className="mt-1 text-sm font-medium text-foreground">Service suggestion sent</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      "I saw you had a few HVAC issues recently. Want me to schedule a tune-up using your credit?"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Churn Impact */}
+          <div className="saas-card">
+            <h3 className="mb-4 text-lg font-semibold text-foreground">Churn Reduction Impact</h3>
+            <div className="grid gap-4 md:grid-cols-3">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                <p className="text-xs font-medium text-red-700">Before Intervention</p>
+                <p className="mt-2 text-3xl font-semibold text-foreground">{resident.riskScore}</p>
+                <p className="text-xs text-muted-foreground">Risk Score</p>
+              </div>
+
+              <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                <p className="text-xs font-medium text-green-700">After Service</p>
+                <p className="mt-2 text-3xl font-semibold text-foreground">
+                  {bookings.filter(b => b.status === "completed").length > 0 ? '58' : resident.riskScore}
+                </p>
+                <p className="text-xs text-muted-foreground">Risk Score</p>
+              </div>
+
+              <div className="rounded-lg border border-teal-200 bg-teal-50 p-4">
+                <p className="text-xs font-medium text-teal-700">Change</p>
+                <p className="mt-2 text-3xl font-semibold text-foreground">
+                  {bookings.filter(b => b.status === "completed").length > 0 ? '-16' : '--'}
+                </p>
+                <p className="text-xs text-muted-foreground">Points</p>
+              </div>
+            </div>
+            {bookings.filter(b => b.status === "completed").length > 0 && (
+              <div className="mt-4 rounded-lg border border-teal-200 bg-teal-50 p-4">
+                <p className="text-sm font-semibold text-foreground">Intervention Outcome</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  The retention credit successfully reduced churn risk by 16 points. 
+                  Resident satisfaction improved through proactive service delivery and personalized AI support.
+                </p>
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>

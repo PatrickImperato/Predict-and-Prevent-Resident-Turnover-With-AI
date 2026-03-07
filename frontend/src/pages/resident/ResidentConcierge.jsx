@@ -10,23 +10,22 @@ import { getAlexChenData } from "@/lib/canonicalData";
 
 const alex = getAlexChenData();
 
-// Casual, friendly concierge responses
 const RESPONSES = {
-  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I'm your concierge. I can help you book services, handle maintenance stuff, or check your credits. What can I do for you?`,
-  bookCleaning: (credit) => `Nice! I can get you a deep cleaning. You've got $${credit} in credits. Deep cleaning runs $120, takes about 2 hours. Want me to book it?`,
+  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I noticed you still have a $500 credit available. Want me to help you use it? I can suggest services that'll help with those recent maintenance issues.`,
+  bookCleaning: (credit) => `Nice! Deep cleaning runs $120, and it's fully covered by your credit. You'd still have $380 left after. Want me to book it?`,
   scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, electrical, or general repairs.",
-  checkCredits: (credit) => `You've got $${credit} in credits right now. Use them on any service—cleaning, maintenance, pet care, whatever. Heads up, they expire September 30, 2025.`,
-  availableServices: "Here's what's available: Deep Cleaning ($120), AC Tune-up ($85), Pet Grooming ($65), plus a bunch more. All bookable with your credits. What sounds good?",
-  fallback: "I'm here to help! I can:\n• Book a service\n• Handle maintenance requests\n• Check your credit balance\n• Show you what's available\n\nWhat do you need?",
+  checkCredits: (credit) => `You've got $${credit} in credits right now. That easily covers a deep cleaning ($120), HVAC tune-up ($85), or both. Heads up, they expire September 30, 2025.`,
+  availableServices: "Here's what I recommend based on your recent HVAC issues: HVAC Tune-up ($85 - fully covered), Deep Cleaning ($120 - fully covered), Air Vent Inspection ($65 - fully covered). All of these are covered by your credit. What sounds good?",
+  fallback: "I'm here to help! I can:\n• Book a service (all covered by your $500 credit)\n• Handle maintenance requests\n• Show you what's recommended\n\nWhat do you need?",
   bookingConfirmed: (service, price, creditApplied) => `Easy. ${service} is booked. Applied $${creditApplied} in credits. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
-  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is in. Maintenance will reach out within 2 hours to schedule. You'll get updates via ${alex.communicationChannel}.`
+  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is in. Maintenance will reach out within 2 hours to schedule. You'll get updates via ${alex.communicationChannel}.`,
+  hvacRecommendation: "I saw you had a few HVAC issues recently. Want me to schedule a tune-up using your credit? It's $85 and fully covered."
 };
 
-// Service prices
 const SERVICES = {
   deepCleaning: { name: "Deep Cleaning", basePrice: 120 },
-  acTuneup: { name: "AC Tune-up", basePrice: 85 },
-  petGrooming: { name: "Pet Grooming", basePrice: 65 }
+  acTuneup: { name: "HVAC Tune-up", basePrice: 85 },
+  ventInspection: { name: "Air Vent Inspection", basePrice: 65 }
 };
 
 export default function ResidentConcierge() {
@@ -53,7 +52,6 @@ export default function ResidentConcierge() {
 
     setMessages(prev => [...prev, userMessage]);
 
-    // Simulate AI response
     setTimeout(() => {
       const response = generateResponse(inputValue.toLowerCase());
       const assistantMessage = {
@@ -74,8 +72,17 @@ export default function ResidentConcierge() {
       return {
         text: RESPONSES.bookCleaning(creditAvailable),
         actions: [
-          { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
+          { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
           { label: "See Other Services", handler: () => handleQuickAction("browse") }
+        ]
+      };
+    }
+    
+    if (input.includes("hvac") || input.includes("ac") || input.includes("air")) {
+      return {
+        text: RESPONSES.hvacRecommendation,
+        actions: [
+          { label: `Book HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) }
         ]
       };
     }
@@ -94,18 +101,18 @@ export default function ResidentConcierge() {
       return {
         text: RESPONSES.checkCredits(creditAvailable),
         actions: [
-          { label: "Browse Services", handler: () => handleQuickAction("browse") }
+          { label: "Show Recommended Services", handler: () => handleQuickAction("services") }
         ]
       };
     }
     
-    if (input.includes("service") || input.includes("available")) {
+    if (input.includes("service") || input.includes("available") || input.includes("recommend")) {
       return {
         text: RESPONSES.availableServices,
         actions: [
-          { label: `Book Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
-          { label: `Book AC Service ($${SERVICES.acTuneup.basePrice})`, handler: () => handleQuickAction("AC Tune-up", SERVICES.acTuneup.basePrice) },
-          { label: `Book Pet Grooming ($${SERVICES.petGrooming.basePrice})`, handler: () => handleQuickAction("Pet Grooming", SERVICES.petGrooming.basePrice) }
+          { label: `HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) },
+          { label: `Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
+          { label: `Vent Inspection ($${SERVICES.ventInspection.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Air Vent Inspection", SERVICES.ventInspection.basePrice) }
         ]
       };
     }
@@ -113,19 +120,26 @@ export default function ResidentConcierge() {
     return {
       text: RESPONSES.fallback,
       actions: [
-        { label: "Book a Service", handler: () => handleQuickAction("browse") },
+        { label: "Show Recommended Services", handler: () => handleQuickAction("services") },
         { label: "Request Maintenance", handler: () => handleQuickAction("maintenance") },
-        { label: "Check Credits", handler: () => handleQuickAction("credits") }
+        { label: "Check Credit Balance", handler: () => handleQuickAction("credits") }
       ]
     };
   };
 
   const handleQuickAction = (action, price) => {
-    if (action === "browse") {
-      toast.success("Opening services...", {
-        description: "Check out what's available and book with your credits",
-        className: "border-teal-200 bg-teal-50 text-teal-900"
-      });
+    if (action === "browse" || action === "services") {
+      const msg = {
+        id: messages.length + 1,
+        type: "assistant",
+        text: RESPONSES.availableServices,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        actions: [
+          { label: `HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) },
+          { label: `Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) }
+        ]
+      };
+      setMessages(prev => [...prev, msg]);
       return;
     }
     
@@ -166,10 +180,10 @@ export default function ResidentConcierge() {
       return;
     }
     
-    // Service booking
     const creditApplied = Math.min(price, creditAvailable);
+    const fullyCovered = creditApplied === price;
     toast.success("Booking confirmed!", {
-      description: `${action} scheduled • $${creditApplied} credit applied`,
+      description: `${action} scheduled • ${fullyCovered ? 'Fully covered by your credit' : `$${creditApplied} credit applied`}`,
       className: "border-teal-200 bg-teal-50 text-teal-900"
     });
     const msg = {
@@ -186,27 +200,24 @@ export default function ResidentConcierge() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
-      className="space-y-6"
+      className="space-y-6 max-w-[1400px]"
       data-testid="resident-concierge-root"
     >
-      {/* Header */}
-      <section className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
+      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <Badge className="mb-2 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
           AI-Powered Assistant
         </Badge>
-        <h2 className="font-[var(--font-heading)] text-[28px] font-semibold tracking-tight text-slate-900">
+        <h2 className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-slate-900">
           AI Concierge
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          Get help with bookings, maintenance, and retention credits.
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+          Get help using your $500 credit and booking services
         </p>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-        {/* Chat Interface */}
-        <div className="saas-card flex flex-col" style={{ height: "600px" }}>
-          {/* Messages */}
-          <div className="flex-1 space-y-4 overflow-y-auto p-2">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col" style={{ height: "600px" }}>
+          <div className="flex-1 space-y-4 overflow-y-auto p-4">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[80%] ${msg.type === "user" ? "order-2" : "order-1"}`}>
@@ -223,7 +234,7 @@ export default function ResidentConcierge() {
                     {msg.timestamp}
                   </p>
                   {msg.actions && (
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {msg.actions.map((action, idx) => (
                         <Button
                           key={idx}
@@ -242,8 +253,7 @@ export default function ResidentConcierge() {
             ))}
           </div>
 
-          {/* Input */}
-          <div className="mt-4 flex gap-2 border-t border-slate-200 pt-4">
+          <div className="flex gap-2 border-t border-slate-200 p-4">
             <Input
               placeholder="Ask about services, maintenance, or credits..."
               value={inputValue}
@@ -258,66 +268,65 @@ export default function ResidentConcierge() {
           </div>
         </div>
 
-        {/* Quick Actions Sidebar */}
-        <div className="space-y-6">
-          <div className="saas-card">
-            <h3 className="mb-4 text-lg font-semibold text-slate-900">Quick Actions</h3>
-            <div className="space-y-3">
+        <div className="space-y-4">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="mb-3 text-base font-semibold text-slate-900">Quick Actions</h3>
+            <div className="space-y-2">
               <button
-                onClick={() => handleQuickAction("Deep Cleaning", 120)}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-teal-200 hover:bg-white hover:shadow-sm"
+                onClick={() => handleQuickAction("services")}
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-teal-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-book-service"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                    <Sparkles className="h-5 w-5" />
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
+                    <Sparkles className="h-4 w-4" />
                   </div>
-                  <div>
-                    <p className="font-medium text-slate-900">Book a Service</p>
-                    <p className="text-sm text-slate-600">Browse marketplace</p>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-900">Show Recommended Services</p>
+                    <p className="text-xs text-slate-600">All covered by your credit</p>
                   </div>
                 </div>
               </button>
               
               <button
                 onClick={() => handleQuickAction("HVAC maintenance")}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-request-maintenance"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-                    <Wrench className="h-5 w-5" />
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                    <Wrench className="h-4 w-4" />
                   </div>
-                  <div>
-                    <p className="font-medium text-slate-900">Request Maintenance</p>
-                    <p className="text-sm text-slate-600">Report an issue</p>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-900">Request Maintenance</p>
+                    <p className="text-xs text-slate-600">Report an issue</p>
                   </div>
                 </div>
               </button>
               
               <button
                 onClick={() => handleQuickAction("credits")}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-check-credits"
               >
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                    <Calendar className="h-5 w-5" />
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <Calendar className="h-4 w-4" />
                   </div>
-                  <div>
-                    <p className="font-medium text-slate-900">Check Credits</p>
-                    <p className="text-sm text-slate-600">${creditAvailable} available</p>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-slate-900">Check Credit Balance</p>
+                    <p className="text-xs text-slate-600">${creditAvailable} available</p>
                   </div>
                 </div>
               </button>
             </div>
           </div>
 
-          <div className="rounded-xl border border-teal-200 bg-teal-50 p-6">
-            <h4 className="font-semibold text-slate-900">Your Credits</h4>
-            <p className="mt-2 text-3xl font-semibold text-slate-900">${creditAvailable}</p>
-            <p className="mt-1 text-sm text-slate-700">Available for services</p>
-            <p className="mt-2 text-xs text-slate-600">Expires September 30, 2025</p>
+          <div className="rounded-xl border border-teal-200 bg-teal-50 p-5">
+            <h4 className="text-sm font-semibold text-slate-900">Your Credit</h4>
+            <p className="mt-2 text-2xl font-semibold text-slate-900">${creditAvailable}</p>
+            <p className="mt-1 text-xs text-slate-700">Use it before September 30, 2025</p>
+            <p className="mt-2 text-xs font-medium text-slate-600">Reason: Recent maintenance issues</p>
           </div>
         </div>
       </div>
