@@ -1,42 +1,34 @@
 [
   {
-    "content": "Refactor ManagerDashboard.jsx to use canonicalData.js - remove demoData dependency, use CANONICAL_RESIDENTS, CANONICAL_PROPERTIES, PORTFOLIO_TOTALS",
+    "content": "Fix authentication - remove restriction that only allows admin logins",
     "status": "completed"
   },
   {
-    "content": "Refactor ManagerChurnRisk.jsx to use canonicalData.js - replace AT_RISK_RESIDENTS_WITH_SCORES and PROPERTIES with canonical data",
+    "content": "Verify seeded credentials match LoginPage constants",
     "status": "completed"
   },
   {
-    "content": "Refactor ManagerResidents.jsx to use canonicalData.js - replace mockResidents with CANONICAL_RESIDENTS",
+    "content": "Create shared calculation helpers for ROI, occupancy, risk tiers",
     "status": "completed"
   },
   {
-    "content": "Refactor ResidentDashboard.jsx to use ALEX_CHEN from canonicalData.js",
-    "status": "completed"
-  },
-  {
-    "content": "Refactor ResidentConcierge.jsx to remove demoData dependency - use canonical data for services",
-    "status": "completed"
-  },
-  {
-    "content": "Verify no remaining references to demoData.js in manager or resident pages",
-    "status": "completed"
-  },
-  {
-    "content": "Test all Property Manager routes thoroughly - dashboard, churn-risk, residents, providers, maintenance",
+    "content": "Add error boundaries and empty states across key pages",
     "status": "in_progress"
   },
   {
-    "content": "Test all Alex resident routes thoroughly - dashboard, concierge, services, bookings, maintenance",
+    "content": "Verify all nav links and routes work correctly",
     "status": "pending"
   },
   {
-    "content": "Cross-verify Alex Chen data consistency between Admin, Manager, and Resident views",
+    "content": "Test authentication flow for all 3 roles",
     "status": "pending"
   },
   {
-    "content": "Verify property names, metrics, and ROI values match across all experiences",
+    "content": "Cross-verify data consistency across experiences",
+    "status": "pending"
+  },
+  {
+    "content": "Final stability check and testing",
     "status": "pending"
   }
 ]

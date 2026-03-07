@@ -16,7 +16,7 @@ const DEMO_ROLES = [
     id: "manager",
     title: "Property Manager",
     description: "Churn risk and retention interventions",
-    email: "manager@riverside.com",
+    email: "sarah.mitchell@riverside.com",
     password: "manager123",
     icon: TrendingUp
   },
@@ -39,7 +39,7 @@ const DEMO_ROLES = [
 ];
 
 export default function LoginPage() {
-  const { loading, login, logout, session } = useAuth();
+  const { loading, login, session } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -48,8 +48,17 @@ export default function LoginPage() {
     return <div className="min-h-screen bg-background" data-testid="login-page-loading-state" />;
   }
 
-  if (session?.authenticated && session?.role === "admin") {
-    return <Navigate replace to="/app/admin/dashboard" />;
+  // Redirect authenticated users to their role-specific dashboard
+  if (session?.authenticated) {
+    if (session?.role === "admin") {
+      return <Navigate replace to="/app/admin/dashboard" />;
+    }
+    if (session?.role === "manager") {
+      return <Navigate replace to="/app/manager/dashboard" />;
+    }
+    if (session?.role === "resident") {
+      return <Navigate replace to="/app/resident/dashboard" />;
+    }
   }
 
   const handleSubmit = async (event) => {
@@ -64,15 +73,19 @@ export default function LoginPage() {
         toast.success("Signed in. Opening admin workspace.", {
           className: "border-teal-200 bg-teal-50 text-teal-900"
         });
-        return;
+      } else if (role === "manager") {
+        toast.success("Signed in. Opening property manager workspace.", {
+          className: "border-teal-200 bg-teal-50 text-teal-900"
+        });
+      } else if (role === "resident") {
+        toast.success("Signed in. Opening resident dashboard.", {
+          className: "border-teal-200 bg-teal-50 text-teal-900"
+        });
       }
-
-      await logout();
-      toast.error("Only the HappyCo Admin route set is implemented in this phase.", {
-        className: "border-red-200 bg-red-50 text-red-900"
-      });
+      
+      // Navigation happens via RootRoute redirect
     } catch (error) {
-      const message = error?.response?.data?.detail || "Unable to sign in.";
+      const message = error?.response?.data?.detail || "Invalid email or password";
       toast.error(message, {
         className: "border-red-200 bg-red-50 text-red-900"
       });
@@ -150,7 +163,7 @@ export default function LoginPage() {
                   data-testid="login-email-input"
                   disabled={submitting}
                   id="email"
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(event) => setEmail(event.target.value)}
                   placeholder="you@example.com"
                   required
                   type="email"
@@ -168,7 +181,7 @@ export default function LoginPage() {
                   data-testid="login-password-input"
                   disabled={submitting}
                   id="password"
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(event) => setPassword(event.target.value)}
                   placeholder="Enter your password"
                   required
                   type="password"
@@ -177,106 +190,85 @@ export default function LoginPage() {
               </div>
 
               <Button
-                className="h-12 w-full bg-primary text-[15px] font-medium shadow-none hover:bg-primary/90"
+                className="h-11 w-full text-[15px] font-semibold"
                 data-testid="login-submit-button"
                 disabled={submitting}
                 type="submit"
               >
-                {submitting ? "Signing in..." : "Sign In"}
+                {submitting ? "Signing In..." : "Sign In"}
               </Button>
             </form>
+
+            <div className="mt-8">
+              <p className="text-[13px] font-medium text-muted-foreground">
+                Demo environment • Concept demonstration
+              </p>
+            </div>
           </motion.div>
-          
-          {/* Copyright - Anchored to Left Column Bottom */}
-          <div className="absolute bottom-5 left-8 lg:left-12 max-w-[440px]">
-            <p className="text-xs text-muted-foreground/40 leading-relaxed">
-              © Time Travel Media LLC. All rights reserved. Proprietary concept demonstration. HappyCo is a trademark of HappyCo, Inc.
-            </p>
-          </div>
         </div>
 
-        {/* Right Side: Demo Access Panel */}
-        <div className="relative hidden overflow-hidden bg-slate-900 lg:block">
-          {/* Background Image */}
-          <div className="absolute inset-0">
-            <img
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwxfHxjaXR5JTIwYnVpbGRpbmdzJTIwc2t5bGluZSUyMGJsdWV8ZW58MHx8fHx0ZWFsfDE3NzI3NzExODZ8MA&ixlib=rb-4.1.0&q=85"
-              alt="City skyline"
-              className="h-full w-full object-cover"
-              style={{ filter: 'contrast(1.15) brightness(0.65)' }}
-            />
-            <div className="absolute inset-0 bg-slate-900/97"></div>
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-950/90 via-slate-900/90 to-slate-900/85"></div>
-          </div>
+        {/* Right Side: Demo Access */}
+        <div className="hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 lg:flex flex-col justify-center px-16">
+          <div className="max-w-lg">
+            <Badge className="mb-5 border-teal-400 bg-teal-500/20 text-teal-300 hover:bg-teal-500/20" variant="secondary">
+              Demo Access
+            </Badge>
+            <h2 className="font-[var(--font-heading)] text-5xl font-semibold tracking-[-0.03em] text-white">
+              AI Concierge Platform for Multifamily Operations
+            </h2>
 
-          <div className="relative flex h-full flex-col justify-center p-10 xl:p-12">
-            {/* Top: Platform Info */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="mb-12"
-            >
-              <Badge className="mb-4 border-primary/15 bg-primary/8 px-3 py-1 text-[13px] text-primary" variant="secondary">
-                Demo Access
-              </Badge>
-              <h2 className="font-[var(--font-heading)] text-[38px] font-semibold leading-tight tracking-[-0.02em] text-white xl:text-[42px]">
-                AI Concierge Platform for Multifamily Operations
-              </h2>
-              
-              {/* Summary Metrics */}
-              <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-white">$3,800</p>
-                  <p className="mt-2 text-[14px] font-medium text-white/50">Avg. turnover cost</p>
-                </div>
-                <div className="rounded-xl border border-primary/12 bg-primary/[0.04] p-4 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-primary">10–15%</p>
-                  <p className="mt-2 text-[14px] font-medium text-primary/70">Annual turnover rate</p>
-                </div>
-                <div className="rounded-xl border border-white/6 bg-white/[0.02] p-4 backdrop-blur-[3px]">
-                  <p className="font-[var(--font-heading)] text-[30px] font-semibold leading-none tracking-tight text-white">$496K</p>
-                  <p className="mt-2 text-[14px] font-medium text-white/50">Portfolio ROI example</p>
-                </div>
+            {/* Platform Metrics */}
+            <div className="mt-10 grid grid-cols-3 gap-6">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+                <p className="text-sm font-medium text-slate-400">Avg. turnover cost</p>
+                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-white">
+                  $3,800
+                </p>
               </div>
-            </motion.div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+                <p className="text-sm font-medium text-slate-400">Annual turnover rate</p>
+                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-teal-400">
+                  10–15%
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+                <p className="text-sm font-medium text-slate-400">Portfolio ROI example</p>
+                <p className="mt-2 font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-teal-400">
+                  $496K
+                </p>
+              </div>
+            </div>
 
-            {/* Bottom: Demo Role Cards - IMPROVED SPACING */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-            >
-              <p className="mb-4 text-[15px] font-medium text-white/70">
+            {/* Demo Roles */}
+            <div className="mt-12">
+              <p className="text-[15px] font-semibold text-white">
                 Select a demo account to auto fill credentials and explore the product experience.
               </p>
-              <div className="space-y-2.5">
+              
+              <div className="mt-6 space-y-4">
                 {DEMO_ROLES.map((role, index) => {
                   const Icon = role.icon;
+                  
                   return (
                     <motion.button
                       key={role.id}
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.5 + index * 0.08 }}
+                      transition={{ duration: 0.3, delay: 0.1 + index * 0.1 }}
                       onClick={() => handleRoleCardClick(role)}
-                      className="group w-full rounded-xl border border-white/6 bg-white/[0.02] p-4 text-left backdrop-blur-[2px] transition-all duration-150 hover:border-white/10 hover:bg-white/[0.03] active:scale-[0.99]"
-                      data-testid={`demo-role-card-${role.id}`}
+                      className="w-full rounded-2xl border border-white/10 bg-white/5 p-6 text-left backdrop-blur-sm transition-all hover:border-teal-500/50 hover:bg-white/10 active:scale-[0.98]"
+                      data-testid={`demo-role-${role.id}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-white/4 text-white/70 transition-colors group-hover:bg-primary/8 group-hover:text-primary">
-                          <Icon className="h-[18px] w-[18px]" strokeWidth={2.5} />
+                      <div className="flex items-start gap-4">
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-400">
+                          <Icon className="h-6 w-6" strokeWidth={2} />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[15px] font-semibold text-white">{role.title}</p>
-                          <p className="mt-0.5 text-[14px] text-white/50">{role.description}</p>
-                          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 text-[12px]">
-                            <p className="text-white/40">
-                              <span className="text-white/30">Email:</span> {role.email}
-                            </p>
-                            <p className="text-white/40">
-                              <span className="text-white/30">Pass:</span> {role.password}
-                            </p>
+                        <div className="flex-1">
+                          <p className="text-lg font-semibold text-white">{role.title}</p>
+                          <p className="mt-1 text-[14px] text-slate-400">{role.description}</p>
+                          <div className="mt-3 flex items-center gap-4 text-[13px]">
+                            <p className="text-slate-500">Email: <span className="text-slate-300">{role.email}</span></p>
+                            <p className="text-slate-500">Pass: <span className="text-slate-300">{role.password}</span></p>
                           </div>
                         </div>
                       </div>
@@ -284,7 +276,15 @@ export default function LoginPage() {
                   );
                 })}
               </div>
-            </motion.div>
+            </div>
+
+            {/* Footer Note */}
+            <div className="mt-12 rounded-xl border border-white/10 bg-white/5 p-5">
+              <p className="text-[13px] leading-relaxed text-slate-400">
+                © Tima Travel Media LLC. All rights reserved. Proprietary concept demonstration. 
+                HappyCo is a trademark of HappyCo, Inc.
+              </p>
+            </div>
           </div>
         </div>
       </div>
