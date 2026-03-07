@@ -28,31 +28,37 @@ async def deploy_intervention(
     db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """Deploy an intervention to a resident."""
-    # Verify resident exists
-    resident = await db.tracked_residents.find_one({"residentId": request.residentId})
+    # Verify resident exists (check both collections and both field names for compatibility)
+    resident = await db.residents.find_one({"id": request.residentId})
+    if not resident:
+        resident = await db.tracked_residents.find_one({"residentId": request.residentId})
     if not resident:
         raise HTTPException(status_code=404, detail="Resident not found")
     
     # Get property info
-    property_doc = await db.properties.find_one({"propertyId": resident["propertyId"]})
+    property_id = resident.get("propertyId")
+    property_doc = await db.properties.find_one({"propertyId": property_id}) if property_id else None
+    if not property_doc and property_id:
+        property_doc = await db.properties.find_one({"id": property_id})
     
     # Create intervention record
     intervention_id = str(uuid.uuid4())
     tier_labels = {1: "Light Touch", 2: "Standard", 3: "High Priority"}
     
-    # Calculate expected impact
+    # Calculate expected impact based on risk tier
+    risk_tier = resident.get("riskTier", "low")
     risk_score = resident.get("riskScore", 0)
-    expected_savings = 3800 if risk_score >= 80 else (2660 if risk_score >= 70 else 1900)
+    expected_savings = 3800 if risk_tier == "high" else (2660 if risk_tier == "medium" else 1900)
     expected_revenue = int(request.creditAmount * 0.25)
     net_roi = expected_savings + expected_revenue - request.creditAmount
-    roi_multiple = round((expected_savings + expected_revenue) / request.creditAmount, 1) if request.creditAmount > 0 else 0
+    roi_multiple = round((expected_savings + expectedRevenue) / request.creditAmount, 1) if request.creditAmount > 0 else 0
     
     intervention = {
         "interventionId": intervention_id,
         "residentId": request.residentId,
-        "residentName": resident["fullName"],
-        "propertyId": resident["propertyId"],
-        "propertyName": property_doc["name"] if property_doc else "Unknown",
+        "residentName": resident.get("fullName", "Unknown"),
+        "propertyId": property_id,
+        "propertyName": property_doc.get("name") if property_doc else "Unknown",
         "unit": resident.get("unit"),
         "tier": request.tier,
         "tierLabel": tier_labels.get(request.tier, "Unknown"),
@@ -60,7 +66,7 @@ async def deploy_intervention(
         "riskScore": risk_score,
         "topDriver": resident.get("primaryDriver", "Unknown"),
         "status": ActionStatus.SENT,
-        "deployedBy": current_user.get("userId"),
+        "deployedBy": current_user.get("userId") or current_user.get("id"),
         "deployedByEmail": current_user.get("email"),
         "deployedAt": datetime.now(timezone.utc),
         "reason": request.reason,

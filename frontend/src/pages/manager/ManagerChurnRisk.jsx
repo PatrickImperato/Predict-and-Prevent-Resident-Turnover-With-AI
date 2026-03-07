@@ -44,21 +44,21 @@ export default function ManagerChurnRisk() {
     loadInterventions();
   }, []);
   
-  // Filter residents by risk level
-  const highRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80);
-  const mediumRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 70 && r.riskScore < 80);
-  const lowRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 70);
+  // Filter residents by risk tier (using canonical risk tier field)
+  const highRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "high");
+  const mediumRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "medium");
+  const lowRiskResidents = CANONICAL_RESIDENTS.filter(r => r.riskTier === "low");
   
-  // Calculate projected impact
-  const estimateSavings = (riskScore) => {
-    if (riskScore >= 80) return 3800;
-    if (riskScore >= 70) return 2660;
+  // Calculate projected impact based on canonical risk tier
+  const estimateSavings = (resident) => {
+    if (resident.riskTier === "high") return 3800;
+    if (resident.riskTier === "medium") return 2660;
     return 1900;
   };
   
   const totalProjectedSavings = CANONICAL_RESIDENTS
     .filter(r => r.riskScore >= 60)
-    .reduce((sum, r) => sum + estimateSavings(r.riskScore), 0);
+    .reduce((sum, r) => sum + estimateSavings(r), 0);
   
   const toggleExpanded = (residentId) => {
     setExpandedResidentId(expandedResidentId === residentId ? null : residentId);
@@ -66,10 +66,10 @@ export default function ManagerChurnRisk() {
   
   const handleDeployIntervention = async (resident) => {
     const property = getPropertyById(resident.propertyId);
-    const creditAmount = resident.riskScore >= 80 ? 500 : resident.riskScore >= 70 ? 350 : 200;
-    const tier = resident.riskScore >= 80 ? 3 : resident.riskScore >= 70 ? 2 : 1;
-    const tierLabel = resident.riskScore >= 80 ? "High Priority" : resident.riskScore >= 70 ? "Standard" : "Light Touch";
-    const expectedSavings = estimateSavings(resident.riskScore);
+    const creditAmount = resident.riskTier === "high" ? 500 : resident.riskTier === "medium" ? 350 : 200;
+    const tier = resident.riskTier === "high" ? 3 : resident.riskTier === "medium" ? 2 : 1;
+    const tierLabel = resident.riskTier === "high" ? "High Priority" : resident.riskTier === "medium" ? "Standard" : "Light Touch";
+    const expectedSavings = estimateSavings(resident);
     const expectedRevenue = Math.round(creditAmount * 0.25);
     const netROI = expectedSavings + expectedRevenue - creditAmount;
     const roiMultiple = ((expectedSavings + expectedRevenue) / creditAmount).toFixed(1);
@@ -194,7 +194,7 @@ export default function ManagerChurnRisk() {
               const isDeploying = deploying.has(resident.id);
               const property = getPropertyById(resident.propertyId);
               const creditAmount = 500;
-              const expectedSavings = estimateSavings(resident.riskScore);
+              const expectedSavings = estimateSavings(resident);
               const expectedRevenue = Math.round(creditAmount * 0.25);
               const netROI = expectedSavings + expectedRevenue - creditAmount;
               const roiMultiple = ((expectedSavings + expectedRevenue) / creditAmount).toFixed(1);
