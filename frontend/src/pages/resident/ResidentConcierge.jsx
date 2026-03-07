@@ -6,18 +6,20 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ALEX_CHEN } from "@/lib/canonicalData";
+import { getAlexChenData } from "@/lib/canonicalData";
 
-// Concierge response templates
+const alex = getAlexChenData();
+
+// Casual, friendly concierge responses
 const RESPONSES = {
-  greeting: `Hi ${ALEX_CHEN.fullName}! I'm your AI concierge assistant. I can help you book services, request maintenance, or check your retention credits. How can I assist you today?`,
-  bookCleaning: (credit) => `I can help you book a deep cleaning service! You have $${credit} in retention credits available. A standard deep cleaning costs $120 and takes about 2 hours. Would you like me to book this for you?`,
-  scheduleMaintenance: "I can help you submit a maintenance request. What issue are you experiencing? Common categories include HVAC, plumbing, electrical, or general repairs.",
-  checkCredits: (credit) => `You currently have $${credit} in retention credits available. These credits can be used for any service in our marketplace, including cleaning, maintenance, pet care, and more. Credits expire on September 30, 2025.`,
-  availableServices: "Our service marketplace includes: Deep Cleaning ($120), AC Tune-up ($85), Pet Grooming ($65), and many more. All services can be booked with your retention credits. Which service interests you?",
-  fallback: "I'm here to help! You can ask me to: \n\u2022 Book a service from our marketplace\n\u2022 Submit a maintenance request\n\u2022 Check your credit balance\n\u2022 View available services\n\nWhat would you like to do?",
-  bookingConfirmed: (service, price, creditApplied) => `Perfect! I've scheduled your ${service} service. $${creditApplied} in retention credits have been applied. ${price - creditApplied > 0 ? `Remaining balance: $${price - creditApplied}.` : 'Fully covered by your credits!'} You'll receive a confirmation email shortly.`,
-  maintenanceSubmitted: (issue) => `Your ${issue} maintenance request has been submitted successfully. Our maintenance team will contact you within 2 hours to schedule a visit. You'll receive updates via ${ALEX_CHEN.communicationChannel}.`
+  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I'm your concierge. I can help you book services, handle maintenance stuff, or check your credits. What can I do for you?`,
+  bookCleaning: (credit) => `Nice! I can get you a deep cleaning. You've got $${credit} in credits. Deep cleaning runs $120, takes about 2 hours. Want me to book it?`,
+  scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, electrical, or general repairs.",
+  checkCredits: (credit) => `You've got $${credit} in credits right now. Use them on any service—cleaning, maintenance, pet care, whatever. Heads up, they expire September 30, 2025.`,
+  availableServices: "Here's what's available: Deep Cleaning ($120), AC Tune-up ($85), Pet Grooming ($65), plus a bunch more. All bookable with your credits. What sounds good?",
+  fallback: "I'm here to help! I can:\n• Book a service\n• Handle maintenance requests\n• Check your credit balance\n• Show you what's available\n\nWhat do you need?",
+  bookingConfirmed: (service, price, creditApplied) => `Easy. ${service} is booked. Applied $${creditApplied} in credits. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
+  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is in. Maintenance will reach out within 2 hours to schedule. You'll get updates via ${alex.communicationChannel}.`
 };
 
 // Service prices
@@ -73,7 +75,7 @@ export default function ResidentConcierge() {
         text: RESPONSES.bookCleaning(creditAvailable),
         actions: [
           { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice})`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
-          { label: "Browse Other Services", handler: () => handleQuickAction("browse") }
+          { label: "See Other Services", handler: () => handleQuickAction("browse") }
         ]
       };
     }
@@ -120,8 +122,8 @@ export default function ResidentConcierge() {
 
   const handleQuickAction = (action, price) => {
     if (action === "browse") {
-      toast.success("Opening services marketplace...", {
-        description: "View all available services and book with your credits",
+      toast.success("Opening services...", {
+        description: "Check out what's available and book with your credits",
         className: "border-teal-200 bg-teal-50 text-teal-900"
       });
       return;
@@ -151,7 +153,7 @@ export default function ResidentConcierge() {
     
     if (action.includes("maintenance")) {
       toast.success("Maintenance request submitted", {
-        description: `Your ${action} request has been received. Our team will contact you within 2 hours.`,
+        description: `${action} request received. We'll contact you within 2 hours.`,
         className: "border-teal-200 bg-teal-50 text-teal-900"
       });
       const msg = {
@@ -196,7 +198,7 @@ export default function ResidentConcierge() {
           AI Concierge
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          Get personalized assistance with bookings, maintenance, and retention credits.
+          Get help with bookings, maintenance, and retention credits.
         </p>
       </section>
 
@@ -248,8 +250,9 @@ export default function ResidentConcierge() {
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
               className="flex-1"
+              data-testid="concierge-input"
             />
-            <Button onClick={handleSendMessage} className="h-10 w-10 p-0">
+            <Button onClick={handleSendMessage} className="h-10 w-10 p-0" data-testid="concierge-send-button">
               <Send className="h-4 w-4" />
             </Button>
           </div>
@@ -263,6 +266,7 @@ export default function ResidentConcierge() {
               <button
                 onClick={() => handleQuickAction("Deep Cleaning", 120)}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-teal-200 hover:bg-white hover:shadow-sm"
+                data-testid="quick-action-book-service"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
@@ -278,6 +282,7 @@ export default function ResidentConcierge() {
               <button
                 onClick={() => handleQuickAction("HVAC maintenance")}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
+                data-testid="quick-action-request-maintenance"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
@@ -293,6 +298,7 @@ export default function ResidentConcierge() {
               <button
                 onClick={() => handleQuickAction("credits")}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
+                data-testid="quick-action-check-credits"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
