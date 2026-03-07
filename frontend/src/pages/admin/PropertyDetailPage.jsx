@@ -1,4 +1,4 @@
-import { ArrowLeft, Building2, MessageSquare, Wrench } from "lucide-react";
+import { ArrowLeft, Building2, MessageSquare, Wrench, AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -17,13 +17,17 @@ export default function PropertyDetailPage() {
   const { propertyId } = useParams();
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const loadDetail = async () => {
       try {
         const response = await propertiesApi.getDetail(propertyId);
         setDetail(response.data);
+        setError(null);
       } catch (error) {
+        console.error("Property detail load error:", error);
+        setError(error?.response?.data?.detail || "Unable to load property detail.");
         toast.error(error?.response?.data?.detail || "Unable to load property detail.");
       } finally {
         setLoading(false);
@@ -39,6 +43,36 @@ export default function PropertyDetailPage() {
         <Skeleton className="h-16 rounded-3xl" />
         <Skeleton className="h-80 rounded-3xl" />
       </div>
+    );
+  }
+
+  // Safe error state
+  if (error || !detail || !detail.property) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.24, ease: "easeOut" }}
+        className="space-y-6"
+      >
+        <Card className="border-amber-200 bg-amber-50">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-6 w-6 text-amber-600" />
+              <CardTitle className="text-xl text-amber-900">Property Not Available</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-amber-800 mb-4">{error || "The requested property data could not be loaded."}</p>
+            <Button asChild variant="outline" className="border-amber-300">
+              <Link to="/app/admin/properties">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Properties
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   }
 
@@ -75,14 +109,14 @@ export default function PropertyDetailPage() {
             <p className="mt-2 max-w-4xl text-sm leading-relaxed text-slate-600">{detail.property.overview}</p>
           </div>
           <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600" data-testid="property-detail-address-card">
-            <p className="font-medium text-slate-900">{detail.property.address.street}</p>
-            <p>{detail.property.address.city}, {detail.property.address.state} {detail.property.address.postalCode}</p>
+            <p className="font-medium text-slate-900">{detail.property.address?.street || "Address not available"}</p>
+            <p>{detail.property.address?.city || ""}, {detail.property.address?.state || ""} {detail.property.address?.postalCode || ""}</p>
           </div>
         </div>
       </section>
 
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4" data-testid="property-detail-summary-grid">
-        {detail.summary_cards.map((card) => (
+        {(detail.summary_cards || []).map((card) => (
           <div className="saas-metric-card" data-testid={`property-detail-summary-${card.key}`} key={card.key}>
             <p className="metric-label">{card.label}</p>
             <p className="metric-value mt-3">{card.value}</p>
@@ -107,30 +141,30 @@ export default function PropertyDetailPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold tracking-tight text-slate-900">Alex Chen end-to-end profile</h3>
-                  <p className="mt-1 text-sm text-slate-600">Unit {detail.resident_profile.unit} • {detail.resident_profile.email}</p>
+                  <p className="mt-1 text-sm text-slate-600">Unit {detail.resident_profile?.unit || "N/A"} • {detail.resident_profile?.email || "N/A"}</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="grid gap-3 sm:grid-cols-3">
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                     <p className="text-xs font-medium text-slate-600">Churn score</p>
-                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile.churn_score}</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile?.churn_score || 0}</p>
                   </div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                     <p className="text-xs font-medium text-slate-600">Score change</p>
-                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">+{detail.resident_profile.score_change}</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">+{detail.resident_profile?.score_change || 0}</p>
                   </div>
                   <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                     <p className="text-xs font-medium text-slate-600">Risk tier</p>
-                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile.risk_tier}</p>
+                    <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{detail.resident_profile?.risk_tier || "N/A"}</p>
                   </div>
                 </div>
                 <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-slate-700" data-testid="property-detail-score-explanation">
-                  <p className="font-medium text-slate-900">{detail.resident_profile.driver_summary}</p>
-                  <p className="mt-2">{detail.resident_profile.score_explanation}</p>
+                  <p className="font-medium text-slate-900">{detail.resident_profile?.driver_summary || "Friction analysis"}</p>
+                  <p className="mt-2">{detail.resident_profile?.score_explanation || "AI analyzing resident engagement patterns."}</p>
                 </div>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {detail.weighted_drivers.map((driver) => (
+                  {(detail.weighted_drivers || []).map((driver) => (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-driver-${driver.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={driver.label}>
                       <div className="flex items-center justify-between">
                         <p className="font-medium text-slate-900">{driver.label}</p>
@@ -149,7 +183,7 @@ export default function PropertyDetailPage() {
               <div className="saas-card" data-testid="property-detail-flagged-residents-card">
                 <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Top flagged residents</h3>
                 <div className="space-y-3">
-                  {detail.flagged_residents.map((resident) => (
+                  {(detail.flagged_residents || []).map((resident) => (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-flagged-${resident.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`} key={resident.resident_id}>
                       <div className="flex items-center justify-between">
                         <div>
@@ -168,7 +202,7 @@ export default function PropertyDetailPage() {
               <div className="saas-card" data-testid="property-detail-score-history-card">
                 <h3 className="mb-4 text-lg font-semibold tracking-tight text-slate-900">Churn score history</h3>
                 <div className="grid gap-3 sm:grid-cols-3">
-                  {detail.resident_profile.score_history.map((point) => (
+                  {(detail.resident_profile?.score_history || []).map((point) => (
                     <div className="rounded-lg border border-slate-200 bg-slate-50 p-4" data-testid={`property-detail-score-point-${point.as_of_date}`} key={point.as_of_date}>
                       <p className="text-xs font-medium uppercase tracking-wide text-slate-600">{new Date(point.as_of_date).toLocaleDateString()}</p>
                       <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-900">{point.score}</p>
@@ -184,7 +218,7 @@ export default function PropertyDetailPage() {
             <Card className="happyco-card" data-testid="property-detail-maintenance-card">
               <CardHeader><div className="flex items-center gap-3"><Wrench className="h-5 w-5 text-primary" strokeWidth={1.75} /><CardTitle className="text-xl tracking-[-0.02em]">Maintenance history</CardTitle></div></CardHeader>
               <CardContent className="space-y-3">
-                {detail.maintenance_history.map((item) => (
+                {(detail.maintenance_history || []).map((item) => (
                   <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={item.id}><p className="font-medium text-foreground">{item.title}</p><p className="mt-2 text-sm text-muted-foreground">{item.detail}</p><p className="mt-2 text-xs uppercase tracking-[0.08em] text-muted-foreground">{item.status} • {new Date(item.happened_at).toLocaleDateString()}</p></div>
                 ))}
               </CardContent>
@@ -192,18 +226,18 @@ export default function PropertyDetailPage() {
             <Card className="happyco-card" data-testid="property-detail-communications-card">
               <CardHeader><div className="flex items-center gap-3"><MessageSquare className="h-5 w-5 text-primary" strokeWidth={1.75} /><CardTitle className="text-xl tracking-[-0.02em]">AI concierge communication</CardTitle></div></CardHeader>
               <CardContent className="space-y-3">
-                {detail.communications.map((item) => (
+                {(detail.communications || []).map((item) => (
                   <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={item.id}><p className="text-xs uppercase tracking-[0.08em] text-muted-foreground">{item.title}</p><p className="mt-2 text-sm leading-7 text-foreground">{item.detail}</p><p className="mt-2 text-xs text-muted-foreground">{new Date(item.happened_at).toLocaleString()}</p></div>
                 ))}
               </CardContent>
             </Card>
             <Card className="happyco-card" data-testid="property-detail-interventions-card">
-              <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Interventions, credits, and bookings</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">AI-driven interventions</CardTitle></CardHeader>
               <CardContent className="space-y-3">
-                {detail.interventions.map((item) => (
+                {(detail.interventions || []).map((item) => (
                   <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={item.id}><p className="font-medium text-foreground">{item.title}</p><p className="mt-2 text-sm text-muted-foreground">{item.detail}</p></div>
                 ))}
-                {detail.credits.map((credit) => (
+                {(detail.credits || []).map((credit) => (
                   <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4" key={credit.id}><p className="font-medium text-foreground">{credit.title}</p><p className="mt-2 text-sm text-muted-foreground">${credit.amount.toLocaleString()} • {credit.outcome}</p></div>
                 ))}
               </CardContent>
@@ -214,7 +248,7 @@ export default function PropertyDetailPage() {
         <TabsContent value="units">
           <Card className="happyco-card" data-testid="property-detail-units-card">
             <CardHeader>
-              <CardTitle className="text-xl tracking-[-0.02em]">Flagship unit-level records</CardTitle>
+              <CardTitle className="text-xl tracking-[-0.02em]">Unit-level records</CardTitle>
             </CardHeader>
             <CardContent className="rounded-2xl border border-border/80">
               <Table>
@@ -227,7 +261,7 @@ export default function PropertyDetailPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {detail.units.map((unit) => (
+                  {(detail.units || []).map((unit) => (
                     <TableRow key={unit.id}>
                       <TableCell className="font-medium text-foreground">{unit.number}</TableCell>
                       <TableCell>{unit.status}</TableCell>
@@ -246,7 +280,7 @@ export default function PropertyDetailPage() {
             <Card className="happyco-card" data-testid="property-detail-bookings-card">
               <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Bookings and revenue linkage</CardTitle></CardHeader>
               <CardContent className="space-y-3">
-                {detail.bookings.map((booking) => (
+                {(detail.bookings || []).map((booking) => (
                   <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={booking.id}>
                     <div className="flex items-center justify-between gap-3">
                       <div>
@@ -260,9 +294,11 @@ export default function PropertyDetailPage() {
                     </div>
                   </div>
                 ))}
-                <div className="rounded-2xl border border-border/80 bg-secondary/35 p-4 text-sm text-secondary-foreground">
-                  Gross revenue: ${detail.revenue_summary.gross_revenue.toLocaleString()} • Credits: ${detail.revenue_summary.credits_issued.toLocaleString()} • Net: ${detail.revenue_summary.net_revenue.toLocaleString()}
-                </div>
+                {detail.revenue_summary && (
+                  <div className="rounded-2xl border border-border/80 bg-secondary/35 p-4 text-sm text-secondary-foreground">
+                    Gross revenue: ${detail.revenue_summary.gross_revenue.toLocaleString()} • Credits: ${detail.revenue_summary.credits_issued.toLocaleString()} • Net: ${detail.revenue_summary.net_revenue.toLocaleString()}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -270,7 +306,7 @@ export default function PropertyDetailPage() {
               <Card className="happyco-card" data-testid="property-detail-providers-card">
                 <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Provider relationships</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
-                  {detail.providers.map((provider) => (
+                  {(detail.providers || []).map((provider) => (
                     <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={provider.id}>
                       <p className="font-medium text-foreground">{provider.name}</p>
                       <p className="mt-2 text-sm text-muted-foreground">{provider.service_categories.join(", ")}</p>
@@ -282,7 +318,7 @@ export default function PropertyDetailPage() {
               <Card className="happyco-card" data-testid="property-detail-revenue-history-card">
                 <CardHeader><CardTitle className="text-xl tracking-[-0.02em]">Monthly revenue history</CardTitle></CardHeader>
                 <CardContent className="space-y-3">
-                  {detail.monthly_revenue_history.map((row) => (
+                  {(detail.monthly_revenue_history || []).map((row) => (
                     <div className="rounded-2xl border border-border/80 bg-muted/35 p-4" key={row.month}>
                       <div className="flex items-center justify-between"><p className="font-medium text-foreground">{row.month}</p><p className="text-sm text-muted-foreground">Net ${row.net_revenue.toLocaleString()}</p></div>
                       <p className="mt-2 text-sm text-muted-foreground">Gross ${row.gross_revenue.toLocaleString()} • Credits ${row.credits_issued.toLocaleString()}</p>
