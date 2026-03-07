@@ -3,15 +3,16 @@ import { useAuth } from "@/context/AuthContext";
 import { useEffect } from "react";
 
 /**
- * Protected route wrapper with role-based access control.
- * Replaces the old AdminRoute component.
+ * Protected route wrapper for demo environment.
  * 
- * Features:
- * - Session validation
- * - Session timeout detection (24 hour max)
- * - Role-based access control
- * - Deep link preservation
- * - Automatic redirect to login when unauthorized
+ * Demo-First Approach:
+ * - Any authenticated user can access any demo route
+ * - No role-based blocking for signed-in users
+ * - Session validation and timeout still active
+ * - Only unauthenticated users are redirected to login
+ * 
+ * Note: allowedRoles parameter is preserved for metadata/logging
+ * but does NOT block access in demo mode
  */
 export function ProtectedRoute({ allowedRoles = [] }) {
   const { loading, session, logout } = useAuth();
@@ -47,15 +48,10 @@ export function ProtectedRoute({ allowedRoles = [] }) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
   }
 
-  // Check if user's role is allowed
-  const userRole = session?.role;
-  const hasAccess = allowedRoles.length === 0 || allowedRoles.includes(userRole);
-
-  // Role not allowed - redirect to unauthorized
-  if (!hasAccess) {
-    return <Navigate to="/unauthorized" replace />;
-  }
-
+  // DEMO MODE: All authenticated users can access all routes
+  // Role checking is disabled to allow smooth demo navigation
+  // (Role metadata is preserved in session for display purposes)
+  
   // All checks passed - render protected content
   return <Outlet />;
 }
