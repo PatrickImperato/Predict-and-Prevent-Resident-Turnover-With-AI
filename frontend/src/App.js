@@ -59,15 +59,45 @@ function RootRoute() {
     if (session?.role === "resident") {
       return <Navigate replace to="/app/resident/dashboard" />;
     }
+    // Fallback if role is unknown but authenticated
+    return <Navigate replace to="/login" />;
   }
 
   return <LandingPage />;
+}
+
+// Handles /app redirect based on user role
+function AppRootRedirect() {
+  const { loading, session } = useAuth();
+
+  if (loading) {
+    return <div className="min-h-screen bg-background" data-testid="app-root-loading-state" />;
+  }
+
+  if (!session?.authenticated) {
+    return <Navigate replace to="/login" />;
+  }
+
+  // Redirect authenticated users to their role-specific dashboard
+  if (session?.role === "admin") {
+    return <Navigate replace to="/app/admin/dashboard" />;
+  }
+  if (session?.role === "manager") {
+    return <Navigate replace to="/app/manager/dashboard" />;
+  }
+  if (session?.role === "resident") {
+    return <Navigate replace to="/app/resident/dashboard" />;
+  }
+
+  // Unknown role - redirect to login
+  return <Navigate replace to="/login" />;
 }
 
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<RootRoute />} />
+      <Route path="/app" element={<AppRootRedirect />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/legal" element={<LegalPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
