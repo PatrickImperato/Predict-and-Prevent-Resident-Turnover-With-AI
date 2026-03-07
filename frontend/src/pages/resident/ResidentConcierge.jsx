@@ -11,7 +11,7 @@ import { getAlexChenData } from "@/lib/canonicalData";
 const alex = getAlexChenData();
 
 const RESPONSES = {
-  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I noticed you still have a $500 credit available. Want me to help you use it? I can suggest services that'll help with those recent maintenance issues.`,
+  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I noticed you still have a $500 credit available. Want me to help you use it? I can suggest services that'll help with those recent HVAC issues.`,
   bookCleaning: (credit) => `Nice! Deep cleaning runs $120, and it's fully covered by your credit. You'd still have $380 left after. Want me to book it?`,
   scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, electrical, or general repairs.",
   checkCredits: (credit) => `You've got $${credit} in credits right now. That easily covers a deep cleaning ($120), HVAC tune-up ($85), or both. Heads up, they expire September 30, 2025.`,
@@ -200,29 +200,33 @@ export default function ResidentConcierge() {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
-      className="space-y-6 max-w-[1400px]"
+      className="space-y-4 max-w-[1400px]"
       data-testid="resident-concierge-root"
     >
-      <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <Badge className="mb-2 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
-          AI-Powered Assistant
-        </Badge>
-        <h2 className="font-[var(--font-heading)] text-2xl font-semibold tracking-tight text-slate-900">
-          AI Concierge
-        </h2>
-        <p className="mt-1 text-sm leading-relaxed text-slate-600">
-          Get help using your $500 credit and booking services
+      {/* Compact Header */}
+      <section className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex items-center gap-2">
+          <Badge className="border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
+            AI-Powered
+          </Badge>
+          <h2 className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-slate-900">
+            AI Concierge
+          </h2>
+        </div>
+        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+          Get help using your $500 credit • Expires Sep 30, 2025
         </p>
       </section>
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-        <div className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col" style={{ height: "600px" }}>
-          <div className="flex-1 space-y-4 overflow-y-auto p-4">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)]">
+        {/* Compact Chat Interface */}
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm flex flex-col" style={{ height: "480px" }}>
+          <div className="flex-1 space-y-3 overflow-y-auto p-3">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] ${msg.type === "user" ? "order-2" : "order-1"}`}>
+                <div className={`max-w-[85%] ${msg.type === "user" ? "order-2" : "order-1"}`}>
                   <div 
-                    className={`rounded-2xl px-4 py-3 ${
+                    className={`rounded-2xl px-3 py-2 ${
                       msg.type === "user" 
                         ? "bg-teal-600 text-white" 
                         : "border border-slate-200 bg-slate-50 text-slate-900"
@@ -230,17 +234,17 @@ export default function ResidentConcierge() {
                   >
                     <p className="text-sm leading-relaxed whitespace-pre-line">{msg.text}</p>
                   </div>
-                  <p className={`mt-1 text-xs text-slate-500 ${msg.type === "user" ? "text-right" : "text-left"}`}>
+                  <p className={`mt-0.5 text-xs text-slate-500 ${msg.type === "user" ? "text-right" : "text-left"}`}>
                     {msg.timestamp}
                   </p>
                   {msg.actions && (
-                    <div className="mt-2 flex flex-wrap gap-2">
+                    <div className="mt-2 flex flex-wrap gap-1.5">
                       {msg.actions.map((action, idx) => (
                         <Button
                           key={idx}
                           size="sm"
                           variant="outline"
-                          className="h-8 rounded-lg text-xs"
+                          className="h-7 rounded-lg text-xs"
                           onClick={action.handler}
                         >
                           {action.label}
@@ -253,80 +257,81 @@ export default function ResidentConcierge() {
             ))}
           </div>
 
-          <div className="flex gap-2 border-t border-slate-200 p-4">
+          <div className="flex gap-2 border-t border-slate-200 p-3">
             <Input
               placeholder="Ask about services, maintenance, or credits..."
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-              className="flex-1"
+              className="flex-1 h-9"
               data-testid="concierge-input"
             />
-            <Button onClick={handleSendMessage} className="h-10 w-10 p-0" data-testid="concierge-send-button">
+            <Button onClick={handleSendMessage} className="h-9 w-9 p-0" data-testid="concierge-send-button">
               <Send className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
-        <div className="space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h3 className="mb-3 text-base font-semibold text-slate-900">Quick Actions</h3>
+        {/* Compact Sidebar */}
+        <div className="space-y-3">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">Quick Actions</h3>
             <div className="space-y-2">
               <button
                 onClick={() => handleQuickAction("services")}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-teal-200 hover:bg-white hover:shadow-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-left transition-all hover:border-teal-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-book-service"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
                     <Sparkles className="h-4 w-4" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">Show Recommended Services</p>
-                    <p className="text-xs text-slate-600">All covered by your credit</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 truncate">Recommended Services</p>
+                    <p className="text-xs text-slate-600 truncate">All covered by your credit</p>
                   </div>
                 </div>
               </button>
               
               <button
                 onClick={() => handleQuickAction("HVAC maintenance")}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-request-maintenance"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
                     <Wrench className="h-4 w-4" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">Request Maintenance</p>
-                    <p className="text-xs text-slate-600">Report an issue</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 truncate">Request Maintenance</p>
+                    <p className="text-xs text-slate-600 truncate">Report an issue</p>
                   </div>
                 </div>
               </button>
               
               <button
                 onClick={() => handleQuickAction("credits")}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-check-credits"
               >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <div className="flex items-center gap-2">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
                     <Calendar className="h-4 w-4" />
                   </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-900">Check Credit Balance</p>
-                    <p className="text-xs text-slate-600">${creditAvailable} available</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-slate-900 truncate">Check Balance</p>
+                    <p className="text-xs text-slate-600 truncate">${creditAvailable} available</p>
                   </div>
                 </div>
               </button>
             </div>
           </div>
 
-          <div className="rounded-xl border border-teal-200 bg-teal-50 p-5">
+          <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
             <h4 className="text-sm font-semibold text-slate-900">Your Credit</h4>
-            <p className="mt-2 text-2xl font-semibold text-slate-900">${creditAvailable}</p>
-            <p className="mt-1 text-xs text-slate-700">Use it before September 30, 2025</p>
-            <p className="mt-2 text-xs font-medium text-slate-600">Reason: Recent maintenance issues</p>
+            <p className="mt-1.5 text-2xl font-semibold text-slate-900">${creditAvailable}</p>
+            <p className="mt-1 text-xs text-slate-700">Expires Sep 30, 2025</p>
+            <p className="mt-2 text-xs font-medium text-slate-600">Reason: Recent HVAC issues</p>
           </div>
         </div>
       </div>

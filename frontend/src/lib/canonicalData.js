@@ -52,7 +52,26 @@ export const ALEX_CHEN = {
   monthlyRent: 2400,
   status: "active",
   tags: ["High Risk", "Flagship Property"],
-  isQaResident: true
+  isQaResident: true,
+  
+  // Extended profile
+  petOwner: true,
+  petType: "Dog",
+  petName: "Bailey",
+  householdSize: 1,
+  workFromHome: true,
+  preferredContactTime: "evenings",
+  renewalStatus: "upcoming", // Lease renewal coming up in 4 months
+  residentSince: "Jan 2024", // ~2 years of history
+  previousIssues: [
+    "HVAC cooling issue (Feb 2024)",
+    "AC unit failed during summer (Jul 2024)",
+    "Thermostat malfunction (Jan 2025)",
+    "Air filter replacement delay (Feb 2025)"
+  ],
+  engagementLevel: "medium-low", // Responds to texts but hasn't used amenities recently
+  satisfactionTrend: "declining", // Was happy initially, recent maintenance issues changed that
+  notes: "Reliable resident who pays on time. Works from home full-time. Has become frustrated with repeat HVAC issues during hot months. Concerned about comfort for work-from-home setup. Has a golden retriever that needs regular grooming. Previously booked cleaning services but stopped after maintenance issues. Good candidate for retention credit tied to HVAC service + cleaning."
 };
 
 // ============================================================================
