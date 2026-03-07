@@ -15,7 +15,7 @@ export default function AdminAnalytics() {
     totalAtRisk: PORTFOLIO_TOTALS.totalAtRisk,
     roiMultiple: PORTFOLIO_TOTALS.roiMultiple,
     avgTurnoverCost: 3800, // Average across properties
-    highRisk: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length
+    highRisk: CANONICAL_RESIDENTS.filter(r => r.riskTier === "high").length
   };
 
   // Mock trends data (would ideally come from historical data)
@@ -57,18 +57,18 @@ export default function AdminAnalytics() {
   const riskDistribution = [
     { 
       level: "High Risk", 
-      count: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length,
-      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length / CANONICAL_RESIDENTS.length) * 100)
+      count: CANONICAL_RESIDENTS.filter(r => r.riskTier === "high").length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskTier === "high").length / CANONICAL_RESIDENTS.length) * 100)
     },
     { 
       level: "Medium Risk", 
-      count: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length,
-      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length / CANONICAL_RESIDENTS.length) * 100)
+      count: CANONICAL_RESIDENTS.filter(r => r.riskTier === "medium").length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskTier === "medium").length / CANONICAL_RESIDENTS.length) * 100)
     },
     { 
       level: "Low Risk", 
-      count: CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length,
-      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length / CANONICAL_RESIDENTS.length) * 100)
+      count: CANONICAL_RESIDENTS.filter(r => r.riskTier === "low").length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskTier === "low").length / CANONICAL_RESIDENTS.length) * 100)
     }
   ];
 

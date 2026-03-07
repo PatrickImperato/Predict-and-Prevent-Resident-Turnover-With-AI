@@ -4,6 +4,7 @@ import { AppProviders } from "@/components/app/AppProviders";
 import { ProtectedRoute } from "@/components/app/ProtectedRoute";
 import { AdminShell } from "@/components/layout/AdminShell";
 import { ManagerLayout } from "@/components/layout/ManagerLayout";
+import { ResidentLayout } from "@/components/layout/ResidentLayout";
 import { useAuth } from "@/context/AuthContext";
 
 // Admin pages
@@ -18,6 +19,7 @@ import TenantsPage from "@/pages/admin/TenantsPage";
 // Manager pages
 import ManagerDashboard from "@/pages/manager/ManagerDashboard";
 import ManagerResidents from "@/pages/manager/ManagerResidents";
+import ManagerResidentDetail from "@/pages/manager/ManagerResidentDetail";
 import ManagerChurnRisk from "@/pages/manager/ManagerChurnRisk";
 import ManagerRetentionRules from "@/pages/manager/ManagerRetentionRules";
 import ManagerProviders from "@/pages/manager/ManagerProviders";
@@ -91,6 +93,7 @@ function AppRoutes() {
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<ManagerDashboard />} />
           <Route path="residents" element={<ManagerResidents />} />
+          <Route path="residents/:residentId" element={<ManagerResidentDetail />} />
           <Route path="churn-risk" element={<ManagerChurnRisk />} />
           <Route path="retention-rules" element={<ManagerRetentionRules />} />
           <Route path="providers" element={<ManagerProviders />} />
@@ -102,7 +105,7 @@ function AppRoutes() {
 
       {/* Resident Routes - Protected */}
       <Route element={<ProtectedRoute allowedRoles={["resident", "admin"]} />}>
-        <Route path="/app/resident" element={<AdminShell />}>
+        <Route path="/app/resident" element={<ResidentLayout />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<ResidentDashboard />} />
           <Route path="concierge" element={<ResidentConcierge />} />

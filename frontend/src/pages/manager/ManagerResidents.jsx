@@ -1,6 +1,7 @@
 import { Calendar, Home, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -161,8 +162,10 @@ export default function ManagerResidents() {
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button size="sm" variant="outline" className="h-8 rounded-lg">
-                          View Profile
+                        <Button size="sm" variant="outline" className="h-8 rounded-lg" asChild>
+                          <Link to={`/app/manager/residents/${resident.id}`}>
+                            View Profile
+                          </Link>
                         </Button>
                       </TableCell>
                     </TableRow>
