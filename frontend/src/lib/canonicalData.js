@@ -255,6 +255,7 @@ export function getProviderById(providerId) {
 // ========================================
 
 export const SARAH_PROPERTY_ID = PROPERTY_IDS.metropolitan;
+export const SARAH_USER_ID = "8f5e9a1b-3c2d-4e8f-9a7b-6d5c4e3f2a1b"; // Sarah Mitchell's user ID
 
 // Get Sarah's managed property
 export function getSarahManagedProperty() {
@@ -276,6 +277,11 @@ export function getSarahPropertyTotals() {
   const property = getSarahManagedProperty();
   if (!property) return null;
   
+  const residents = getSarahPropertyResidents();
+  const highRisk = residents.filter(r => r.riskTier === "high").length;
+  const mediumRisk = residents.filter(r => r.riskTier === "medium").length;
+  const lowRisk = residents.filter(r => r.riskTier === "low").length;
+  
   return {
     propertyId: property.id,
     propertyName: property.name,
@@ -283,12 +289,112 @@ export function getSarahPropertyTotals() {
     occupiedUnits: property.occupiedUnits,
     occupancyRate: property.occupancyRate,
     atRiskResidents: property.atRiskResidents,
+    highRiskCount: highRisk,
+    mediumRiskCount: mediumRisk,
+    lowRiskCount: lowRisk,
     creditsInvested: property.creditsInvestedPerMonth,
     projectedSavings: property.estimatedAnnualROI,
     avoidedTurnovers: property.avoidedTurnoversPerYear,
     serviceRevenue: property.monthlyServiceRevenueProjection,
-    providerCoverage: property.providerCoveragePercent
+    providerCoverage: property.providerCoveragePercent,
+    fulfillmentRate: property.fulfillmentRate
   };
+}
+
+// Get maintenance history for Sarah's property only
+export function getSarahPropertyMaintenanceHistory() {
+  // Mock data - in real app this would come from backend
+  return [
+    {
+      id: "maint-1",
+      residentId: ALEX_CHEN.id,
+      residentName: ALEX_CHEN.fullName,
+      unit: ALEX_CHEN.unit,
+      issueType: "HVAC",
+      issueTitle: "AC cooling issue reopened",
+      status: "closed",
+      openedAt: new Date(Date.now() - 33 * 24 * 60 * 60 * 1000),
+      resolvedAt: new Date(Date.now() - 29 * 24 * 60 * 60 * 1000),
+      resolutionDays: 4
+    },
+    {
+      id: "maint-2",
+      residentId: ALEX_CHEN.id,
+      residentName: ALEX_CHEN.fullName,
+      unit: ALEX_CHEN.unit,
+      issueType: "Appliance",
+      issueTitle: "Dishwasher leak follow-up",
+      status: "closed",
+      openedAt: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000),
+      resolvedAt: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000),
+      resolutionDays: 5
+    },
+    {
+      id: "maint-3",
+      residentId: ALEX_CHEN.id,
+      residentName: ALEX_CHEN.fullName,
+      unit: ALEX_CHEN.unit,
+      issueType: "Ventilation",
+      issueTitle: "Bedroom vent noise",
+      status: "open",
+      openedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      resolvedAt: null,
+      resolutionDays: 0
+    }
+  ];
+}
+
+// Get bookings for Sarah's property only
+export function getSarahPropertyBookings() {
+  // Mock data - in real app this would come from backend
+  return [
+    {
+      id: "booking-1",
+      residentId: ALEX_CHEN.id,
+      residentName: ALEX_CHEN.fullName,
+      unit: ALEX_CHEN.unit,
+      providerId: PROVIDER_IDS.sparkclean,
+      providerName: "SparkClean",
+      serviceName: "Apartment refresh cleaning",
+      status: "completed",
+      scheduledFor: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+    },
+    {
+      id: "booking-2",
+      residentId: ALEX_CHEN.id,
+      residentName: ALEX_CHEN.fullName,
+      unit: ALEX_CHEN.unit,
+      providerId: PROVIDER_IDS.fixright,
+      providerName: "FixRight HVAC",
+      serviceName: "Priority HVAC tune-up",
+      status: "completed",
+      scheduledFor: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
+    }
+  ];
+}
+
+// Get revenue data for Sarah's property only
+export function getSarahPropertyRevenue() {
+  // Mock data - in real app this would come from backend
+  const now = new Date();
+  const months = [];
+  
+  for (let i = 3; i >= 0; i--) {
+    const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthStr = month.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    
+    months.push({
+      month: monthStr,
+      grossRevenue: 7469 - (i * 250),
+      creditsIssued: 500 - (i * 50),
+      netRevenue: (7469 - (i * 250)) - (500 - (i * 50)),
+      bookingsCompleted: 18 + i
+    });
+  }
+  
+  return months;
 }
 
 // ========================================

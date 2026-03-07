@@ -123,15 +123,15 @@ export default function ManagerChurnRisk() {
     }
   };
   
-  const getRiskBadgeColor = (score) => {
-    if (score >= 80) return "border-red-200 bg-red-50 text-red-700";
-    if (score >= 70) return "border-amber-200 bg-amber-50 text-amber-700";
-    return "border-border bg-muted text-muted-foreground";
+  const getRiskBadgeColor = (tier) => {
+    if (tier === "high") return "border-red-200 bg-red-50 text-red-700";
+    if (tier === "medium") return "border-amber-200 bg-amber-50 text-amber-700";
+    return "border-green-200 bg-green-50 text-green-700";
   };
   
-  const getRiskLabel = (score) => {
-    if (score >= 80) return "High Risk";
-    if (score >= 70) return "Medium Risk";
+  const getRiskLabel = (tier) => {
+    if (tier === "high") return "High Risk";
+    if (tier === "medium") return "Medium Risk";
     return "Low Risk";
   };
 
@@ -341,8 +341,8 @@ export default function ManagerChurnRisk() {
                     {/* Score & Action */}
                     <div className="ml-6 text-right">
                       <p className="text-4xl font-semibold tracking-tight text-foreground">{resident.riskScore}</p>
-                      <Badge className={`mt-2 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
-                        {getRiskLabel(resident.riskScore)}
+                      <Badge className={`mt-2 ${getRiskBadgeColor(resident.riskTier)}`} variant="secondary">
+                        {getRiskLabel(resident.riskTier)}
                       </Badge>
                       <Button 
                         className="mt-4 h-9 w-full rounded-lg" 
@@ -398,8 +398,8 @@ export default function ManagerChurnRisk() {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-semibold text-foreground">{resident.riskScore}</p>
-                      <Badge className={`mt-1 ${getRiskBadgeColor(resident.riskScore)}`} variant="secondary">
-                        Medium
+                      <Badge className={`mt-1 ${getRiskBadgeColor(resident.riskTier)}`} variant="secondary">
+                        {resident.riskTier}
                       </Badge>
                       <Button 
                         className="mt-3 h-8 w-full rounded-lg" 

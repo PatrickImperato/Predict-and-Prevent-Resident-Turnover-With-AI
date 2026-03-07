@@ -267,14 +267,14 @@ export default function ManagerDashboard() {
       <section className="grid gap-6 md:grid-cols-2">
         {/* Churn Risk Distribution */}
         <div className="saas-card">
-          <h3 className="mb-6 text-lg font-semibold tracking-tight text-slate-900">Portfolio Risk Distribution</h3>
+          <h3 className="mb-6 text-lg font-semibold tracking-tight text-foreground">Risk Distribution</h3>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-900">High Risk</p>
-                <p className="text-sm font-semibold text-slate-900">{highRisk} residents</p>
+                <p className="text-sm font-medium text-foreground">High Risk</p>
+                <p className="text-sm font-semibold text-foreground">{highRisk} residents</p>
               </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
                 <div 
                   className="h-full rounded-full bg-red-500"
                   style={{ width: `${(highRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
@@ -284,10 +284,10 @@ export default function ManagerDashboard() {
 
             <div>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-900">Medium Risk</p>
-                <p className="text-sm font-semibold text-slate-900">{mediumRisk} residents</p>
+                <p className="text-sm font-medium text-foreground">Medium Risk</p>
+                <p className="text-sm font-semibold text-foreground">{mediumRisk} residents</p>
               </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
                 <div 
                   className="h-full rounded-full bg-amber-500"
                   style={{ width: `${(mediumRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
@@ -297,12 +297,12 @@ export default function ManagerDashboard() {
 
             <div>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-900">Low Risk</p>
-                <p className="text-sm font-semibold text-slate-900">{lowRisk} residents</p>
+                <p className="text-sm font-medium text-foreground">Low Risk</p>
+                <p className="text-sm font-semibold text-foreground">{lowRisk} residents</p>
               </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
                 <div 
-                  className="h-full rounded-full bg-slate-400"
+                  className="h-full rounded-full bg-green-500"
                   style={{ width: `${(lowRisk / (highRisk + mediumRisk + lowRisk)) * 100}%` }}
                 />
               </div>
@@ -312,20 +312,20 @@ export default function ManagerDashboard() {
 
         {/* Property Overview */}
         <div className="saas-card">
-          <h3 className="mb-6 text-lg font-semibold tracking-tight text-slate-900">Managed Property</h3>
+          <h3 className="mb-6 text-lg font-semibold tracking-tight text-foreground">Managed Property</h3>
           <div className="space-y-3">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div className="rounded-lg border border-border bg-muted/40 p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-semibold text-slate-900">{sarahProperty.name}</p>
-                  <p className="text-sm text-slate-600">{sarahProperty.address.street}</p>
-                  <p className="text-sm text-slate-600">{sarahProperty.address.city}, {sarahProperty.address.state} {sarahProperty.address.postalCode}</p>
+                  <p className="font-semibold text-foreground">{sarahProperty.name}</p>
+                  <p className="text-sm text-muted-foreground">{sarahProperty.address.street}</p>
+                  <p className="text-sm text-muted-foreground">{sarahProperty.address.city}, {sarahProperty.address.state} {sarahProperty.address.postalCode}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-semibold text-slate-900">{sarahProperty.atRiskResidents}</p>
-                  <p className="text-xs text-slate-600">at-risk</p>
-                  <p className="mt-2 text-sm text-slate-600">{sarahProperty.totalUnits} units</p>
-                  <p className="text-xs text-slate-600">{sarahProperty.occupiedUnits} occupied</p>
+                  <p className="text-xl font-semibold text-foreground">{sarahProperty.atRiskResidents}</p>
+                  <p className="text-xs text-muted-foreground">at-risk</p>
+                  <p className="mt-2 text-sm text-foreground">{sarahProperty.totalUnits} units</p>
+                  <p className="text-xs text-muted-foreground">{sarahProperty.occupiedUnits} occupied</p>
                 </div>
               </div>
             </div>

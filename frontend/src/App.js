@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AppProviders } from "@/components/app/AppProviders";
 import { ProtectedRoute } from "@/components/app/ProtectedRoute";
 import { AdminShell } from "@/components/layout/AdminShell";
+import { ManagerLayout } from "@/components/layout/ManagerLayout";
 import { useAuth } from "@/context/AuthContext";
 
 // Admin pages
@@ -18,8 +19,11 @@ import TenantsPage from "@/pages/admin/TenantsPage";
 import ManagerDashboard from "@/pages/manager/ManagerDashboard";
 import ManagerResidents from "@/pages/manager/ManagerResidents";
 import ManagerChurnRisk from "@/pages/manager/ManagerChurnRisk";
+import ManagerRetentionRules from "@/pages/manager/ManagerRetentionRules";
 import ManagerProviders from "@/pages/manager/ManagerProviders";
 import ManagerMaintenance from "@/pages/manager/ManagerMaintenance";
+import ManagerRevenue from "@/pages/manager/ManagerRevenue";
+import ManagerBookings from "@/pages/manager/ManagerBookings";
 
 // Resident pages
 import ResidentDashboard from "@/pages/resident/ResidentDashboard";
@@ -83,13 +87,16 @@ function AppRoutes() {
 
       {/* Manager Routes - Protected */}
       <Route element={<ProtectedRoute allowedRoles={["manager", "admin"]} />}>
-        <Route path="/app/manager" element={<AdminShell />}>
+        <Route path="/app/manager" element={<ManagerLayout />}>
           <Route index element={<Navigate replace to="dashboard" />} />
           <Route path="dashboard" element={<ManagerDashboard />} />
           <Route path="residents" element={<ManagerResidents />} />
           <Route path="churn-risk" element={<ManagerChurnRisk />} />
+          <Route path="retention-rules" element={<ManagerRetentionRules />} />
           <Route path="providers" element={<ManagerProviders />} />
           <Route path="maintenance" element={<ManagerMaintenance />} />
+          <Route path="revenue" element={<ManagerRevenue />} />
+          <Route path="bookings" element={<ManagerBookings />} />
         </Route>
       </Route>
 
