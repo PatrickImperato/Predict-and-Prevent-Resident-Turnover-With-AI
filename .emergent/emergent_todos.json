@@ -1,26 +1,50 @@
 [
   {
-    "content": "Priority 1: Rebuild Landing Page completely with Linear-inspired design",
-    "status": "in_progress"
+    "content": "Refactor Admin Dashboard to use canonicalData.js - remove hardcoded portfolio metrics, use PORTFOLIO_TOTALS and CANONICAL_PROPERTIES",
+    "status": "completed"
   },
   {
-    "content": "Priority 2: Fix portfolio math in demoData.js with realistic assumptions",
+    "content": "Refactor Tenants/Residents pages to use CANONICAL_RESIDENTS and ALEX_CHEN from canonicalData.js",
+    "status": "completed"
+  },
+  {
+    "content": "Refactor Properties pages to use CANONICAL_PROPERTIES from canonicalData.js",
+    "status": "completed"
+  },
+  {
+    "content": "Refactor Property Detail page to use getPropertyById helper and canonical property data",
+    "status": "completed"
+  },
+  {
+    "content": "Refactor Providers page to use CANONICAL_PROVIDERS from canonicalData.js",
+    "status": "completed"
+  },
+  {
+    "content": "Refactor Analytics page to use PORTFOLIO_TOTALS and canonical data",
+    "status": "completed"
+  },
+  {
+    "content": "Refactor Manager Dashboard and all manager pages to use canonical data",
     "status": "pending"
   },
   {
-    "content": "Priority 3: Increase at-risk residents from 5 to 30-35 with realistic distribution",
+    "content": "Refactor Landing Page to use canonical properties and ALEX_CHEN for demo data",
     "status": "pending"
   },
   {
-    "content": "Priority 4: Apply consistent UI polish across all 6 pages",
+    "content": "Refactor Resident pages to use canonical data for services and bookings",
     "status": "pending"
   },
   {
-    "content": "Priority 5: Full QA pass on all routes",
-    "status": "pending"
+    "content": "Verify frontend compiles without errors using esbuild check",
+    "status": "completed"
   },
   {
-    "content": "Generate final completion report",
-    "status": "pending"
+    "content": "Perform comprehensive click-through test of all admin routes",
+    "status": "completed"
+  },
+  {
+    "content": "Perform manual cross-page data consistency verification (Alex Chen data, property names, metrics)",
+    "status": "completed"
   }
 ]

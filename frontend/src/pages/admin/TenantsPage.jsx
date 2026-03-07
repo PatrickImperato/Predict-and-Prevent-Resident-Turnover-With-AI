@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Search, Users, AlertTriangle, TrendingUp, Mail, Phone, MessageSquare } from "lucide-react";
+import { Search, Users, AlertTriangle, Mail, MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -12,148 +12,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const TENANT_DATA = {
-  summary: {
-    totalTenants: 248,
-    atRiskCount: 31,
-    avgRiskScore: 42,
-    activeInterventions: 18
-  },
-  tenants: [
-    {
-      id: "res-1",
-      name: "Alex Chen",
-      unit: "501",
-      property: "Ballard Commons",
-      propertyId: "prop-ballard",
-      riskScore: 76,
-      riskTier: "High",
-      status: "Active",
-      channel: "SMS",
-      email: "alex.chen@email.com",
-      phone: "(206) 555-0142",
-      leaseEnd: "2025-07-15",
-      primaryDriver: "Maintenance"
-    },
-    {
-      id: "res-2",
-      name: "Taylor Wong",
-      unit: "204",
-      property: "Ballard Commons",
-      propertyId: "prop-ballard",
-      riskScore: 81,
-      riskTier: "High",
-      status: "Active",
-      channel: "Email",
-      email: "taylor.wong@email.com",
-      phone: "(206) 555-0298",
-      leaseEnd: "2025-06-20",
-      primaryDriver: "Response Time"
-    },
-    {
-      id: "res-3",
-      name: "Maria Santos",
-      unit: "312",
-      property: "Capitol Hill Residences",
-      propertyId: "prop-capitol",
-      riskScore: 68,
-      riskTier: "Medium",
-      status: "Active",
-      channel: "SMS",
-      email: "maria.santos@email.com",
-      phone: "(206) 555-0187",
-      leaseEnd: "2025-08-01",
-      primaryDriver: "Maintenance"
-    },
-    {
-      id: "res-4",
-      name: "Sam Patel",
-      unit: "702",
-      property: "Capitol Hill Residences",
-      propertyId: "prop-capitol",
-      riskScore: 72,
-      riskTier: "High",
-      status: "Active",
-      channel: "Email",
-      email: "sam.patel@email.com",
-      phone: "(206) 555-0356",
-      leaseEnd: "2025-07-20",
-      primaryDriver: "Sentiment"
-    },
-    {
-      id: "res-5",
-      name: "Jordan Kim",
-      unit: "1408",
-      property: "Bellevue Towers",
-      propertyId: "prop-bellevue",
-      riskScore: 79,
-      riskTier: "High",
-      status: "Active",
-      channel: "SMS",
-      email: "jordan.kim@email.com",
-      phone: "(425) 555-0421",
-      leaseEnd: "2025-06-30",
-      primaryDriver: "Maintenance"
-    },
-    {
-      id: "res-6",
-      name: "Casey Martinez",
-      unit: "312",
-      property: "Ballard Commons",
-      propertyId: "prop-ballard",
-      riskScore: 70,
-      riskTier: "Medium",
-      status: "Active",
-      channel: "Email",
-      email: "casey.m@email.com",
-      phone: "(206) 555-0321",
-      leaseEnd: "2025-08-10",
-      primaryDriver: "Sentiment"
-    },
-    {
-      id: "res-7",
-      name: "Devon Harris",
-      unit: "408",
-      property: "Ballard Commons",
-      propertyId: "prop-ballard",
-      riskScore: 75,
-      riskTier: "High",
-      status: "Active",
-      channel: "SMS",
-      email: "devon.harris@email.com",
-      phone: "(206) 555-0445",
-      leaseEnd: "2025-07-01",
-      primaryDriver: "Response Time"
-    },
-    {
-      id: "res-8",
-      name: "Riley Chen",
-      unit: "805",
-      property: "Capitol Hill Residences",
-      propertyId: "prop-capitol",
-      riskScore: 64,
-      riskTier: "Medium",
-      status: "Active",
-      channel: "Email",
-      email: "riley.chen@email.com",
-      phone: "(206) 555-0512",
-      leaseEnd: "2025-09-15",
-      primaryDriver: "Maintenance"
-    }
-  ]
-};
+import { CANONICAL_RESIDENTS, CANONICAL_PROPERTIES, ALEX_CHEN } from "@/lib/canonicalData";
 
 export default function TenantsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [propertyFilter, setPropertyFilter] = useState("all");
   const [riskFilter, setRiskFilter] = useState("all");
 
-  const filteredTenants = TENANT_DATA.tenants.filter((tenant) => {
-    const matchesSearch = tenant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  // Calculate summary metrics
+  const totalTenants = CANONICAL_RESIDENTS.length;
+  const atRiskCount = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60).length;
+  const avgRiskScore = Math.round(
+    CANONICAL_RESIDENTS.reduce((sum, r) => sum + r.riskScore, 0) / totalTenants
+  );
+  const activeInterventions = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 70).length;
+
+  const filteredTenants = CANONICAL_RESIDENTS.filter((tenant) => {
+    const matchesSearch = tenant.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           tenant.unit.includes(searchTerm);
     const matchesProperty = propertyFilter === "all" || tenant.propertyId === propertyFilter;
-    const matchesRisk = riskFilter === "all" || tenant.riskTier === riskFilter;
+    const matchesRisk = riskFilter === "all" || tenant.riskTier.toLowerCase() === riskFilter.toLowerCase();
     return matchesSearch && matchesProperty && matchesRisk;
   });
 
@@ -169,22 +47,22 @@ export default function TenantsPage() {
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <div className="saas-metric-card">
           <p className="metric-label">Total Tenants</p>
-          <p className="metric-value mt-3">{TENANT_DATA.summary.totalTenants}</p>
-          <p className="metric-detail mt-2">Across 3 properties</p>
+          <p className="metric-value mt-3">{totalTenants}</p>
+          <p className="metric-detail mt-2">Across {CANONICAL_PROPERTIES.length} properties</p>
         </div>
         <div className="saas-metric-card border-amber-200 bg-amber-50">
           <p className="metric-label text-amber-900">At Risk</p>
-          <p className="metric-value mt-3 text-amber-900">{TENANT_DATA.summary.atRiskCount}</p>
+          <p className="metric-value mt-3 text-amber-900">{atRiskCount}</p>
           <p className="metric-detail mt-2 text-amber-700">Requires attention</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Avg. Risk Score</p>
-          <p className="metric-value mt-3">{TENANT_DATA.summary.avgRiskScore}</p>
+          <p className="metric-value mt-3">{avgRiskScore}</p>
           <p className="metric-detail mt-2">Portfolio average</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Active Interventions</p>
-          <p className="metric-value mt-3">{TENANT_DATA.summary.activeInterventions}</p>
+          <p className="metric-value mt-3">{activeInterventions}</p>
           <p className="metric-detail mt-2">AI-driven outreach</p>
         </div>
       </div>
@@ -208,9 +86,9 @@ export default function TenantsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Properties</SelectItem>
-                <SelectItem value="prop-ballard">Ballard Commons</SelectItem>
-                <SelectItem value="prop-capitol">Capitol Hill Residences</SelectItem>
-                <SelectItem value="prop-bellevue">Bellevue Towers</SelectItem>
+                {CANONICAL_PROPERTIES.map(prop => (
+                  <SelectItem key={prop.id} value={prop.id}>{prop.shortName}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={riskFilter} onValueChange={setRiskFilter}>
@@ -219,9 +97,9 @@ export default function TenantsPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Risk Levels</SelectItem>
-                <SelectItem value="High">High Risk</SelectItem>
-                <SelectItem value="Medium">Medium Risk</SelectItem>
-                <SelectItem value="Low">Low Risk</SelectItem>
+                <SelectItem value="high">High Risk</SelectItem>
+                <SelectItem value="medium">Medium Risk</SelectItem>
+                <SelectItem value="low">Low Risk</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -249,66 +127,71 @@ export default function TenantsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredTenants.map((tenant, index) => (
-                <TableRow key={tenant.id} className={index === 0 ? "bg-teal-50/50" : ""}>
-                  <TableCell className="font-medium text-foreground">
-                    <div className="flex items-center gap-2">
-                      {tenant.name}
-                      {index === 0 && (
-                        <Badge variant="secondary" className="text-xs bg-teal-100 text-teal-700 border-teal-200">
-                          Featured
+              {filteredTenants.map((tenant, index) => {
+                const property = CANONICAL_PROPERTIES.find(p => p.id === tenant.propertyId);
+                const isAlexChen = tenant.id === ALEX_CHEN.id;
+                
+                return (
+                  <TableRow key={tenant.id} className={isAlexChen ? "bg-teal-50/50" : ""}>
+                    <TableCell className="font-medium text-foreground">
+                      <div className="flex items-center gap-2">
+                        {tenant.fullName}
+                        {isAlexChen && (
+                          <Badge variant="secondary" className="text-xs bg-teal-100 text-teal-700 border-teal-200">
+                            Flagship
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="font-mono text-sm">{tenant.unit}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{property?.shortName || tenant.propertyName}</TableCell>
+                    <TableCell className="text-right">
+                      <span className={`font-semibold ${
+                        tenant.riskScore >= 75 ? "text-red-600" : 
+                        tenant.riskScore >= 65 ? "text-amber-600" : "text-slate-600"
+                      }`}>
+                        {tenant.riskScore}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {tenant.riskTier === "high" ? (
+                        <Badge variant="outline" className="border-red-300 bg-red-50 text-red-700 text-xs">
+                          <AlertTriangle className="mr-1 h-3 w-3" />
+                          High
+                        </Badge>
+                      ) : tenant.riskTier === "medium" ? (
+                        <Badge variant="outline" className="border-amber-300 bg-amber-50 text-amber-700 text-xs">
+                          Medium
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-slate-300 bg-slate-50 text-slate-600 text-xs">
+                          Low
                         </Badge>
                       )}
-                    </div>
-                  </TableCell>
-                  <TableCell className="font-mono text-sm">{tenant.unit}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{tenant.property}</TableCell>
-                  <TableCell className="text-right">
-                    <span className={`font-semibold ${
-                      tenant.riskScore >= 75 ? "text-red-600" : 
-                      tenant.riskScore >= 65 ? "text-amber-600" : "text-slate-600"
-                    }`}>
-                      {tenant.riskScore}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {tenant.riskTier === "High" ? (
-                      <Badge variant="outline" className="border-red-300 bg-red-50 text-red-700 text-xs">
-                        <AlertTriangle className="mr-1 h-3 w-3" />
-                        High
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{tenant.primaryDriver}</TableCell>
+                    <TableCell>
+                      {tenant.communicationChannel === "SMS" ? (
+                        <Badge variant="secondary" className="text-xs">
+                          <MessageSquare className="mr-1 h-3 w-3" />
+                          SMS
+                        </Badge>
+                      ) : (
+                        <Badge variant="secondary" className="text-xs">
+                          <Mail className="mr-1 h-3 w-3" />
+                          Email
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{tenant.leaseEnd ? new Date(tenant.leaseEnd).toLocaleDateString() : tenant.status}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-700 text-xs">
+                        {tenant.status || "Active"}
                       </Badge>
-                    ) : tenant.riskTier === "Medium" ? (
-                      <Badge variant="outline" className="border-amber-300 bg-amber-50 text-amber-700 text-xs">
-                        Medium
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="border-slate-300 bg-slate-50 text-slate-600 text-xs">
-                        Low
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{tenant.primaryDriver}</TableCell>
-                  <TableCell>
-                    {tenant.channel === "SMS" ? (
-                      <Badge variant="secondary" className="text-xs">
-                        <MessageSquare className="mr-1 h-3 w-3" />
-                        SMS
-                      </Badge>
-                    ) : (
-                      <Badge variant="secondary" className="text-xs">
-                        <Mail className="mr-1 h-3 w-3" />
-                        Email
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{new Date(tenant.leaseEnd).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="border-teal-300 bg-teal-50 text-teal-700 text-xs">
-                      {tenant.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
           {filteredTenants.length === 0 && (

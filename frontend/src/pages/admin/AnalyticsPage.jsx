@@ -1,16 +1,76 @@
 import { motion } from "framer-motion";
-import { TrendingUp, DollarSign, Users, BarChart3 } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { TrendLineChart, DistributionBarChart, ComparisonLineChart } from "@/components/charts/SaaSCharts";
-import { computePortfolioAnalytics } from "@/lib/demoData";
+import { TrendLineChart } from "@/components/charts/SaaSCharts";
+import { PORTFOLIO_TOTALS, CANONICAL_PROPERTIES, CANONICAL_RESIDENTS } from "@/lib/canonicalData";
 
 export default function AdminAnalytics() {
-  // Calculate current metrics from Seattle portfolio
-  const analytics = computePortfolioAnalytics();
-  const currentMetrics = analytics.current;
-  const trends = analytics.trends;
-  const riskDistribution = analytics.riskDistribution;
+  // Use canonical portfolio totals and data
+  const currentMetrics = {
+    netRetentionROI: PORTFOLIO_TOTALS.portfolioROI,
+    totalProjectedSavings: PORTFOLIO_TOTALS.totalProjectedSavings,
+    totalProjectedRevenue: PORTFOLIO_TOTALS.totalServiceRevenue,
+    totalCreditsRecommended: PORTFOLIO_TOTALS.totalCreditsInvested,
+    totalAtRisk: PORTFOLIO_TOTALS.totalAtRisk,
+    roiMultiple: PORTFOLIO_TOTALS.roiMultiple,
+    avgTurnoverCost: 3800, // Average across properties
+    highRisk: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length
+  };
+
+  // Mock trends data (would ideally come from historical data)
+  const trends = {
+    retentionROI: [
+      { month: "Oct", value: 75000 },
+      { month: "Nov", value: 82000 },
+      { month: "Dec", value: 88000 },
+      { month: "Jan", value: 92000 },
+      { month: "Feb", value: 94000 },
+      { month: "Mar", value: PORTFOLIO_TOTALS.portfolioROI }
+    ],
+    retentionSavings: [
+      { month: "Oct", value: 85000 },
+      { month: "Nov", value: 88000 },
+      { month: "Dec", value: 91000 },
+      { month: "Jan", value: 93000 },
+      { month: "Feb", value: 96000 },
+      { month: "Mar", value: PORTFOLIO_TOTALS.totalProjectedSavings }
+    ],
+    turnoversAvoided: [
+      { month: "Oct", turnovers: 10 },
+      { month: "Nov", turnovers: 11 },
+      { month: "Dec", turnovers: 12 },
+      { month: "Jan", turnovers: 11 },
+      { month: "Feb", turnovers: 12 },
+      { month: "Mar", turnovers: PORTFOLIO_TOTALS.totalAvoidedTurnovers }
+    ],
+    serviceRevenue: [
+      { month: "Oct", value: 4800 },
+      { month: "Nov", value: 5100 },
+      { month: "Dec", value: 5400 },
+      { month: "Jan", value: 5300 },
+      { month: "Feb", value: 5500 },
+      { month: "Mar", value: PORTFOLIO_TOTALS.totalServiceRevenue }
+    ]
+  };
+
+  const riskDistribution = [
+    { 
+      level: "High Risk", 
+      count: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore >= 80).length / CANONICAL_RESIDENTS.length) * 100)
+    },
+    { 
+      level: "Medium Risk", 
+      count: CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore >= 60 && r.riskScore < 80).length / CANONICAL_RESIDENTS.length) * 100)
+    },
+    { 
+      level: "Low Risk", 
+      count: CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length,
+      percentage: Math.round((CANONICAL_RESIDENTS.filter(r => r.riskScore < 60).length / CANONICAL_RESIDENTS.length) * 100)
+    }
+  ];
 
   return (
     <motion.div 
@@ -26,11 +86,10 @@ export default function AdminAnalytics() {
           Portfolio Analytics
         </Badge>
         <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
-          Seattle Portfolio Performance
+          Portfolio Performance
         </h2>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-          Track retention ROI, churn prevention effectiveness, and service revenue across Ballard Commons, 
-          Capitol Hill Residences, and Bellevue Skyline Towers.
+          Track retention ROI, churn prevention effectiveness, and service revenue across {CANONICAL_PROPERTIES.map(p => p.shortName).join(", ")}.
         </p>
       </section>
 
@@ -39,7 +98,7 @@ export default function AdminAnalytics() {
         <div className="saas-metric-card">
           <p className="metric-label">Current Net ROI</p>
           <p className="metric-value mt-3">${currentMetrics.netRetentionROI.toLocaleString()}</p>
-          <p className="metric-detail mt-2">{currentMetrics.roiMultiple}x return multiple</p>
+          <p className="metric-detail mt-2">{currentMetrics.roiMultiple.toFixed(1)}x return multiple</p>
         </div>
         <div className="saas-metric-card">
           <p className="metric-label">Projected Savings</p>
@@ -52,7 +111,7 @@ export default function AdminAnalytics() {
           <p className="metric-detail mt-2">Expected bookings</p>
         </div>
         <div className="saas-metric-card">
-          <p className="metric-label">Credits Recommended</p>
+          <p className="metric-label">Credits Invested</p>
           <p className="metric-value mt-3">${currentMetrics.totalCreditsRecommended.toLocaleString()}</p>
           <p className="metric-detail mt-2">Investment across portfolio</p>
         </div>
@@ -145,20 +204,20 @@ export default function AdminAnalytics() {
                 <strong> 4+ months earlier</strong> than traditional methods.
               </p>
               <p className="mt-3 text-sm leading-relaxed text-slate-700">
-                The Seattle portfolio demonstrates this approach: <strong>{currentMetrics.totalAtRisk} residents</strong> are flagged for friction-based churn risk 
+                The current portfolio demonstrates this approach: <strong>{currentMetrics.totalAtRisk} residents</strong> are flagged for friction-based churn risk 
                 using maintenance frequency, response time patterns, and sentiment tracking. Proactive interventions targeting these residents project 
-                <strong> ${currentMetrics.totalProjectedSavings.toLocaleString()} in turnover prevention savings</strong>, with a <strong>{currentMetrics.roiMultiple}x return</strong> on credits deployed.
+                <strong> ${currentMetrics.totalProjectedSavings.toLocaleString()} in turnover prevention savings</strong>, with a <strong>{currentMetrics.roiMultiple.toFixed(1)}x return</strong> on credits deployed.
               </p>
               
               <div className="mt-6 grid gap-4 md:grid-cols-4">
                 <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
-                  <p className="text-xs font-medium text-slate-600">Avg Seattle Turnover Cost</p>
+                  <p className="text-xs font-medium text-slate-600">Avg Turnover Cost</p>
                   <p className="mt-2 text-2xl font-semibold text-slate-900">${currentMetrics.avgTurnoverCost.toLocaleString()}</p>
                   <p className="mt-1 text-xs text-slate-500">Per unit</p>
                 </div>
                 <div className="rounded-lg border-2 border-teal-200 bg-white p-4">
                   <p className="text-xs font-medium text-slate-600">Early Detection Window</p>
-                  <p className="mt-2 text-2xl font-semibold text-teal-600">132</p>
+                  <p className="mt-2 text-2xl font-semibold text-teal-600">120+</p>
                   <p className="mt-1 text-xs text-slate-500">Days avg advance notice</p>
                 </div>
                 <div className="rounded-lg border-2 border-teal-200 bg-white p-4">

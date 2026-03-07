@@ -1,161 +1,139 @@
-# plan.md — HappyCo Concierge Seattle Demo + Retention Intelligence
+# plan.md — HappyCo Concierge Demo: Canonical Data Consistency + Reliability Verification (Preview Only)
 
 ## 1) Objectives
-- **Stabilize UI** after recent analytics/concierge work; eliminate runtime crashes and blank renders across roles.
-- Convert the entire demo to a coherent, Seattle-area portfolio (**~50 / ~100 / ~150 units**) with consistent properties, residents, providers, services, bookings, receipts, and analytics.
-- Make churn prediction **leading** (signals → risk) and make intervention logic visible (why flagged, what action, expected ROI impact).
-- Anchor the product narrative around **Retention ROI** and position this as a **HappyCo add-on** leveraging HappyCo’s existing operational + maintenance data.
-- Make the **Manager** experience the strongest daily workflow (risk queue → insight → recommended actions → intervention history → ROI outcomes).
-- Keep premium SaaS design system unchanged; **frontend-only**; centralized mocked data.
+- **Establish a single canonical source of truth** for all demo entities and metrics (properties, residents, providers, portfolio totals) across:
+  - Public pages
+  - Authenticated Admin
+  - Manager
+  - Resident
+- **Eliminate data inconsistency** by removing fragmented/hardcoded mocks and aligning the frontend with the backend canonical seed dataset:
+  - Backend authority: `/app/backend/app/seeds/demo_dataset.py` (+ `/app/backend/app/seeds/constants.py`)
+  - Frontend canonical mirror: `/app/frontend/src/lib/canonicalData.js`
+- **Guarantee click-safety and route reliability**: every clickable element in authenticated flows must be safe (no crashes, no runtime errors, no blank renders). Non-functional UI must be disabled or clearly non-interactive.
+- **Pin the flagship resident story (Alex Chen)** across all relevant views:
+  - Same name, unit, property, risk tier/score, and narrative everywhere
+  - Alex is always present and easy to find
+- **Presentation-ready product polish**: remove placeholder/internal jargon; keep copy credible; maintain premium UI.
+- **Work in preview only**: **DO NOT DEPLOY**.
 
 **Status update (current):**
-- ✅ **Phase 1 complete**: retention engine POC is implemented and visible in the Manager workflow.
-- ✅ **Critical runtime crash fixed**: `roleLabel is not defined` in `AdminSidebar` was crashing pages.
-- 🚧 Moving to **Phase 2**: propagate Seattle consistency + Retention ROI rollups across Admin/Manager/Resident surfaces, then run comprehensive UI testing.
+- ✅ Critical root cause identified: **frontend mock data conflicts with backend canonical dataset** (e.g., property names).
+- ✅ Created `/app/frontend/src/lib/canonicalData.js` as the **frontend canonical data layer** aligned to backend seeds.
+- ✅ Canonical dataset includes:
+  - Canonical properties: Lakeside Commons, Downtown Tower, The Metropolitan at Riverside (flagship)
+  - Flagship resident: Alex Chen (unit 501 at The Metropolitan at Riverside)
+  - Canonical providers: SparkClean, FixRight HVAC, Urban Pest Control
+  - Portfolio totals derived from the canonical properties
+- 🚧 In progress: **Phase 2A refactor** to make *all frontend pages* consume `canonicalData.js` and delete/retire conflicting mocks (esp. `demoData.js` usage).
 
 ---
 
 ## 2) Implementation Steps
 
-### Phase 1 — Core Flow POC (Prove the retention engine + intervention visibility)
-**Core = “Risk → Recommended intervention → ROI impact”** working end-to-end off `demoData.js` and visible in UI.
+### Phase 1 — Identify Canonical Data + Create Frontend Source of Truth (Completed)
+**Core outcome:** A single authoritative data definition exists for frontend display.
 
 User stories:
-1. As a Manager, I can see a ranked risk queue with top drivers per resident.
-2. As a Manager, I can open a resident and see the exact signals/weights that triggered the score.
-3. As a Manager, I can preview recommended intervention tiers and the expected ROI delta before applying.
-4. As an Admin, I can adjust global assumptions (turn cost, margins, credit thresholds) and see ROI update immediately.
-5. As a Manager, I can switch properties and see property-specific settings change the recommendations.
+1. As a user, I see the same property/resident/provider data across every page.
+2. As a presenter, I can trust that what’s shown matches the seeded backend demo dataset.
 
 Steps (Completed):
-- ✅ Created a **single-source retention configuration** in `demoData.js`:
-  - Global assumptions: turnover cost, avg rent, margins, tier thresholds, signal weights, demand assumptions.
-  - Per-property overrides: turnover cost, pricing multipliers, provider availability.
-- ✅ Implemented pure functions in `demoData.js` (no backend):
-  - `computeRiskScore(resident, property, config)` → score + driver breakdown.
-  - `recommendIntervention(score, drivers, config)` → tier, offer, rationale.
-  - `estimateInterventionROI(intervention, residentContext, property, config)` → savings, revenue, cost, ROI, multiple.
-- ✅ Seeded **5 Seattle-area residents** with friction signals and generated computed risk + intervention + ROI projections.
-- ✅ Updated **Manager Churn Risk** page to render:
-  - Risk queue with computed scores + driver contributions.
-  - Visible recommended intervention tier + rationale.
-  - Expandable ROI explainer cards (savings, revenue, credits invested, ROI multiple).
-  - Mock “Deploy intervention” state (UI-level) to prove apply loop.
-- ✅ Stabilized UI crash: fixed `AdminSidebar` `roleLabel` runtime error.
+- ✅ Audited mismatch between backend seed data and frontend hardcoded mocks.
+- ✅ Implemented canonical frontend registry in `/app/frontend/src/lib/canonicalData.js` mirroring backend seeds.
+- ✅ Defined canonical IDs for properties/residents/providers and helper getters (`getPropertyById`, `getResidentById`, `getProviderById`).
+- ✅ Anchored Alex Chen as the flagship resident (`ALEX_CHEN`) and ensured he is first in `CANONICAL_RESIDENTS`.
 
-Checkpoint: ✅ POC is stable and renders with no runtime errors.
+Checkpoint: ✅ A canonical frontend dataset exists and matches backend seeds at the entity level.
 
 ---
 
-### Phase 2 — V1 App Development (Seattle conversion + consistent marketplace + role completeness)
+### Phase 2 — Deep Consistency + Reliability Verification Pass (Now)
+**Core = “One data source everywhere + click-safe UI everywhere.”**
 
 User stories:
-1. As an Admin, I can view a Seattle portfolio summary where all counts and ROI match across dashboards and analytics.
-2. As a Manager, I can take action on an at-risk resident and see it recorded in intervention history.
-3. As a Resident, I can use Concierge to browse Seattle services and book using credits.
-4. As an Admin, I can view analytics trends that roll up into Retention ROI as the primary metric.
-5. As a Manager, I can see provider readiness/availability for recommended interventions at my property.
+1. As an Admin, I see consistent portfolio totals and property names across Dashboard/Analytics/Properties/Providers/Tenants.
+2. As a Manager, I see the same canonical properties/residents/providers and no Seattle-only mock portfolio remnants.
+3. As a Resident, Alex’s data and property context are consistent with Admin/Manager views.
+4. As any user, I can click through the entire app without crashes, runtime errors, or dead-end routes.
 
 Steps (Now):
 
-**2A — Seattle data consistency sweep (single source of truth)**
-- Confirm all pages pull from `demoData.js` for:
-  - Properties (names, neighborhoods, addresses, unit counts, rents).
-  - Residents (identity consistency: e.g., Alex Chen, unit, propertyId everywhere).
-  - Providers/services (pricing, availability, service areas).
-  - Bookings/receipts (consistent amounts and service IDs).
-- Add/standardize entity registries (IDs → references) to prevent drift:
-  - `propertiesById`, `residentsById`, `providersById`, `servicesById` helper maps.
+**2A — Systematic frontend refactor to `canonicalData.js` (P0)**
+- Refactor *every* data-displaying page/component to import from `/app/frontend/src/lib/canonicalData.js`.
+- Remove local mock objects and stop importing conflicting sources (especially `demoData.js`).
+- Pages to sweep (minimum):
+  - Public: `LandingPage.jsx`, `PrivacyPage.jsx`, `LegalPage.jsx`
+  - Admin: `DashboardPage.jsx`, `AnalyticsPage.jsx`, `PropertiesPage.jsx`, `PropertyDetailPage.jsx`, `TenantsPage.jsx`, `ProvidersPage.jsx`, `SettingsPage.jsx`, `DiagnosticsPage.jsx`
+  - Manager: `ManagerDashboard.jsx`, `ManagerChurnRisk.jsx`, `ManagerResidents.jsx`, `ManagerProviders.jsx`, `ManagerMaintenance.jsx`
+  - Resident: `ResidentDashboard.jsx`, `ResidentConcierge.jsx`, `ResidentServices.jsx`, `ResidentBookings.jsx`, `ResidentMaintenance.jsx`
+- Enforce naming consistency:
+  - “Lakeside Commons”, “Downtown Tower”, “The Metropolitan at Riverside” must be used everywhere.
+  - Ensure shortName usage (“The Metropolitan”) is deliberate and consistent.
 
-**2B — Retention ROI as the anchor metric everywhere**
-- Replace any remaining hardcoded ROI/savings numbers on Admin and Manager pages with:
-  - Shared computed rollups derived from global config + property overrides.
-  - Consistent portfolio totals (turnovers avoided, credits invested, service revenue, retention ROI, ROI multiple).
-- Ensure Admin Analytics charts and dashboard metric cards use the same rollup source.
+**2B — Canonical rollups + derived metrics (P0/P1)**
+- Ensure all “portfolio totals”/summary cards are derived from `CANONICAL_PROPERTIES` / `PORTFOLIO_TOTALS` (and not hardcoded per page).
+- Where possible, compute totals rather than store them (or add a single helper that computes them once).
+- Validate Alex Chen’s risk score, tier, unit, property match across:
+  - Tenants/Residents list
+  - Property detail view
+  - Any “at-risk” or “featured resident” modules
 
-**2C — Admin surfaces update (Seattle-first + story clarity)**
-- Admin Dashboard:
-  - Update portfolio cards to Seattle counts and computed metrics.
-  - Add brief story framing: “Leading indicators → interventions → retention ROI.”
-- Admin Analytics:
-  - Ensure charts render and reflect Seattle portfolio rollups.
-  - Add an “Operational Signals”/“Leading indicators” insight card (non-marketing, decision-useful).
+**2C — Click-safety pass (P0)**
+- Exhaustive click-through test across all routes and UI controls:
+  - Sidebar navigation items
+  - Table row actions
+  - Tabs, filters, dropdowns
+  - “View details” links/cards
+- For unfinished features:
+  - Disable controls OR route to a safe “Coming soon” placeholder (no exceptions).
+- Fix any console errors, undefined access, empty state crashes.
 
-**2D — Manager workflow hardening (strongest UX)**
-- Expand the “Deploy intervention” loop into a believable daily tool:
-  - Intervention history per resident (timeline entries: date, tier, credits, expected ROI).
-  - Property-level performance widget: ROI, avoided turnover cost, service revenue, credits.
-  - Provider readiness card for the recommended action (availability/pricing/ETA).
-- Add filtering and sorting:
-  - Filter by driver type (maintenance/sentiment/response time/lease timing).
-  - Sort by risk score, lease proximity, or highest projected ROI.
+**2D — Cross-page consistency verification (P0/P1)**
+- Manual consistency checks for the same entity across multiple pages:
+  - Alex Chen: name, email/phone, unit, property, risk score/tier, narrative labels
+  - Properties: name, address, unit counts, occupancy rate
+  - Providers: name, coverage properties, coverage %, fulfillment rate
+- Validate “flagship property” highlighting for The Metropolitan at Riverside appears consistently.
 
-**2E — Resident experience consistency (friendly, informal)**
-- Update Resident Concierge and Resident Services pages to use:
-  - Seattle service catalog, provider names, real prices.
-  - Credits/offers that align with manager intervention tiers.
-- Add resident-friendly copy that stays premium but light.
+**2E — Copy polish (P1)**
+- Remove placeholder text and internal jargon.
+- Ensure “interventions” language is framed as **AI-driven automation** and concierge workflows.
 
-**2F — Comprehensive UI testing (frontend-only)**
-- Screenshot + console log checks across key routes:
-  - Admin: `/app/admin/dashboard`, `/app/admin/analytics`, `/app/admin/properties`, `/app/admin/providers`.
-  - Manager: `/app/manager/dashboard`, `/app/manager/churn-risk`, `/app/manager/residents`, `/app/manager/providers`.
-  - Resident: `/app/resident/dashboard`, `/app/resident/concierge`, `/app/resident/services`, `/app/resident/bookings`.
-- Validate:
-  - No runtime errors.
-  - No blank pages.
-  - Metrics are consistent across roles.
-  - Performance remains stable (no heavy render loops).
-
-End Phase 2: run one end-to-end demo walkthrough (Admin → Manager → Resident) and capture a consistency checklist.
+End Phase 2: produce a concise verification checklist (routes tested + key value matches) and confirm no runtime errors.
 
 ---
 
-### Phase 3 — Expansion & Hardening (configurability + onboarding + narrative polish)
+### Phase 3 — Retention Intelligence Reconciliation (Later, after consistency is locked)
+> Note: Prior retention-engine POC work was built around Seattle-only `demoData.js`. This phase reintroduces retention logic **only after** canonical data consistency is enforced.
 
 User stories:
-1. As an Admin, I can tune assumptions per property and instantly see different intervention tiers.
-2. As a Manager, I get a first-login onboarding card that teaches the daily workflow.
-3. As an Admin, I can view platform impact (NOI, turn reduction, HappyCo revenue lift) derived from ROI components.
-4. As a Manager, I can filter the risk queue by driver type (maintenance, sentiment, lease timing).
-5. As a Resident, I can see credits/offers that match the manager intervention history.
+1. As an Admin/Manager, retention analytics reflect canonical properties/residents.
+2. As a presenter, ROI and churn/risk narratives don’t contradict seeded data.
 
 Steps (Later):
-- Config surfaces (frontend-only):
-  - Admin Settings: editable global assumptions + per-property overrides (demo-safe).
-  - Store edits in local state/sessionStorage (no backend).
-- Onboarding (Manager):
-  - Dismissible onboarding card + “3 steps today” checklist.
-- Platform impact (Admin):
-  - Add “Platform Impact” section: NOI lift, turn reduction, incremental HappyCo revenue, ROI multiple.
-- Consistency audit:
-  - Single ID system for properties/residents/providers/services.
-  - Remove conflicting numbers; ensure charts derive from computed portfolio outputs.
-- Performance pass:
-  - Memoization for computed analytics; avoid large object cloning; keep `demoData.js` structured but not overly heavy.
-
-End Phase 3: run comprehensive regression pass + route smoke tests.
+- Migrate or rebuild retention computations (risk scoring, intervention recommendation, ROI estimates) to use `canonicalData.js` entities.
+- Remove/deprecate `demoData.js` or isolate it so it cannot leak into canonical views.
+- Add memoized computed selectors/rollups (avoid heavy recalculation on render).
 
 ---
 
 ## 3) Next Actions (Immediate)
-1. ✅ Completed Phase 1 POC (retention config + functions + Manager churn-risk UI).
-2. Update Admin Dashboard and Admin Analytics to use Seattle portfolio + computed rollups.
-3. Update Resident Concierge / Services to use Seattle marketplace data + credits aligned to intervention tiers.
-4. Add intervention history persistence (frontend-only) that survives navigation (e.g., sessionStorage) to support believable workflows.
-5. Run screenshot+console checks on:
-   - `/app/admin/analytics`
-   - `/app/manager/churn-risk`
-   - `/app/resident/concierge`
+1. Refactor Admin pages to use `canonicalData.js` first (highest demo visibility):
+   - `DashboardPage.jsx`, `PropertiesPage.jsx`, `PropertyDetailPage.jsx`, `TenantsPage.jsx`, `ProvidersPage.jsx`, `AnalyticsPage.jsx`.
+2. Refactor Manager pages next:
+   - `ManagerDashboard.jsx`, `ManagerResidents.jsx`, `ManagerProviders.jsx`, `ManagerMaintenance.jsx`, `ManagerChurnRisk.jsx`.
+3. Refactor Resident pages to ensure Alex Chen is consistent end-to-end.
+4. Remove/replace imports from `demoData.js` and delete page-level hardcoded mocks.
+5. Run a full click-through safety pass on:
+   - Admin → Manager → Resident flows via login role cards.
+6. Perform explicit cross-page value comparisons for Alex Chen and the flagship property.
 
 ---
 
 ## 4) Success Criteria
-- No blank pages; no uncaught runtime errors in console across Admin/Manager/Resident core routes.
-- Manager workflow feels complete:
-  - Risk queue renders, drivers visible, intervention tier visible, ROI delta shown.
-  - “Deploy intervention” creates a history entry and aligns with resident-facing credits.
-- Seattle portfolio is fully consistent everywhere (names, units, rents, risk counts, credits, bookings, receipts, charts).
-- Retention ROI is the primary metric on Admin + Manager surfaces, with clearly explained component roll-up.
-- Intervention logic is explicit (thresholds + signals + rationale) and configurable globally + per property via `demoData.js` (and optionally UI overrides stored locally).
-- Premium SaaS design system preserved with no visual regressions.
+- **Single source of truth**: all displayed properties/residents/providers and rollups are derived from `/app/frontend/src/lib/canonicalData.js`.
+- **Canonical naming enforced**: no “Ballard Commons / Seattle portfolio” remnants appear anywhere.
+- **Alex Chen is pinned and consistent** across Admin/Manager/Resident views.
+- **Click-safe authenticated UX**: no crashes, no runtime errors, no blank pages; non-functional UI is disabled or safely handled.
+- **Presentation-ready polish**: no placeholder/internal jargon; coherent AI concierge/intervention framing.
+- **Preview only**: changes remain in preview environment; **DO NOT DEPLOY**.

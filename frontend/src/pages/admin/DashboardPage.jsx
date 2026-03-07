@@ -5,16 +5,16 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { computePortfolioAnalytics, getPropertyPerformance, PORTFOLIO_TOTALS, AT_RISK_RESIDENTS_WITH_SCORES } from "@/lib/demoData";
+import { 
+  CANONICAL_PROPERTIES, 
+  CANONICAL_RESIDENTS, 
+  PORTFOLIO_TOTALS 
+} from "@/lib/canonicalData";
 
 export default function DashboardPage() {
-  // Compute current portfolio metrics
-  const analytics = computePortfolioAnalytics();
-  const currentMetrics = analytics.current;
-  const propertyPerformance = getPropertyPerformance();
-  
-  // Get top flagged residents (highest risk scores)
-  const topFlaggedResidents = AT_RISK_RESIDENTS_WITH_SCORES.slice(0, 5);
+  // Use canonical data
+  const flagshipProperty = CANONICAL_PROPERTIES.find(p => p.isFlagship);
+  const topFlaggedResidents = CANONICAL_RESIDENTS.filter(r => r.riskScore >= 68).slice(0, 5);
 
   return (
     <motion.div 
@@ -29,13 +29,13 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <Badge className="mb-3 w-fit border-teal-200 bg-teal-50 text-teal-700 hover:bg-teal-50" variant="secondary">
-              Seattle Portfolio
+              Portfolio Overview
             </Badge>
             <h2 className="font-[var(--font-heading)] text-3xl font-semibold tracking-[-0.02em] text-foreground">
               Portfolio Control Center
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-              Real-time retention intelligence across Ballard Commons, Capitol Hill Residences, and Bellevue Skyline Towers.
+              Real-time retention intelligence across {CANONICAL_PROPERTIES.map(p => p.shortName).join(", ")}.
             </p>
           </div>
           <Button asChild className="h-9 px-4 text-sm shadow-sm">
@@ -68,8 +68,8 @@ export default function DashboardPage() {
         >
           <div className="saas-metric-card">
             <p className="metric-label mb-3">Occupancy Rate</p>
-            <p className="metric-value">{((PORTFOLIO_TOTALS.occupiedUnits / PORTFOLIO_TOTALS.totalUnits) * 100).toFixed(1)}%</p>
-            <p className="metric-detail mt-2">Across 3 properties</p>
+            <p className="metric-value">{PORTFOLIO_TOTALS.occupancyRate.toFixed(1)}%</p>
+            <p className="metric-detail mt-2">Across {PORTFOLIO_TOTALS.totalProperties} properties</p>
           </div>
         </motion.div>
 
@@ -80,8 +80,8 @@ export default function DashboardPage() {
         >
           <div className="saas-metric-card">
             <p className="metric-label mb-3">At-Risk Residents</p>
-            <p className="metric-value text-amber-600">{currentMetrics.totalAtRisk}</p>
-            <p className="metric-detail mt-2">{currentMetrics.highRisk} high priority</p>
+            <p className="metric-value text-amber-600">{PORTFOLIO_TOTALS.totalAtRisk}</p>
+            <p className="metric-detail mt-2">Require attention</p>
           </div>
         </motion.div>
 
@@ -91,9 +91,9 @@ export default function DashboardPage() {
           transition={{ duration: 0.24, delay: 0.22 }}
         >
           <div className="saas-metric-card">
-            <p className="metric-label mb-3">Interventions Recommended</p>
-            <p className="metric-value">{currentMetrics.totalAtRisk}</p>
-            <p className="metric-detail mt-2">${currentMetrics.totalCreditsRecommended.toLocaleString()} credits</p>
+            <p className="metric-label mb-3">Projected Savings</p>
+            <p className="metric-value text-teal-600">${PORTFOLIO_TOTALS.totalProjectedSavings.toLocaleString()}</p>
+            <p className="metric-detail mt-2">Turnover avoidance</p>
           </div>
         </motion.div>
       </section>
@@ -101,26 +101,26 @@ export default function DashboardPage() {
       {/* Retention ROI Summary */}
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         <div className="saas-metric-card">
-          <p className="metric-label mb-3">Credits Deployed</p>
-          <p className="metric-value">${currentMetrics.totalCreditsRecommended.toLocaleString()}</p>
-          <p className="metric-detail mt-2">Investment</p>
+          <p className="metric-label mb-3">Credits Invested</p>
+          <p className="metric-value">${PORTFOLIO_TOTALS.totalCreditsInvested.toLocaleString()}</p>
+          <p className="metric-detail mt-2">Monthly investment</p>
         </div>
 
         <div className="saas-metric-card">
-          <p className="metric-label mb-3">Projected Savings</p>
-          <p className="metric-value text-teal-600">${currentMetrics.totalProjectedSavings.toLocaleString()}</p>
-          <p className="metric-detail mt-2">Turnover prevention</p>
+          <p className="metric-label mb-3">Service Revenue</p>
+          <p className="metric-value text-teal-600">${PORTFOLIO_TOTALS.totalServiceRevenue.toLocaleString()}</p>
+          <p className="metric-detail mt-2">Monthly projection</p>
         </div>
 
         <div className="saas-metric-card">
-          <p className="metric-label mb-3">Net Retention ROI</p>
-          <p className="metric-value text-teal-600">${currentMetrics.netRetentionROI.toLocaleString()}</p>
-          <p className="metric-detail mt-2">After credits invested</p>
+          <p className="metric-label mb-3">Portfolio ROI</p>
+          <p className="metric-value text-teal-600">${PORTFOLIO_TOTALS.portfolioROI.toLocaleString()}</p>
+          <p className="metric-detail mt-2">Net monthly impact</p>
         </div>
 
         <div className="saas-metric-card">
           <p className="metric-label mb-3">ROI Multiple</p>
-          <p className="metric-value text-teal-600">{currentMetrics.roiMultiple}x</p>
+          <p className="metric-value text-teal-600">{PORTFOLIO_TOTALS.roiMultiple.toFixed(1)}x</p>
           <p className="metric-detail mt-2">Return on investment</p>
         </div>
       </section>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
           <div className="mb-6 flex items-center justify-between">
             <h3 className="text-lg font-semibold tracking-tight text-foreground">Property Performance</h3>
             <Badge className="border-border bg-muted text-muted-foreground" variant="secondary">
-              {propertyPerformance.length} Properties
+              {CANONICAL_PROPERTIES.length} Properties
             </Badge>
           </div>
           <div className="overflow-hidden rounded-lg border border-border">
@@ -142,14 +142,13 @@ export default function DashboardPage() {
                   <TableHead className="text-center text-xs font-semibold text-foreground">Units</TableHead>
                   <TableHead className="text-center text-xs font-semibold text-foreground">Occupied</TableHead>
                   <TableHead className="text-center text-xs font-semibold text-foreground">At Risk</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-foreground">Interventions</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-foreground">Projected Savings</TableHead>
-                  <TableHead className="text-right text-xs font-semibold text-foreground">Net ROI</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-foreground">Annual ROI</TableHead>
+                  <TableHead className="text-right text-xs font-semibold text-foreground">Monthly Credits</TableHead>
                   <TableHead className="text-xs font-semibold text-foreground">Manager</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {propertyPerformance.map((property) => (
+                {CANONICAL_PROPERTIES.map((property) => (
                   <TableRow key={property.id} className="border-border hover:bg-muted/30">
                     <TableCell>
                       <Link 
@@ -158,36 +157,42 @@ export default function DashboardPage() {
                         data-testid={`property-link-${property.id}`}
                       >
                         <div>
-                          <p className="font-semibold">{property.name}</p>
-                          <p className="text-xs text-muted-foreground">{property.neighborhood}</p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold">{property.shortName}</p>
+                            {property.isFlagship && (
+                              <Badge className="text-xs border-teal-200 bg-teal-50 text-teal-700" variant="secondary">
+                                Flagship
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">{property.address.city}, {property.address.state}</p>
                         </div>
                       </Link>
                     </TableCell>
-                    <TableCell className="text-center text-foreground">{property.units}</TableCell>
+                    <TableCell className="text-center text-foreground">{property.totalUnits}</TableCell>
                     <TableCell className="text-center">
                       <div>
-                        <p className="font-medium text-foreground">{property.occupied}</p>
-                        <p className="text-xs text-muted-foreground">{property.occupancyRate}%</p>
+                        <p className="font-medium text-foreground">{property.occupiedUnits}</p>
+                        <p className="text-xs text-muted-foreground">{property.occupancyRate.toFixed(1)}%</p>
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge 
                         className={`${
-                          property.atRiskCount >= 10 ? 'border-red-200 bg-red-50 text-red-700' :
-                          property.atRiskCount >= 5 ? 'border-amber-200 bg-amber-50 text-amber-700' :
+                          property.atRiskResidents >= 10 ? 'border-red-200 bg-red-50 text-red-700' :
+                          property.atRiskResidents >= 5 ? 'border-amber-200 bg-amber-50 text-amber-700' :
                           'border-border bg-muted text-muted-foreground'
                         }`}
                         variant="secondary"
                       >
-                        {property.atRiskCount}
+                        {property.atRiskResidents}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-right text-foreground">{property.interventionsRecommended}</TableCell>
                     <TableCell className="text-right font-medium text-teal-600">
-                      ${property.projectedSavings.toLocaleString()}
+                      ${property.estimatedAnnualROI.toLocaleString()}
                     </TableCell>
-                    <TableCell className="text-right font-semibold text-teal-700">
-                      ${property.netROI.toLocaleString()}
+                    <TableCell className="text-right font-medium text-foreground">
+                      ${property.creditsInvestedPerMonth}
                     </TableCell>
                     <TableCell>
                       <div className="text-sm">
@@ -208,7 +213,7 @@ export default function DashboardPage() {
           <h3 className="mb-4 text-lg font-semibold tracking-tight text-foreground">Top Flagged Residents</h3>
           <div className="space-y-3">
             {topFlaggedResidents.map((resident, index) => {
-              const property = propertyPerformance.find(p => p.id === resident.propertyId);
+              const property = CANONICAL_PROPERTIES.find(p => p.id === resident.propertyId);
               
               return (
                 <motion.div
@@ -223,12 +228,12 @@ export default function DashboardPage() {
                     data-testid={`flagged-resident-${resident.id}`}
                   >
                     <div>
-                      <p className="font-semibold text-foreground">{resident.name}</p>
+                      <p className="font-semibold text-foreground">{resident.fullName}</p>
                       <p className="text-sm text-muted-foreground">
-                        {property?.name} • Unit {resident.unit}
+                        {property?.shortName} • Unit {resident.unit}
                       </p>
                       <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        Primary: {resident.topDriver.name}
+                        Primary: {resident.primaryDriver}
                       </p>
                     </div>
                     <div className="text-right">
@@ -241,7 +246,7 @@ export default function DashboardPage() {
                         }`}
                         variant="secondary"
                       >
-                        {resident.riskScore >= 80 ? 'High' : resident.riskScore >= 70 ? 'Medium' : 'Low'}
+                        {resident.riskTier}
                       </Badge>
                     </div>
                   </Link>
@@ -262,16 +267,16 @@ export default function DashboardPage() {
               <div className="flex-1">
                 <h4 className="font-semibold text-foreground">Platform Business Impact</h4>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  HappyCo Concierge turns operational friction into measurable NOI improvement. Current Seattle portfolio shows <strong className="text-foreground">${currentMetrics.netRetentionROI.toLocaleString()} net retention ROI</strong> with <strong className="text-foreground">{currentMetrics.roiMultiple}x return multiple</strong> on credits deployed.
+                  HappyCo Concierge turns operational friction into measurable NOI improvement. Current portfolio shows <strong className="text-foreground">${PORTFOLIO_TOTALS.portfolioROI.toLocaleString()} net retention ROI</strong> with <strong className="text-foreground">{PORTFOLIO_TOTALS.roiMultiple.toFixed(1)}x return multiple</strong> on credits deployed.
                 </p>
                 <div className="mt-4 grid gap-3 grid-cols-2">
                   <div className="rounded-lg border border-teal-200 bg-white p-3">
                     <p className="text-xs font-medium text-muted-foreground">Turnover Savings</p>
-                    <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedSavings / 1000).toFixed(0)}k</p>
+                    <p className="mt-1 text-lg font-semibold text-teal-600">${(PORTFOLIO_TOTALS.totalProjectedSavings / 1000).toFixed(0)}k</p>
                   </div>
                   <div className="rounded-lg border border-teal-200 bg-white p-3">
                     <p className="text-xs font-medium text-muted-foreground">Service Revenue</p>
-                    <p className="mt-1 text-lg font-semibold text-teal-600">${(currentMetrics.totalProjectedRevenue / 1000).toFixed(1)}k</p>
+                    <p className="mt-1 text-lg font-semibold text-teal-600">${(PORTFOLIO_TOTALS.totalServiceRevenue / 1000).toFixed(1)}k</p>
                   </div>
                 </div>
               </div>
@@ -294,33 +299,28 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Churn Model Weights */}
-          <div className="saas-card">
-            <h3 className="mb-4 text-lg font-semibold tracking-tight text-foreground">Churn Model Weights</h3>
-            <div className="space-y-3">
-              <div className="rounded-lg border border-border bg-muted/40 p-4">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-foreground">Maintenance Frequency</p>
-                  <p className="text-sm font-semibold text-teal-600">35%</p>
+          {/* Flagship Property Callout */}
+          {flagshipProperty && (
+            <div className="saas-card">
+              <h3 className="mb-4 text-lg font-semibold tracking-tight text-foreground">Flagship Property</h3>
+              <div className="space-y-3">
+                <div className="rounded-lg border border-border bg-muted/40 p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-medium text-foreground">{flagshipProperty.shortName}</p>
+                    <Badge className="border-teal-200 bg-teal-50 text-teal-700" variant="secondary">
+                      Flagship
+                    </Badge>
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {flagshipProperty.address.city}, {flagshipProperty.address.state} • {flagshipProperty.totalUnits} units
+                  </p>
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    Full operational depth with unit records, resident assignment, interventions, and provider bookings.
+                  </p>
                 </div>
-                <p className="mt-2 text-sm text-muted-foreground">Repeat maintenance requests indicate resident friction</p>
-              </div>
-              <div className="rounded-lg border border-border bg-muted/40 p-4">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-foreground">Sentiment Decline</p>
-                  <p className="text-sm font-semibold text-teal-600">25%</p>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">Detected negative tone in resident interactions</p>
-              </div>
-              <div className="rounded-lg border border-border bg-muted/40 p-4">
-                <div className="flex items-center justify-between">
-                  <p className="font-medium text-foreground">Response Time</p>
-                  <p className="text-sm font-semibold text-teal-600">20%</p>
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">Slow response to requests creates dissatisfaction</p>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
     </motion.div>
