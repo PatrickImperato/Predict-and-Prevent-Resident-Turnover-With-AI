@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
-import { TrendingUp, AlertCircle, CheckCircle2, ArrowUpRight } from "lucide-react";
+import { TrendingUp, AlertCircle, CheckCircle2, ArrowUpRight, Target } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { CANONICAL_PROVIDERS, CANONICAL_PROPERTIES } from "@/lib/canonicalData";
+import { CANONICAL_PROVIDERS, PROVIDER_EXPANSION_OPPORTUNITIES, CANONICAL_PROPERTIES } from "@/lib/canonicalData";
 
 export default function ProvidersPage() {
   // Calculate summary metrics from canonical data
@@ -70,14 +70,70 @@ export default function ProvidersPage() {
             <TrendingUp className="h-5 w-5 text-amber-600" />
             <CardTitle className="text-xl tracking-[-0.02em] text-amber-900">Provider Expansion Opportunities</CardTitle>
           </div>
+          <p className="mt-2 text-sm text-amber-800">Strategic provider gaps tied to churn risk and revenue opportunities</p>
         </CardHeader>
-        <CardContent className="space-y-3">
-          {CANONICAL_PROVIDERS.filter(p => p.expansionOpportunity).map(provider => (
-            <div key={provider.id} className="rounded-xl border border-amber-200 bg-white p-4">
-              <p className="font-semibold text-slate-900">{provider.name}</p>
-              <p className="mt-2 text-sm text-slate-600">{provider.expansionOpportunity}</p>
-            </div>
-          ))}
+        <CardContent className="space-y-4">
+          {PROVIDER_EXPANSION_OPPORTUNITIES.map((opportunity, index) => {
+            const priorityColor = opportunity.priority === "High" ? "border-red-200 bg-red-50" : "border-amber-200 bg-amber-50";
+            const priorityBadgeColor = opportunity.priority === "High" ? "border-red-200 bg-red-100 text-red-700" : "border-amber-200 bg-amber-100 text-amber-700";
+            
+            return (
+              <motion.div 
+                key={opportunity.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.24, delay: index * 0.06 }}
+                className={`rounded-xl border bg-white p-5 ${priorityColor}`}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <Target className={`h-5 w-5 flex-shrink-0 ${opportunity.priority === "High" ? "text-red-600" : "text-amber-600"}`} />
+                    <h3 className="font-semibold text-slate-900">{opportunity.title}</h3>
+                  </div>
+                  <Badge className={priorityBadgeColor} variant="secondary">
+                    {opportunity.priority} Priority
+                  </Badge>
+                </div>
+                
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Affected Properties</p>
+                      <p className="text-sm text-slate-900">{opportunity.affectedProperties.join(", ")}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Reason</p>
+                      <p className="text-sm text-slate-700">{opportunity.reason}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Friction Signal</p>
+                      <p className="text-sm text-amber-800">{opportunity.frictionSignal}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Demand Signal</p>
+                      <p className="text-sm text-slate-700">{opportunity.demandSignal}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Expected Impact</p>
+                      <p className="text-sm font-medium text-emerald-700">{opportunity.expectedImpact}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium text-slate-600">Revenue Opportunity</p>
+                      <p className="text-sm font-semibold text-slate-900">{opportunity.revenueOpportunity}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-3 pt-3 border-t border-slate-200">
+                  <p className="text-xs font-medium text-slate-600">Next Action</p>
+                  <p className="mt-1 text-sm text-slate-900">{opportunity.nextAction}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </CardContent>
       </Card>
 

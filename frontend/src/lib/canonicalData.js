@@ -395,6 +395,85 @@ export const CANONICAL_PROVIDERS = [
 ];
 
 // ============================================================================
+// PROVIDER EXPANSION OPPORTUNITIES
+// ============================================================================
+
+export const PROVIDER_EXPANSION_OPPORTUNITIES = [
+  {
+    id: "exp-001",
+    title: "HVAC Service Depth - Lakeside Commons",
+    affectedProperties: ["Lakeside Commons"],
+    reason: "Property lacks dedicated HVAC provider coverage",
+    frictionSignal: "Repeat HVAC complaints driving 43% of Lakeside churn risk",
+    demandSignal: "12 residents requested HVAC services last quarter with no local provider",
+    priority: "High",
+    expectedImpact: "Reduce churn risk by 8-12 points for 7 at-risk residents",
+    revenueOpportunity: "$840/month in HVAC service revenue",
+    nextAction: "Onboard FixRight HVAC or equivalent regional HVAC specialist"
+  },
+  {
+    id: "exp-002",
+    title: "Premium Pet Services - Portfolio Wide",
+    affectedProperties: ["The Metropolitan", "Lakeside Commons", "Downtown Tower"],
+    reason: "35% of residents have pets but no premium grooming/training options",
+    frictionSignal: "Pet owners report limited concierge service value",
+    demandSignal: "18 residents with dogs, 11 with cats, zero premium pet bookings YTD",
+    priority: "Medium",
+    expectedImpact: "Increase resident satisfaction scores by 15-20% for pet owners",
+    revenueOpportunity: "$1,200/month in pet service revenue",
+    nextAction: "Partner with PetSpa Pro or PawsPerfect for premium mobile grooming"
+  },
+  {
+    id: "exp-003",
+    title: "Air Quality & Vent Cleaning - High Risk Units",
+    affectedProperties: ["The Metropolitan", "Downtown Tower"],
+    reason: "Vent maintenance tied to 28% of repeat HVAC friction cases",
+    frictionSignal: "Air quality complaints correlate with elevated churn scores",
+    demandSignal: "9 residents flagged poor airflow or vent noise in Q1 maintenance tickets",
+    priority: "High",
+    expectedImpact: "Prevent repeat HVAC issues, reduce churn by 6-10 points per unit",
+    revenueOpportunity: "$600/month in vent cleaning and air quality services",
+    nextAction: "Add AirPure Specialists to provider network for quarterly vent inspections"
+  },
+  {
+    id: "exp-004",
+    title: "Express Cleaning Capacity - Peak Retention Periods",
+    affectedProperties: ["The Metropolitan", "Lakeside Commons"],
+    reason: "Cleaning bookings exceed capacity during lease renewal months",
+    frictionSignal: "4+ day wait times for cleaning during retention intervention pushes",
+    demandSignal: "23% booking overflow in Feb-Mar retention credit deployment",
+    priority: "Medium",
+    expectedImpact: "Capture $2,400 in missed cleaning revenue, improve intervention speed",
+    revenueOpportunity: "$2,400/quarter during peak retention months",
+    nextAction: "Add backup cleaning provider (CleanSwift) for peak season overflow"
+  },
+  {
+    id: "exp-005",
+    title: "Rapid Response Providers - High Risk Units",
+    affectedProperties: ["Downtown Tower"],
+    reason: "Slow response times (3.5+ hour avg) increase resident frustration",
+    frictionSignal: "Response time delays contribute to 18% of Downtown churn cases",
+    demandSignal: "High-risk residents need <2 hour response for retention effectiveness",
+    priority: "High",
+    expectedImpact: "Reduce Downtown churn score by 10-15 points through faster resolution",
+    revenueOpportunity: "$900/month in priority response bookings",
+    nextAction: "Recruit local rapid-response provider with <90 min SLA"
+  },
+  {
+    id: "exp-006",
+    title: "Preventative Maintenance Bundling",
+    affectedProperties: ["The Metropolitan", "Lakeside Commons", "Downtown Tower"],
+    reason: "Reactive maintenance drives churn; preventative packages reduce friction",
+    frictionSignal: "Residents with 3+ repeat issues have 2.3x higher churn scores",
+    demandSignal: "Zero bundled preventative packages offered; 34 residents qualify",
+    priority: "Medium",
+    expectedImpact: "Reduce repeat issue frequency by 40%, improve retention by 12%",
+    revenueOpportunity: "$3,200/month in recurring preventative service contracts",
+    nextAction: "Launch quarterly HVAC + vent + filter bundle for high-risk units"
+  }
+];
+
+// ============================================================================
 // MAINTENANCE HISTORY - Property Scoped
 // ============================================================================
 
