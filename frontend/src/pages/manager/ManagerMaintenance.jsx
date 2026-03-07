@@ -3,11 +3,11 @@ import { Wrench, AlertCircle, CheckCircle2, Clock } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { getSarahManagedProperty, getSarahPropertyMaintenanceHistory } from "@/lib/canonicalData";
+import { getSarahManagedProperty, getSarahPropertyMaintenance } from "@/lib/canonicalData";
 
 export default function ManagerMaintenance() {
   const property = getSarahManagedProperty();
-  const maintenanceHistory = getSarahPropertyMaintenanceHistory();
+  const maintenanceHistory = getSarahPropertyMaintenance();
 
   // Calculate summary metrics
   const totalRequests = maintenanceHistory.length;

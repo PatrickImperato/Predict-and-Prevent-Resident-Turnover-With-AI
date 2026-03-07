@@ -44,17 +44,13 @@ export default function PropertiesPage() {
       } catch (error) {
         console.error("Properties load error:", error);
         
-        // On error, use canonical data as fallback
+        // On error, silently use canonical data as fallback (no toast in demo)
         setProperties(CANONICAL_PROPERTIES);
         setPortfolioTotals({
           total_units: PORTFOLIO_TOTALS.totalUnits,
           occupied_units: PORTFOLIO_TOTALS.occupiedUnits,
           gross_revenue: PORTFOLIO_TOTALS.totalServiceRevenue,
           credits_issued: PORTFOLIO_TOTALS.totalCreditsInvested
-        });
-        
-        toast.error("Using cached data", {
-          description: error?.response?.data?.detail || "Unable to load live properties data.",
         });
       } finally {
         setLoading(false);
@@ -129,7 +125,7 @@ export default function PropertiesPage() {
           // Normalize property fields (handle both snake_case from API and camelCase from canonical data)
           const propertyId = property.property_id || property.propertyId || property.id;
           const propertyName = property.name || "Unknown Property";
-          const managerName = property.manager_name || property.managerName || "Unknown Manager";
+          const managerName = property.manager_name || property.managerName || property.manager || "Portfolio Property";
           const isFlagship = property.is_flagship || property.isFlagship || false;
           const totalUnits = property.total_units || property.totalUnits || 0;
           const occupiedUnits = property.occupied_units || property.occupiedUnits || 0;
