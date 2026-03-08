@@ -1,4 +1,4 @@
-import { Gift, MessageSquare, Calendar, Wrench, Sparkles, CheckCircle2 } from "lucide-react";
+import { Gift, MessageSquare, Calendar, Wrench, Sparkles, CheckCircle2, Coffee, UtensilsCrossed, Dog, Car, ShoppingBag, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
@@ -16,11 +16,11 @@ export default function ResidentDashboard() {
   const promotionalCredit = 500;
   const creditExpires = "2025-09-30";
   
-  // Recommended services based on risk driver (maintenance frequency)
+  // RETENTION-FOCUSED recommendations (happiness, convenience, lifestyle)
   const recommendedServices = [
-    { id: "1", name: "HVAC Tune-up", price: 85, icon: Wrench, fullyCovered: true, reason: "Based on recent HVAC issues" },
-    { id: "2", name: "Deep Cleaning", price: 120, icon: Sparkles, fullyCovered: true, reason: "Refresh your space" },
-    { id: "3", name: "Air Vent Inspection", price: 65, icon: Wrench, fullyCovered: true, reason: "Prevent future issues" }
+    { id: "1", name: "Premium Cleaning Service", price: 120, icon: Sparkles, fullyCovered: true, reason: "Great reset after recent frustrations" },
+    { id: "2", name: "Starbucks Coffee Credit", price: 50, icon: Coffee, fullyCovered: true, reason: "Perfect for work-from-home days" },
+    { id: "3", name: "Grocery Delivery Service", price: 45, icon: ShoppingBag, fullyCovered: true, reason: "Convenient and time-saving" }
   ];
   
   const recentBookings = bookings.map(booking => ({
@@ -57,44 +57,55 @@ export default function ResidentDashboard() {
         </p>
       </section>
 
-      {/* Enhanced Retention Credit Banner */}
+      {/* ULTRA BRIGHT CREDIT CARD - Retention Reward Style */}
       <motion.section
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, delay: 0.08 }}
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.32, delay: 0.08 }}
       >
-        <div className="rounded-xl border-2 border-teal-200 bg-gradient-to-br from-teal-50 via-emerald-50 to-teal-50 p-6 shadow-sm">
-          <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-teal-600/10 text-teal-600">
-              <Gift className="h-7 w-7" strokeWidth={2} />
+        <div className="relative overflow-hidden rounded-2xl border-2 border-emerald-300 bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 p-8 shadow-2xl">
+          <div className="absolute -right-12 -top-12 h-48 w-48 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
+          
+          <div className="relative flex items-start gap-5">
+            <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+              <Gift className="h-9 w-9 text-white" strokeWidth={2.5} />
             </div>
             <div className="flex-1">
-              <Badge className="mb-2 border-teal-200 bg-teal-100 text-teal-800 hover:bg-teal-100" variant="secondary">
-                Retention Credit Available
+              <Badge className="mb-3 border-white/40 bg-white/30 text-white hover:bg-white/30 font-semibold" variant="secondary">
+                🎉 YOUR RETENTION REWARD
               </Badge>
-              <p className="font-[var(--font-heading)] text-3xl font-semibold tracking-tight text-slate-900">
-                $<CountUp end={promotionalCredit} duration={1000} />
+              <p className="font-[var(--font-heading)] text-5xl font-bold tracking-tight text-white drop-shadow-lg">
+                $<CountUp end={promotionalCredit} duration={1200} />
               </p>
-              <p className="mt-2 text-sm font-medium text-slate-700">
-                You received this credit because we noticed a few maintenance issues recently and want to make things right.
+              <p className="mt-3 text-base font-semibold text-white/95">
+                We noticed recent issues and want to make things right.
               </p>
-              <p className="mt-1 text-sm text-slate-600">
-                Use it toward services in your apartment before {new Date(creditExpires).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+              <p className="mt-1 text-sm text-white/90">
+                Use it on services that make life easier and help you feel cared for.
+              </p>
+              <p className="mt-2 text-sm font-medium text-white/80">
+                ⏰ Available until {new Date(creditExpires).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
               </p>
             </div>
-            <Button asChild className="h-11 rounded-lg shadow-sm flex-shrink-0" data-testid="browse-services-button">
-              <Link to="/app/resident/services">Browse Services</Link>
+            <Button 
+              asChild 
+              size="lg"
+              className="h-12 rounded-xl bg-white text-teal-700 hover:bg-white/95 hover:text-teal-800 shadow-lg font-semibold flex-shrink-0" 
+              data-testid="use-credit-now-button"
+            >
+              <Link to="/app/resident/services">Use Credit Now</Link>
             </Button>
           </div>
         </div>
       </motion.section>
 
-      {/* Recommended Services For You */}
+      {/* Happiness-Focused Recommendations */}
       <section>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">Recommended Services For You</h3>
-            <p className="mt-1 text-sm text-slate-600">Based on recent maintenance activity</p>
+            <h3 className="text-lg font-semibold text-slate-900">Recommended Just For You</h3>
+            <p className="mt-1 text-sm text-slate-600">Services to make staying here feel better</p>
           </div>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
@@ -105,28 +116,28 @@ export default function ResidentDashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.26, delay: 0.12 + index * 0.06 }}
             >
-              <div className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:border-teal-200 hover:shadow-md">
+              <div className="group rounded-xl border-2 border-teal-100 bg-gradient-to-br from-white to-teal-50/30 p-5 shadow-sm transition-all hover:border-teal-300 hover:shadow-xl">
                 <div className="flex items-start justify-between">
-                  <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-colors group-hover:bg-teal-50 group-hover:text-teal-600">
-                    <service.icon className="h-5 w-5" strokeWidth={1.75} />
+                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-teal-100 text-teal-600 transition-colors group-hover:bg-teal-600 group-hover:text-white">
+                    <service.icon className="h-6 w-6" strokeWidth={2} />
                   </div>
                   {service.fullyCovered && (
-                    <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-50" variant="secondary">
+                    <Badge className="border-emerald-300 bg-emerald-100 text-emerald-700 hover:bg-emerald-100 font-semibold" variant="secondary">
                       <CheckCircle2 className="mr-1 h-3 w-3" />
                       Fully Covered
                     </Badge>
                   )}
                 </div>
-                <h4 className="mt-3 text-base font-semibold text-slate-900">{service.name}</h4>
-                <p className="mt-1 text-xs text-slate-600">{service.reason}</p>
+                <h4 className="mt-4 text-base font-semibold text-slate-900">{service.name}</h4>
+                <p className="mt-1 text-xs font-medium text-teal-700">{service.reason}</p>
                 <div className="mt-4 flex items-center justify-between">
                   <div>
-                    <p className="text-xl font-semibold text-slate-900">${service.price}</p>
+                    <p className="text-2xl font-bold text-slate-900">${service.price}</p>
                     {service.fullyCovered && (
-                      <p className="text-xs font-medium text-emerald-600">${service.price} covered by your credit</p>
+                      <p className="text-xs font-semibold text-emerald-600">${service.price} credit applied</p>
                     )}
                   </div>
-                  <Button size="sm" className="h-9 rounded-lg">Book Now</Button>
+                  <Button size="sm" className="h-10 rounded-lg font-semibold">Book Now</Button>
                 </div>
               </div>
             </motion.div>
@@ -207,18 +218,18 @@ export default function ResidentDashboard() {
 
       {/* Concierge Shortcut */}
       <section>
-        <div className="rounded-xl border border-teal-200 bg-teal-50 p-5">
+        <div className="rounded-xl border-2 border-teal-200 bg-gradient-to-r from-teal-50 to-emerald-50 p-6 shadow-sm">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg bg-teal-600/10 text-teal-600">
-                <MessageSquare className="h-5 w-5" strokeWidth={1.75} />
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-teal-600 text-white">
+                <MessageSquare className="h-7 w-7" strokeWidth={2} />
               </div>
               <div>
-                <p className="text-sm font-semibold text-slate-900">Need help using your credit?</p>
-                <p className="text-sm text-slate-700">Chat with your AI concierge for personalized recommendations</p>
+                <p className="text-base font-bold text-slate-900">Need help using your credit?</p>
+                <p className="text-sm font-medium text-slate-700">Chat with your AI concierge for personalized recommendations</p>
               </div>
             </div>
-            <Button asChild className="h-10 rounded-lg flex-shrink-0" data-testid="start-chat-button">
+            <Button asChild size="lg" className="h-12 rounded-xl flex-shrink-0" data-testid="start-chat-button">
               <Link to="/app/resident/concierge">Start Chat</Link>
             </Button>
           </div>

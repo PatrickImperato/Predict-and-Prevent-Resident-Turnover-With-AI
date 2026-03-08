@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, Wrench, Dog, Wind, Droplet, Zap } from "lucide-react";
+import { Sparkles, Dog, Wind, Coffee, UtensilsCrossed, Car, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAlexPropertyProviders } from "@/lib/canonicalData";
@@ -7,16 +7,17 @@ import { getAlexPropertyProviders } from "@/lib/canonicalData";
 export default function ResidentServices() {
   const providers = getAlexPropertyProviders();
 
+  // RETENTION & HAPPINESS FOCUSED SERVICES (not maintenance-heavy)
   const services = [
-    { id: "1", name: "HVAC Tune-up", category: "HVAC", price: 85, duration: "1 hour", description: "Full system check and filter replacement", icon: Wind, fullyCovered: true, recommended: true },
-    { id: "2", name: "Deep Cleaning", category: "Cleaning", price: 120, duration: "2 hours", description: "Complete apartment refresh", icon: Sparkles, fullyCovered: true, recommended: true },
-    { id: "3", name: "Air Vent Inspection", category: "HVAC", price: 65, duration: "45 min", description: "Prevent future HVAC issues", icon: Wind, fullyCovered: true, recommended: true },
-    { id: "4", name: "Pet Grooming", category: "Pet Care", price: 75, duration: "1.5 hours", description: "Professional grooming for Bailey", icon: Dog, fullyCovered: true },
-    { id: "5", name: "Express Cleaning", category: "Cleaning", price: 75, duration: "1 hour", description: "Quick refresh of high-traffic areas", icon: Sparkles, fullyCovered: true },
-    { id: "6", name: "Filter Replacement", category: "HVAC", price: 45, duration: "30 min", description: "Standard filter swap and airflow check", icon: Wind, fullyCovered: true },
-    { id: "7", name: "Pet Bath & Trim", category: "Pet Care", price: 55, duration: "45 min", description: "Basic grooming essentials", icon: Dog, fullyCovered: true },
-    { id: "8", name: "Plumbing Check", category: "Plumbing", price: 95, duration: "1 hour", description: "Inspect fixtures and prevent leaks", icon: Droplet, fullyCovered: true },
-    { id: "9", name: "Electrical Safety", category: "Electrical", price: 105, duration: "1 hour", description: "Outlet and circuit inspection", icon: Zap, fullyCovered: true }
+    { id: "1", name: "Premium Cleaning Service", category: "Cleaning & Refresh", price: 120, duration: "2 hours", description: "Complete apartment refresh - great reset after frustrations", icon: Sparkles, fullyCovered: true, recommended: true, reason: "Perfect after recent home issues" },
+    { id: "2", name: "Starbucks Coffee Credit", category: "Convenience", price: 50, duration: "Instant", description: "$50 credit for coffee runs - ideal for work from home", icon: Coffee, fullyCovered: true, recommended: true, reason: "Great for busy WFH days" },
+    { id: "3", name: "Grocery Delivery Service", category: "Convenience", price: 45, duration: "Same day", description: "Full grocery delivery to your door", icon: UtensilsCrossed, fullyCovered: true, recommended: true, reason: "Save time, stay comfortable" },
+    { id: "4", name: "Pet Grooming for Bailey", category: "Pet Care", price: 85, duration: "1.5 hours", description: "Professional grooming including bath, trim, nails", icon: Dog, fullyCovered: true, recommended: false, reason: "Pamper your pup" },
+    { id: "5", name: "Car Wash & Detail", category: "Convenience", price: 95, duration: "2 hours", description: "Full exterior wash and interior detail", icon: Car, fullyCovered: true, recommended: false, reason: "Keep your car fresh" },
+    { id: "6", name: "Laundry Pickup & Delivery", category: "Convenience", price: 75, duration: "24 hours", description: "We pickup, wash, fold, and return", icon: Package, fullyCovered: true, recommended: false, reason: "One less thing to worry about" },
+    { id: "7", name: "Home Refresh Package", category: "Cleaning & Refresh", price: 95, duration: "1.5 hours", description: "Quick clean + air freshening + organization", icon: Sparkles, fullyCovered: true, recommended: false, reason: "Make home feel new again" },
+    { id: "8", name: "HVAC Comfort Check", category: "Home Comfort", price: 85, duration: "1 hour", description: "System check to prevent future frustrations", icon: Wind, fullyCovered: true, recommended: false, reason: "Peace of mind for climate control" },
+    { id: "9", name: "Filter Replacement Service", category: "Home Comfort", price: 45, duration: "30 min", description: "Fresh air filters for better indoor air", icon: Wind, fullyCovered: true, recommended: false, reason: "Breathe easier at home" }
   ];
 
   return (
@@ -45,10 +46,10 @@ export default function ResidentServices() {
         </div>
       </section>
 
-      <section className="rounded-xl border border-amber-200 bg-amber-50 p-3">
-        <div className="flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-amber-600 flex-shrink-0" />
-          <p className="text-sm font-medium text-slate-900">Recommended for you based on recent HVAC issues</p>
+      <section className="rounded-xl border-2 border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <Sparkles className="h-5 w-5 text-emerald-600 flex-shrink-0" />
+          <p className="text-sm font-semibold text-slate-900">Top picks to make staying here feel better – all covered by your credit</p>
         </div>
       </section>
 
@@ -81,6 +82,9 @@ export default function ResidentServices() {
                   </Badge>
                   <h3 className="text-sm font-semibold text-slate-900">{service.name}</h3>
                   <p className="mt-1 text-xs text-slate-600 line-clamp-2">{service.description}</p>
+                  {service.reason && (
+                    <p className="mt-1.5 text-xs font-medium text-teal-700">\u2192 {service.reason}</p>
+                  )}
                   <p className="mt-1 text-xs text-slate-500">{service.duration}</p>
                 </div>
                 <div className="mt-3 flex items-center justify-between">

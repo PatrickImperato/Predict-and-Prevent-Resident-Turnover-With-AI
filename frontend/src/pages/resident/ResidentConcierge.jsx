@@ -11,21 +11,25 @@ import { getAlexChenData } from "@/lib/canonicalData";
 const alex = getAlexChenData();
 
 const RESPONSES = {
-  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 I noticed you still have a $500 credit available. Want me to help you use it? I can suggest services that'll help with those recent HVAC issues.`,
-  bookCleaning: (credit) => `Nice! Deep cleaning runs $120, and it's fully covered by your credit. You'd still have $380 left after. Want me to book it?`,
-  scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, electrical, or general repairs.",
-  checkCredits: (credit) => `You've got $${credit} in credits right now. That easily covers a deep cleaning ($120), HVAC tune-up ($85), or both. Heads up, they expire September 30, 2025.`,
-  availableServices: "Here's what I recommend based on your recent HVAC issues: HVAC Tune-up ($85 - fully covered), Deep Cleaning ($120 - fully covered), Air Vent Inspection ($65 - fully covered). All of these are covered by your credit. What sounds good?",
-  fallback: "I'm here to help! I can:\n• Book a service (all covered by your $500 credit)\n• Handle maintenance requests\n• Show you what's recommended\n\nWhat do you need?",
-  bookingConfirmed: (service, price, creditApplied) => `Easy. ${service} is booked. Applied $${creditApplied} in credits. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
-  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is in. Maintenance will reach out within 2 hours to schedule. You'll get updates via ${alex.communicationChannel}.`,
-  hvacRecommendation: "I saw you had a few HVAC issues recently. Want me to schedule a tune-up using your credit? It's $85 and fully covered."
+  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 You have a $500 retention credit available. This is to help make things easier after recent frustrations. Want me to help you use it on services you'll actually enjoy?`,
+  bookCleaning: (credit) => `Perfect! Premium cleaning is $120 and fully covered. Great way to refresh after all those maintenance issues. You'd still have $380 left. Want me to book it?`,
+  scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, or general repairs.",
+  checkCredits: (credit) => `You've got $${credit} available until September 30, 2025. That covers cleaning ($120), coffee credit ($50), grocery delivery ($45), pet grooming ($85), and more. What sounds good?`,
+  availableServices: "Here's what I recommend to make life easier:\n\n• Premium Cleaning ($120) - Great reset after frustrations\n• Coffee Credit ($50) - Perfect for WFH days\n• Grocery Delivery ($45) - Save time & stay comfortable\n• Pet Grooming for Bailey ($85) - Pamper your pup\n\nAll fully covered. What interests you?",
+  fallback: "I'm here to help you use your $500 credit on things that make staying here better!\n\nI can:\n• Show happiness & convenience services\n• Book cleaning or pet care\n• Arrange grocery or laundry delivery\n• Help with maintenance\n\nWhat would help most?",
+  bookingConfirmed: (service, price, creditApplied) => `Awesome! ${service} is booked. Applied $${creditApplied} from your credit. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
+  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is submitted. Maintenance will contact you within 2 hours. You'll get updates via ${alex.communicationChannel}.`,
+  happinessRecommendation: "Based on your profile (works from home, has Bailey), here's what'll make life easier: Coffee credit for busy days, grocery delivery to save time, premium cleaning for a fresh start, and pet grooming for Bailey. All covered!",
+  coffeeCredit: "Love it! $50 Starbucks credit is a great pick for work-from-home days. Easy to use, no expiration. Want me to send it to your email?",
+  groceryDelivery: "Smart choice! Grocery delivery ($45) saves time and is fully covered. I can set you up with a service that delivers same-day. Sound good?"
 };
 
 const SERVICES = {
-  deepCleaning: { name: "Deep Cleaning", basePrice: 120 },
-  acTuneup: { name: "HVAC Tune-up", basePrice: 85 },
-  ventInspection: { name: "Air Vent Inspection", basePrice: 65 }
+  premiumCleaning: { name: "Premium Cleaning", basePrice: 120 },
+  coffeeCredit: { name: "Starbucks Coffee Credit", basePrice: 50 },
+  groceryDelivery: { name: "Grocery Delivery", basePrice: 45 },
+  petGrooming: { name: "Pet Grooming for Bailey", basePrice: 85 },
+  hvacCheck: { name: "HVAC Comfort Check", basePrice: 85 }
 };
 
 export default function ResidentConcierge() {
