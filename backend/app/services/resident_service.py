@@ -271,9 +271,19 @@ async def get_tenants_list_read_model(db: AsyncIOMotorDatabase) -> dict:
     messages = await db.concierge_messages.find({}, {"_id": 0}).to_list(length=None)
     offers = await db.offers.find({}, {"_id": 0}).to_list(length=None)
     bookings = await db.bookings.find({}, {"_id": 0}).to_list(length=None)
+    discount_impacts = await db.discount_impacts.find({}, {"_id": 0}).to_list(length=None)
 
     property_map = {item["id"]: item["name"] for item in properties}
     prediction_map = {item["residentId"]: item for item in predictions}
+    
+    # Create discount map to avoid N+1 query in loop
+    discount_map = {}
+    for item in discount_impacts:
+        resident_id = item.get("residentId")
+        if resident_id:
+            if resident_id not in discount_map:
+                discount_map[resident_id] = []
+            discount_map[resident_id].append(item)
 
     residents_payload = []
     for resident in residents:
@@ -291,7 +301,7 @@ async def get_tenants_list_read_model(db: AsyncIOMotorDatabase) -> dict:
                 "risk_tier": prediction.get("riskTier", resident.get("riskTier", "medium")),
                 "primary_driver": prediction.get("drivers", [{}])[0].get("label", "Maintenance Frequency"),
                 "last_contact_at": _iso(resident.get("lastInteractionAt")),
-                "credits_issued": sum(item.get("amount", 0) for item in await db.discount_impacts.find({"residentId": resident_id}, {"_id": 0}).to_list(length=None)),
+                "credits_issued": sum(item.get("amount", 0) for item in discount_map.get(resident_id, [])),
                 "active_offers": sum(1 for offer in offers if offer.get("residentId") == resident_id),
                 "service_bookings": sum(1 for booking in bookings if booking.get("residentId") == resident_id),
                 "message_count": sum(1 for message in messages if message.get("residentId") == resident_id),
