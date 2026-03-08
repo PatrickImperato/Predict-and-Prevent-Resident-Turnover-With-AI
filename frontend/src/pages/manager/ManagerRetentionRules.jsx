@@ -14,7 +14,7 @@ export default function ManagerRetentionRules() {
       id: "rule-1",
       name: "High Risk Auto-Deploy",
       description: "Automatically deploy High Priority intervention for residents with risk score >= 80",
-      enabled: false,
+      enabled: true,
       tier: "High Priority",
       creditAmount: 500,
       triggerScore: 80

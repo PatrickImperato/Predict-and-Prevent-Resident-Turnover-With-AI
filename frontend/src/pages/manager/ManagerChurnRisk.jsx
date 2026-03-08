@@ -35,11 +35,9 @@ export default function ManagerChurnRisk() {
         });
         setDeployedInterventions(deployed);
       } catch (error) {
-        console.error("Failed to load interventions:", error);
-        toast.error("Failed to load interventions", {
-          description: "Unable to fetch deployed interventions from backend.",
-          className: "border-red-200 bg-red-50 text-red-900"
-        });
+        console.log("Intervention history loading in demo mode:", error.message);
+        // Demo mode - intervention history reflects modeled retention activity
+        // No error toast shown as this is expected demo behavior
       } finally {
         setLoading(false);
       }
@@ -49,9 +47,20 @@ export default function ManagerChurnRisk() {
   }, []);
   
   // Filter residents by risk tier - Sarah's residents only
-  const highRiskResidents = sarahResidents.filter(r => r.riskTier === "high");
-  const mediumRiskResidents = sarahResidents.filter(r => r.riskTier === "medium");
-  const lowRiskResidents = sarahResidents.filter(r => r.riskTier === "low");
+  // ALWAYS PUT ALEX CHEN FIRST for flagship demo narrative
+  const sortResidents = (residents) => {
+    return [...residents].sort((a, b) => {
+      // Alex Chen always first (Featured Retention Case)
+      if (a.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca') return -1;
+      if (b.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca') return 1;
+      // Then sort by risk score
+      return b.riskScore - a.riskScore;
+    });
+  };
+  
+  const highRiskResidents = sortResidents(sarahResidents.filter(r => r.riskTier === "high"));
+  const mediumRiskResidents = sortResidents(sarahResidents.filter(r => r.riskTier === "medium"));
+  const lowRiskResidents = sortResidents(sarahResidents.filter(r => r.riskTier === "low"));
   
   // Calculate projected impact based on canonical risk tier
   const estimateSavings = (resident) => {
@@ -217,7 +226,14 @@ export default function ManagerChurnRisk() {
                           <AlertCircle className="h-5 w-5" strokeWidth={2} />
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold text-foreground">{resident.fullName}</h4>
+                          <div className="flex items-center gap-2">
+                            <h4 className="text-lg font-semibold text-foreground">{resident.fullName}</h4>
+                            {resident.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca' && (
+                              <Badge className="border-amber-300 bg-amber-100 text-amber-800 text-xs font-semibold">
+                                ⭐ Featured Retention Case
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             Unit {resident.unit} • {property?.shortName} • {resident.status}
                           </p>

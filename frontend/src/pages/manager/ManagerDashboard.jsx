@@ -39,9 +39,16 @@ export default function ManagerDashboard() {
   const deployedCredits = interventionHistory.getTotalCredits();
   
   // Sort residents by risk score (highest first) - Sarah's residents only
+  // ALWAYS PUT ALEX CHEN FIRST for flagship demo narrative
   const topOpportunities = [...sarahResidents]
     .filter(r => r.riskScore >= 60)
-    .sort((a, b) => b.riskScore - a.riskScore)
+    .sort((a, b) => {
+      // Alex Chen always first (Featured Retention Case)
+      if (a.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca') return -1;
+      if (b.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca') return 1;
+      // Then sort by risk score
+      return b.riskScore - a.riskScore;
+    })
     .slice(0, 5);
   
   // Get risk distribution for Sarah's property only
@@ -229,6 +236,11 @@ export default function ManagerDashboard() {
                         <div className="flex-1">
                           <div className="flex items-center gap-3">
                             <p className="font-semibold text-slate-900">{resident.fullName}</p>
+                            {resident.id === '79af8e83-cde9-4c36-b4ac-6af78b2904ca' && (
+                              <Badge className="border-amber-300 bg-amber-100 text-amber-800 text-xs font-semibold">
+                                ⭐ Featured Retention Case
+                              </Badge>
+                            )}
                             <Badge className="text-xs">{resident.riskScore}</Badge>
                           </div>
                           <p className="mt-1 text-sm text-slate-600">
