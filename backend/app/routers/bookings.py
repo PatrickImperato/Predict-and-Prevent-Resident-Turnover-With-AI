@@ -51,8 +51,8 @@ async def create_booking(
     resident_email = current_user.get("email")
     resident_name = current_user.get("displayName", "Unknown")
     
-    # Get resident document with full details
-    resident_doc = await db.residents.find_one({"id": resident_id})
+    # Get resident document with full details (look up by userId)
+    resident_doc = await db.residents.find_one({"userId": resident_id})
     if not resident_doc:
         raise HTTPException(status_code=404, detail="Resident not found")
     
@@ -112,11 +112,12 @@ async def create_booking(
     # Persist booking to database
     await db.bookings.insert_one(booking)
     
-    # Update resident's credit balance
+    # Update resident's credit balance (using resident document's id)
     new_credit_amount = available_credit - request.discountApplied
+    resident_record_id = resident_doc.get("id")
     
     await db.residents.update_one(
-        {"id": resident_id},
+        {"id": resident_record_id},
         {
             "$set": {
                 "retentionCredit.amount": new_credit_amount,

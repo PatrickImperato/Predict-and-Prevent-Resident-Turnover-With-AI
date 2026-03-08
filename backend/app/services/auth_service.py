@@ -113,7 +113,7 @@ async def ensure_foundation_users(db: AsyncIOMotorDatabase, config: AppConfig) -
         )
 
 
-def _build_session_response(user: dict | None, config: AppConfig) -> dict:
+async def _build_session_response(db: AsyncIOMotorDatabase, user: dict | None, config: AppConfig) -> dict:
     if not user:
         return {
             "authenticated": False,
@@ -132,16 +132,19 @@ def _build_session_response(user: dict | None, config: AppConfig) -> dict:
 
     # Build retention credit data if user is a resident
     retention_credit = None
-    if user.get("role") == "resident" and user.get("retentionCredit"):
-        credit_data = user.get("retentionCredit", {})
-        retention_credit = {
-            "amount": credit_data.get("amount", 0),
-            "original_amount": credit_data.get("originalAmount", 35),
-            "used_amount": credit_data.get("usedAmount", 0),
-            "reason": credit_data.get("reason", "Retention reward"),
-            "expires_at": credit_data.get("expiresAt"),
-            "offer_id": credit_data.get("offerId"),
-        }
+    if user.get("role") == "resident":
+        # Fetch resident record to get retention credit data
+        resident = await db.residents.find_one({"userId": user.get("id")})
+        if resident and resident.get("retentionCredit"):
+            credit_data = resident.get("retentionCredit", {})
+            retention_credit = {
+                "amount": credit_data.get("amount", 0),
+                "original_amount": credit_data.get("originalAmount", 35),
+                "used_amount": credit_data.get("usedAmount", 0),
+                "reason": credit_data.get("reason", "Retention reward"),
+                "expires_at": credit_data.get("expiresAt"),
+                "offer_id": credit_data.get("offerId"),
+            }
 
     return {
         "authenticated": True,
@@ -227,7 +230,7 @@ async def create_session(
         meta={"appEnv": config.app_env},
     )
 
-    return _build_session_response(user, config)
+    return await _build_session_response(db, user, config)
 
 
 async def get_session_user(
@@ -264,7 +267,7 @@ async def get_session_response(
     config: AppConfig,
 ) -> dict:
     user = await get_session_user(request, db, config)
-    return _build_session_response(user, config)
+    return await _build_session_response(db, user, config)
 
 
 async def logout_current_session(
