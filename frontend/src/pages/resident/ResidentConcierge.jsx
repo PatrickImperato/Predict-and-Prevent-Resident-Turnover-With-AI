@@ -11,17 +11,17 @@ import { getAlexChenData } from "@/lib/canonicalData";
 const alex = getAlexChenData();
 
 const RESPONSES = {
-  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 You have a $500 retention credit available. This is to help make things easier after recent frustrations. Want me to help you use it on services you'll actually enjoy?`,
-  bookCleaning: (credit) => `Perfect! Premium cleaning is $120 and fully covered. Great way to refresh after all those maintenance issues. You'd still have $380 left. Want me to book it?`,
+  greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 You have a $35 retention credit available for the next 4 days. This is to help make things easier after recent frustrations. Want me to help you use it on services you'll actually enjoy?`,
+  bookCleaning: (credit) => `Perfect! Premium cleaning is $120 and with your $35 credit, you'd pay $85. Great way to refresh after all those maintenance issues. Want me to book it?`,
   scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, or general repairs.",
-  checkCredits: (credit) => `You've got $${credit} available until September 30, 2025. That covers cleaning ($120), coffee credit ($50), grocery delivery ($45), pet grooming ($85), and more. What sounds good?`,
-  availableServices: "Here's what I recommend to make life easier:\n\n• Premium Cleaning ($120) - Great reset after frustrations\n• Coffee Credit ($50) - Perfect for WFH days\n• Grocery Delivery ($45) - Save time & stay comfortable\n• Pet Grooming for Bailey ($85) - Pamper your pup\n\nAll fully covered. What interests you?",
-  fallback: "I'm here to help you use your $500 credit on things that make staying here better!\n\nI can:\n• Show happiness & convenience services\n• Book cleaning or pet care\n• Arrange grocery or laundry delivery\n• Help with maintenance\n\nWhat would help most?",
+  checkCredits: (credit) => `You've got $35 available for the next 4 days. That gives you a nice discount on services like cleaning ($120 → $85), grocery delivery ($75 → $40), pet grooming ($95 → $60), and more. What sounds good?`,
+  availableServices: "Here's what I recommend to make life easier:\n\n• Premium Cleaning ($120, you pay $85) - Great reset after frustrations\n• Grocery Delivery ($75, you pay $40) - Save time & stay comfortable\n• Pet Grooming for Bailey ($95, you pay $60) - Pamper your pup\n\nWhat interests you?",
+  fallback: "I'm here to help you use your $35 credit on things that make staying here better!\n\nI can:\n• Show happiness & convenience services\n• Book cleaning or pet care\n• Arrange grocery or laundry delivery\n• Help with maintenance\n\nWhat would help most?",
   bookingConfirmed: (service, price, creditApplied) => `Awesome! ${service} is booked. Applied $${creditApplied} from your credit. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
   maintenanceSubmitted: (issue) => `Done. Your ${issue} request is submitted. Maintenance will contact you within 2 hours. You'll get updates via ${alex.communicationChannel}.`,
-  happinessRecommendation: "Based on your profile (works from home, has Bailey), here's what'll make life easier: Coffee credit for busy days, grocery delivery to save time, premium cleaning for a fresh start, and pet grooming for Bailey. All covered!",
-  coffeeCredit: "Love it! $50 Starbucks credit is a great pick for work-from-home days. Easy to use, no expiration. Want me to send it to your email?",
-  groceryDelivery: "Smart choice! Grocery delivery ($45) saves time and is fully covered. I can set you up with a service that delivers same-day. Sound good?"
+  happinessRecommendation: "Based on your profile (works from home, has Bailey), here's what'll make life easier: Grocery delivery to save time ($75 → $40), premium cleaning for a fresh start ($120 → $85), and pet grooming for Bailey ($95 → $60). All get the $35 discount!",
+  coffeeCredit: "Love it! We can apply your $35 credit to a coffee or meal service. Want me to show you options?",
+  groceryDelivery: "Smart choice! Grocery delivery is $75, and with your $35 credit you'd pay $40. Delivers same-day. Sound good?"
 };
 
 const SERVICES = {
@@ -42,7 +42,7 @@ export default function ResidentConcierge() {
     }
   ]);
   const [inputValue, setInputValue] = useState("");
-  const creditAvailable = 500;
+  const creditAvailable = 35;
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
@@ -218,7 +218,7 @@ export default function ResidentConcierge() {
           </h2>
         </div>
         <p className="mt-1 text-xs leading-relaxed text-slate-600">
-          Get help using your $500 credit • Expires Sep 30, 2025
+          Get help using your $35 credit • Available for 4 days
         </p>
       </section>
 

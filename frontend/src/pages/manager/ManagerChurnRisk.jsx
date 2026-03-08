@@ -79,7 +79,7 @@ export default function ManagerChurnRisk() {
   
   const handleDeployIntervention = async (resident) => {
     const property = getPropertyById(resident.propertyId);
-    const creditAmount = resident.riskTier === "high" ? 500 : resident.riskTier === "medium" ? 350 : 200;
+    const creditAmount = resident.riskTier === "high" ? 35 : resident.riskTier === "medium" ? 35 : 35;
     const tier = resident.riskTier === "high" ? 3 : resident.riskTier === "medium" ? 2 : 1;
     const tierLabel = resident.riskTier === "high" ? "High Priority" : resident.riskTier === "medium" ? "Standard" : "Light Touch";
     const expectedSavings = estimateSavings(resident);
@@ -206,7 +206,7 @@ export default function ManagerChurnRisk() {
               const isDeployed = deployedInterventions.has(resident.id);
               const isDeploying = deploying.has(resident.id);
               const property = getPropertyById(resident.propertyId);
-              const creditAmount = 500;
+              const creditAmount = 35;
               const expectedSavings = estimateSavings(resident);
               const expectedRevenue = Math.round(creditAmount * 0.25);
               const netROI = expectedSavings + expectedRevenue - creditAmount;

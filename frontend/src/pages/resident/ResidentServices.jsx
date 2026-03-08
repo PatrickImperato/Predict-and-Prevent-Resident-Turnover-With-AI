@@ -42,10 +42,10 @@ export default function ResidentServices() {
               </Badge>
               <h2 className="font-[var(--font-heading)] text-xl font-semibold tracking-tight text-slate-900">Services Marketplace</h2>
             </div>
-            <p className="mt-1 text-xs leading-relaxed text-slate-600">Use your $500 credit • Expires Sep 30, 2025</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-600">Use your ${creditAmount} credit • Available for 4 days</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-semibold text-teal-600">$500</p>
+            <p className="text-2xl font-semibold text-teal-600">${creditAmount}</p>
             <p className="text-xs text-slate-600">Available</p>
           </div>
         </div>
