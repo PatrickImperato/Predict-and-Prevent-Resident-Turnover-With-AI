@@ -1,4 +1,5 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 import { AppProviders } from "@/components/app/AppProviders";
 import { ProtectedRoute } from "@/components/app/ProtectedRoute";
@@ -93,12 +94,33 @@ function AppRootRedirect() {
   return <Navigate replace to="/login" />;
 }
 
+// Component to handle post-login redirect
+function LoginPageWrapper() {
+  const { session } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user is already authenticated, redirect to their dashboard
+    if (session?.authenticated) {
+      if (session?.role === "admin") {
+        navigate("/app/admin/dashboard", { replace: true });
+      } else if (session?.role === "manager") {
+        navigate("/app/manager/dashboard", { replace: true });
+      } else if (session?.role === "resident") {
+        navigate("/app/resident/dashboard", { replace: true });
+      }
+    }
+  }, [session, navigate]);
+
+  return <LoginPage />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<RootRoute />} />
       <Route path="/app" element={<AppRootRedirect />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPageWrapper />} />
       <Route path="/legal" element={<LegalPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />

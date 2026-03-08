@@ -51,7 +51,7 @@ async def deploy_intervention(
     expected_savings = 3800 if risk_tier == "high" else (2660 if risk_tier == "medium" else 1900)
     expected_revenue = int(request.creditAmount * 0.25)
     net_roi = expected_savings + expected_revenue - request.creditAmount
-    roi_multiple = round((expected_savings + expectedRevenue) / request.creditAmount, 1) if request.creditAmount > 0 else 0
+    roi_multiple = round((expected_savings + expected_revenue) / request.creditAmount, 1) if request.creditAmount > 0 else 0
     
     intervention = {
         "interventionId": intervention_id,
@@ -66,7 +66,7 @@ async def deploy_intervention(
         "riskScore": risk_score,
         "topDriver": resident.get("primaryDriver", "Unknown"),
         "status": ActionStatus.SENT,
-        "deployedBy": current_user.get("userId") or current_user.get("id"),
+        "deployedBy": current_user.get("id"),
         "deployedByEmail": current_user.get("email"),
         "deployedAt": datetime.now(timezone.utc),
         "reason": request.reason,
@@ -82,7 +82,7 @@ async def deploy_intervention(
     await log_event(
         db,
         EventType.INTERVENTION_DEPLOYED,
-        user_id=current_user.get("userId"),
+        user_id=current_user.get("id"),
         user_email=current_user.get("email"),
         user_role=current_user.get("role"),
         resource_type="intervention",
@@ -91,7 +91,7 @@ async def deploy_intervention(
         user_agent=http_request.headers.get("user-agent"),
         details={
             "residentId": request.residentId,
-            "residentName": resident["fullName"],
+            "residentName": resident.get("fullName", "Unknown"),
             "tier": request.tier,
             "creditAmount": request.creditAmount,
             "expectedROI": net_roi

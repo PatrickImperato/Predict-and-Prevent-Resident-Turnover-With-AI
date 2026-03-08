@@ -27,9 +27,9 @@ FOUNDATION_USERS = [
     },
     {
         "id": "ed940c9d-c58c-4b58-920a-8511a6eaf989",
-        "email": "manager@riverside.com",
+        "email": "sarah.mitchell@riverside.com",
         "password": "manager123",
-        "displayName": "Property Manager",
+        "displayName": "Sarah Mitchell",
         "role": "manager",
         "isSuperAdmin": False,
         "isDemo": True,
@@ -190,15 +190,18 @@ async def create_session(
         }
     )
 
-    response.set_cookie(
-        key=config.session_cookie_name,
-        value=raw_session_token,
-        httponly=True,
-        secure=True,
-        samesite="lax",
-        max_age=config.session_ttl_hours * 3600,
-        path="/",
-    )
+    # Set cookie with domain that works for both preview and production
+    cookie_config = {
+        "key": config.session_cookie_name,
+        "value": raw_session_token,
+        "httponly": True,
+        "secure": True,
+        "samesite": "none",  # Changed from "lax" to "none" for cross-domain
+        "max_age": config.session_ttl_hours * 3600,
+        "path": "/",
+    }
+    
+    response.set_cookie(**cookie_config)
 
     await write_audit_event(
         db,
@@ -262,12 +265,14 @@ async def logout_current_session(
         session_token_hash = _hash_session_token(raw_token, config.session_secret)
         await db.auth_sessions.delete_one({"sessionTokenHash": session_token_hash})
 
+    # Delete cookie with same settings as when it was set
     response.delete_cookie(
         key=config.session_cookie_name,
         path="/",
-        httponly=True,
+        domain=None,
         secure=True,
-        samesite="lax",
+        httponly=True,
+        samesite="none",  # Match the cookie creation settings
     )
 
     await write_audit_event(

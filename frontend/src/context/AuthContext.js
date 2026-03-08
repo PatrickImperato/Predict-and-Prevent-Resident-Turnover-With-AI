@@ -47,6 +47,13 @@ const persistSession = (nextSession) => {
   window.sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(nextSession));
 };
 
+const clearSessionStorage = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+  window.sessionStorage.removeItem(SESSION_STORAGE_KEY);
+};
+
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(readCachedSession);
   const [loading, setLoading] = useState(true);
@@ -88,22 +95,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await apiLogout();
-    setSession((current) => {
-      const nextSession = {
-        ...current,
+    try {
+      await apiLogout();
+    } catch (error) {
+      console.error("Logout API call failed:", error);
+    } finally {
+      // Clear session state regardless of API call result
+      const clearedSession = {
+        ...fallbackSession,
         authenticated: false,
         user_id: null,
         email: null,
         display_name: null,
         role: null,
-        is_super_admin: false,
-        default_property_id: null,
-        last_login_at: null,
       };
-      persistSession(nextSession);
-      return nextSession;
-    });
+      setSession(clearedSession);
+      clearSessionStorage();
+      
+      // Redirect to login
+      window.location.href = "/login";
+    }
   };
 
   const value = useMemo(

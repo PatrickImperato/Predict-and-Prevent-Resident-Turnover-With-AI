@@ -23,8 +23,10 @@ export const AdminShell = () => {
   return (
     <div className="min-h-screen bg-background" data-testid="admin-shell-root">
       <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col xl:flex-row">
-        <AdminSidebar />
-        <div className="flex min-h-screen flex-1 flex-col">
+        <div className="xl:sticky xl:top-0 xl:h-screen xl:w-[260px] flex-shrink-0">
+          <AdminSidebar />
+        </div>
+        <div className="flex min-h-screen flex-1 flex-col overflow-auto">
           <AdminTopbar pageTitle={pageTitle} />
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8" data-testid="admin-shell-main-content">
             <Outlet />

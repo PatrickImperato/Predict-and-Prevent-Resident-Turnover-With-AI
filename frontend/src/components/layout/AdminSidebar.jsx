@@ -6,11 +6,12 @@ import {
   Building2,
   ChartColumnBig,
   LayoutDashboard,
+  LogOut,
   Settings2,
-  ShieldCheck,
   Users,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
 const navItems = [
@@ -23,12 +24,14 @@ const navItems = [
 ];
 
 export const AdminSidebar = () => {
+  const { logout } = useAuth();
+
   return (
     <motion.aside
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="admin-sidebar-dark px-5 py-6 xl:w-[260px]"
+      className="admin-sidebar-dark px-5 py-6 h-full flex flex-col"
       data-testid="admin-sidebar"
     >
       <div className="flex items-center gap-3">
@@ -43,7 +46,7 @@ export const AdminSidebar = () => {
         </div>
       </div>
 
-      <nav className="mt-8 space-y-1" data-testid="admin-sidebar-nav">
+      <nav className="mt-8 space-y-1 flex-1 overflow-y-auto" data-testid="admin-sidebar-nav">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           return (
@@ -69,6 +72,19 @@ export const AdminSidebar = () => {
           );
         })}
       </nav>
+
+      <div className="mt-6 pt-6 border-t border-slate-700">
+        <Button
+          variant="outline"
+          className="w-full border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+          size="sm"
+          onClick={logout}
+          data-testid="admin-sidebar-sign-out-button"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          Sign Out
+        </Button>
+      </div>
     </motion.aside>
   );
 };
