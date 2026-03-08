@@ -13,14 +13,38 @@ export default function ResidentDashboard() {
   const bookings = getAlexBookings();
   const maintenance = getAlexMaintenance();
   
-  const promotionalCredit = 500;
-  const creditExpires = "2025-09-30";
+  const promotionalCredit = 35;
+  const creditExpires = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   
-  // RETENTION-FOCUSED recommendations (happiness, convenience, lifestyle)
+  // RETENTION-FOCUSED recommendations - showing DISCOUNT MODEL
   const recommendedServices = [
-    { id: "1", name: "Premium Cleaning Service", price: 120, icon: Sparkles, fullyCovered: true, reason: "Great reset after recent frustrations" },
-    { id: "2", name: "Starbucks Coffee Credit", price: 50, icon: Coffee, fullyCovered: true, reason: "Perfect for work-from-home days" },
-    { id: "3", name: "Grocery Delivery Service", price: 45, icon: ShoppingBag, fullyCovered: true, reason: "Convenient and time-saving" }
+    { 
+      id: "1", 
+      name: "Premium Cleaning Service", 
+      originalPrice: 120, 
+      discount: 35, 
+      finalPrice: 85,
+      icon: Sparkles, 
+      reason: "Great reset after recent frustrations" 
+    },
+    { 
+      id: "2", 
+      name: "Grocery Delivery Service", 
+      originalPrice: 75, 
+      discount: 35, 
+      finalPrice: 40,
+      icon: ShoppingBag, 
+      reason: "Convenient and time-saving" 
+    },
+    { 
+      id: "3", 
+      name: "Pet Grooming for Bailey", 
+      originalPrice: 95, 
+      discount: 35, 
+      finalPrice: 60,
+      icon: Dog, 
+      reason: "Pamper your pup" 
+    }
   ];
   
   const recentBookings = bookings.map(booking => ({
@@ -85,7 +109,7 @@ export default function ResidentDashboard() {
                 Use it on services that make life easier and help you feel cared for.
               </p>
               <p className="mt-2 text-sm font-medium text-white/80">
-                ⏰ Available until {new Date(creditExpires).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                ⏰ Available for 4 days (expires {new Date(creditExpires).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })})
               </p>
             </div>
             <Button 
@@ -130,15 +154,21 @@ export default function ResidentDashboard() {
                 </div>
                 <h4 className="mt-4 text-base font-semibold text-slate-900">{service.name}</h4>
                 <p className="mt-1 text-xs font-medium text-teal-700">{service.reason}</p>
-                <div className="mt-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-2xl font-bold text-slate-900">${service.price}</p>
-                    {service.fullyCovered && (
-                      <p className="text-xs font-semibold text-emerald-600">${service.price} credit applied</p>
-                    )}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs text-slate-600">Original price</span>
+                    <span className="text-sm font-medium text-slate-600 line-through">${service.originalPrice}</span>
                   </div>
-                  <Button size="sm" className="h-10 rounded-lg font-semibold">Book Now</Button>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs font-semibold text-emerald-700">Retention credit</span>
+                    <span className="text-sm font-semibold text-emerald-700">-${service.discount}</span>
+                  </div>
+                  <div className="flex items-baseline justify-between border-t border-slate-200 pt-2">
+                    <span className="text-sm font-bold text-slate-900">Today you pay</span>
+                    <span className="text-2xl font-bold text-slate-900">${service.finalPrice}</span>
+                  </div>
                 </div>
+                <Button size="sm" className="mt-3 w-full h-10 rounded-lg font-semibold">Book Now</Button>
               </div>
             </motion.div>
           ))}

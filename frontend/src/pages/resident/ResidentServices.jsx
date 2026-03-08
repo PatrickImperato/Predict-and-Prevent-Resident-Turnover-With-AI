@@ -7,17 +7,22 @@ import { getAlexPropertyProviders } from "@/lib/canonicalData";
 export default function ResidentServices() {
   const providers = getAlexPropertyProviders();
 
+  // Credit info
+  const creditAmount = 35;
+  const creditExpires = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000);
+  
   // RETENTION & HAPPINESS FOCUSED SERVICES (not maintenance-heavy)
+  // Show DISCOUNT MODEL: original price - $35 = final price
   const services = [
-    { id: "1", name: "Premium Cleaning Service", category: "Cleaning & Refresh", price: 120, duration: "2 hours", description: "Complete apartment refresh - great reset after frustrations", icon: Sparkles, fullyCovered: true, recommended: true, reason: "Perfect after recent home issues" },
-    { id: "2", name: "Starbucks Coffee Credit", category: "Convenience", price: 50, duration: "Instant", description: "$50 credit for coffee runs - ideal for work from home", icon: Coffee, fullyCovered: true, recommended: true, reason: "Great for busy WFH days" },
-    { id: "3", name: "Grocery Delivery Service", category: "Convenience", price: 45, duration: "Same day", description: "Full grocery delivery to your door", icon: UtensilsCrossed, fullyCovered: true, recommended: true, reason: "Save time, stay comfortable" },
-    { id: "4", name: "Pet Grooming for Bailey", category: "Pet Care", price: 85, duration: "1.5 hours", description: "Professional grooming including bath, trim, nails", icon: Dog, fullyCovered: true, recommended: false, reason: "Pamper your pup" },
-    { id: "5", name: "Car Wash & Detail", category: "Convenience", price: 95, duration: "2 hours", description: "Full exterior wash and interior detail", icon: Car, fullyCovered: true, recommended: false, reason: "Keep your car fresh" },
-    { id: "6", name: "Laundry Pickup & Delivery", category: "Convenience", price: 75, duration: "24 hours", description: "We pickup, wash, fold, and return", icon: Package, fullyCovered: true, recommended: false, reason: "One less thing to worry about" },
-    { id: "7", name: "Home Refresh Package", category: "Cleaning & Refresh", price: 95, duration: "1.5 hours", description: "Quick clean + air freshening + organization", icon: Sparkles, fullyCovered: true, recommended: false, reason: "Make home feel new again" },
-    { id: "8", name: "HVAC Comfort Check", category: "Home Comfort", price: 85, duration: "1 hour", description: "System check to prevent future frustrations", icon: Wind, fullyCovered: true, recommended: false, reason: "Peace of mind for climate control" },
-    { id: "9", name: "Filter Replacement Service", category: "Home Comfort", price: 45, duration: "30 min", description: "Fresh air filters for better indoor air", icon: Wind, fullyCovered: true, recommended: false, reason: "Breathe easier at home" }
+    { id: "1", name: "Premium Cleaning Service", category: "Cleaning & Refresh", originalPrice: 120, discount: 35, finalPrice: 85, duration: "2 hours", description: "Complete apartment refresh - great reset after frustrations", icon: Sparkles, recommended: true, reason: "Perfect after recent home issues" },
+    { id: "2", name: "Grocery Delivery Service", category: "Convenience", originalPrice: 75, discount: 35, finalPrice: 40, duration: "Same day", description: "Full grocery delivery to your door", icon: UtensilsCrossed, recommended: true, reason: "Save time, stay comfortable" },
+    { id: "3", name: "Pet Grooming for Bailey", category: "Pet Care", originalPrice: 95, discount: 35, finalPrice: 60, duration: "1.5 hours", description: "Professional grooming including bath, trim, nails", icon: Dog, recommended: true, reason: "Pamper your pup" },
+    { id: "4", name: "Car Wash & Detail", category: "Convenience", originalPrice: 110, discount: 35, finalPrice: 75, duration: "2 hours", description: "Full exterior wash and interior detail", icon: Car, recommended: false, reason: "Keep your car fresh" },
+    { id: "5", name: "Laundry Pickup & Delivery", category: "Convenience", originalPrice: 85, discount: 35, finalPrice: 50, duration: "24 hours", description: "We pickup, wash, fold, and return", icon: Package, recommended: false, reason: "One less thing to worry about" },
+    { id: "6", name: "Home Refresh Package", category: "Cleaning & Refresh", originalPrice: 95, discount: 35, finalPrice: 60, duration: "1.5 hours", description: "Quick clean + air freshening + organization", icon: Sparkles, recommended: false, reason: "Make home feel new again" },
+    { id: "7", name: "Dog Walking Service", category: "Pet Care", originalPrice: 65, discount: 35, finalPrice: 30, duration: "45 min", description: "Daily walk for Bailey with treats", icon: Dog, recommended: false, reason: "Happy pup, happy home" },
+    { id: "8", name: "HVAC Comfort Check", category: "Home Comfort", originalPrice: 85, discount: 35, finalPrice: 50, duration: "1 hour", description: "System check to prevent future frustrations", icon: Wind, recommended: false, reason: "Peace of mind for climate control" },
+    { id: "9", name: "Filter Replacement Service", category: "Home Comfort", originalPrice: 55, discount: 35, finalPrice: 20, duration: "30 min", description: "Fresh air filters for better indoor air", icon: Wind, recommended: false, reason: "Breathe easier at home" }
   ];
 
   return (
@@ -87,14 +92,20 @@ export default function ResidentServices() {
                   )}
                   <p className="mt-1 text-xs text-slate-500">{service.duration}</p>
                 </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <div>
-                    <p className="text-lg font-semibold text-slate-900">${service.price}</p>
-                    {service.fullyCovered && (
-                      <p className="text-xs font-medium text-emerald-600">Fully covered</p>
-                    )}
+                <div className="mt-3 space-y-1.5">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs text-slate-600">Original</span>
+                    <span className="text-sm font-medium text-slate-600 line-through">${service.originalPrice}</span>
                   </div>
-                  <Button size="sm" className="h-8 rounded-lg text-xs" data-testid={`book-service-${service.id}`}>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs font-semibold text-emerald-700">Credit</span>
+                    <span className="text-sm font-semibold text-emerald-700">-${service.discount}</span>
+                  </div>
+                  <div className="flex items-baseline justify-between border-t border-slate-200 pt-1.5">
+                    <span className="text-sm font-bold text-slate-900">You pay</span>
+                    <span className="text-lg font-bold text-slate-900">${service.finalPrice}</span>
+                  </div>
+                  <Button size="sm" className="mt-3 w-full h-8 rounded-lg text-xs font-semibold" data-testid={`book-service-${service.id}`}>
                     Book Now
                   </Button>
                 </div>
