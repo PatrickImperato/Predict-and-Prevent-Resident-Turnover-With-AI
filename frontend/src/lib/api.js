@@ -9,19 +9,51 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 15000, // 15 second timeout to prevent hanging requests
 });
 
-// Global response interceptor - only log errors, don't auto-show banners
-// Components will decide if/when to show demo banners based on context
+// Track in-flight requests to prevent duplicates
+const inflightRequests = new Map();
+
+// Request deduplication interceptor
+api.interceptors.request.use(
+  (config) => {
+    const requestKey = `${config.method}:${config.url}`;
+    
+    // Cancel duplicate in-flight requests
+    if (inflightRequests.has(requestKey)) {
+      console.log(`Deduplicating request: ${requestKey}`);
+      const controller = new AbortController();
+      controller.abort();
+      config.signal = controller.signal;
+    }
+    
+    inflightRequests.set(requestKey, true);
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response cleanup interceptor
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const requestKey = `${response.config.method}:${response.config.url}`;
+    inflightRequests.delete(requestKey);
+    return response;
+  },
   (error) => {
-    // Log all errors for debugging but don't auto-show banners
+    if (error.config) {
+      const requestKey = `${error.config.method}:${error.config.url}`;
+      inflightRequests.delete(requestKey);
+    }
+    
+    // Log errors silently - components decide what to show users
     if (error.response) {
       console.warn(`API Error [${error.response.status}]:`, error.config?.url);
-    } else if (error.request) {
+    } else if (error.request && !axios.isCancel(error)) {
       console.warn(`Network Error:`, error.config?.url);
     }
+    
     return Promise.reject(error);
   }
 );
@@ -35,18 +67,28 @@ const handleUnsupportedAction = (error, actionName) => {
   );
 };
 
+// Helper for safe data fetching with fallback
+const safeFetch = async (fetchFn, fallbackValue = null) => {
+  try {
+    return await fetchFn();
+  } catch (error) {
+    console.warn("Data fetch failed, using fallback:", error.message);
+    return fallbackValue;
+  }
+};
+
 // Auth endpoints (never show demo banner on login/session)
 const login = (credentials) => api.post("/api/auth/login", credentials);
 const logout = () => api.post("/api/auth/logout");
 const getSession = () => api.get("/api/auth/session");
 
 // Admin endpoints (graceful fallback, no banner on fetch)
-const getAdminDashboard = () => api.get("/api/admin/dashboard");
-const getProperties = () => api.get("/api/admin/properties");
-const getPropertyDetail = (propertyId) => api.get(`/api/admin/properties/${propertyId}`);
-const getProviders = () => api.get("/api/admin/providers");
-const getTenants = () => api.get("/api/admin/tenants");
-const getAnalytics = () => api.get("/api/admin/analytics");
+const getAdminDashboard = () => safeFetch(() => api.get("/api/admin/dashboard"), { data: null });
+const getProperties = () => safeFetch(() => api.get("/api/admin/properties"), { data: { properties: [], portfolio_totals: {} } });
+const getPropertyDetail = (propertyId) => safeFetch(() => api.get(`/api/admin/properties/${propertyId}`), { data: null });
+const getProviders = () => safeFetch(() => api.get("/api/admin/providers"), { data: { providers: [] } });
+const getTenants = () => safeFetch(() => api.get("/api/admin/tenants"), { data: { tenants: [] } });
+const getAnalytics = () => safeFetch(() => api.get("/api/admin/analytics"), { data: null });
 
 // Manager action endpoints (only show banner for unsupported mutations)
 const deployIntervention = async (data) => {
@@ -57,12 +99,12 @@ const deployIntervention = async (data) => {
     throw error;
   }
 };
-const listManagerActions = (limit = 100) => api.get("/api/manager/actions/list", { params: { limit } });
-const getRecentInterventionsForResident = (residentId) => api.get(`/api/manager/actions/recent/${residentId}`);
+const listManagerActions = (limit = 100) => safeFetch(() => api.get("/api/manager/actions/list", { params: { limit } }), { data: { interventions: [] } });
+const getRecentInterventionsForResident = (residentId) => safeFetch(() => api.get(`/api/manager/actions/recent/${residentId}`), { data: { interventions: [] } });
 
 // Resident booking endpoints
 const createBooking = (data) => api.post("/api/resident/bookings", data);
-const getResidentBookings = () => api.get("/api/resident/bookings");
+const getResidentBookings = () => safeFetch(() => api.get("/api/resident/bookings"), { data: { bookings: [] } });
 
 // Seed admin
 const triggerPreviewReset = (payload) => api.post("/api/admin/seeds/preview-reset", payload);
@@ -86,5 +128,6 @@ export {
   getResidentBookings,
   triggerPreviewReset,
   handleUnsupportedAction,
+  safeFetch,
   API_BASE_URL,
 };

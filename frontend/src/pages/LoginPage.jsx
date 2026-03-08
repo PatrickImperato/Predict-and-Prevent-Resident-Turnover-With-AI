@@ -104,7 +104,15 @@ export default function LoginPage() {
       
       // Navigation happens via redirect above
     } catch (error) {
-      const message = error?.response?.data?.detail || error?.message || "Invalid email or password. Please check your credentials and try again.";
+      // Never show technical backend errors on login page
+      console.error("Login failed:", error);
+      
+      // Show clean, user-friendly message
+      const isNetworkError = !error.response && error.request;
+      const message = isNetworkError
+        ? "Unable to sign in. Please check your connection and try again."
+        : "Invalid email or password. Please check your credentials and try again.";
+      
       toast.error(message, {
         className: "border-red-200 bg-red-50 text-red-900",
         duration: 5000

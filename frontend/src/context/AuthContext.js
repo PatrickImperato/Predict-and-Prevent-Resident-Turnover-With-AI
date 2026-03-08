@@ -65,12 +65,13 @@ export const AuthProvider = ({ children }) => {
       persistSession(response.data);
       return response.data;
     } catch (error) {
-      setSession((current) => {
-        const nextSession = current?.authenticated ? current : fallbackSession;
-        persistSession(nextSession);
-        return nextSession;
-      });
-      throw error;
+      // Session restore failed - this is normal on login page or after expiration
+      // Keep current session if exists, otherwise use fallback
+      const nextSession = session?.authenticated ? session : fallbackSession;
+      setSession(nextSession);
+      persistSession(nextSession);
+      // Do NOT throw - let caller decide if this is an error
+      return nextSession;
     }
   };
 
@@ -78,7 +79,12 @@ export const AuthProvider = ({ children }) => {
     const bootstrap = async () => {
       setLoading(true);
       try {
+        // Silently attempt to restore session
+        // Do not show errors - user may not be logged in yet (e.g., on login page)
         await refreshSession();
+      } catch (error) {
+        // Silently fail - this is expected on login page or when session expired
+        console.log("Session restore skipped (user not authenticated)");
       } finally {
         setLoading(false);
       }
