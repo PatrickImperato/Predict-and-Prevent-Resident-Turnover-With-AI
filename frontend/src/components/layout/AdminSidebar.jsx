@@ -22,17 +22,7 @@ const navItems = [
   { label: "Settings", icon: Settings2, path: "/app/admin/settings" },
 ];
 
-const getRoleLabel = (role) => {
-  if (role === "admin") return "Platform Admin";
-  if (role === "manager") return "Property Manager";
-  if (role === "resident") return "Resident";
-  return "User";
-};
-
 export const AdminSidebar = () => {
-  const { session } = useAuth();
-  const roleLabel = getRoleLabel(session?.role);
-
   return (
     <motion.aside
       initial={{ opacity: 0, x: -12 }}
@@ -49,7 +39,7 @@ export const AdminSidebar = () => {
           <p className="font-[var(--font-heading)] text-sm font-semibold tracking-tight text-white">
             HappyCo Concierge
           </p>
-          <p className="text-xs text-slate-400">{roleLabel}</p>
+          <p className="text-xs text-slate-400">Platform Admin</p>
         </div>
       </div>
 
