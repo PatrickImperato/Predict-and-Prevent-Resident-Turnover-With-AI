@@ -1,4 +1,5 @@
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 import logging
@@ -39,6 +40,42 @@ async def root():
         "db_name": config.db_name,
         "scope": "phase-8-residents-providers-analytics",
     }
+
+
+# Custom 404 handler for demo-safe errors
+@app.exception_handler(404)
+async def custom_404_handler(request: Request, exc):
+    """Return demo-friendly message for 404 errors in demo mode"""
+    if config.demo_mode_enabled:
+        return JSONResponse(
+            status_code=404,
+            content={
+                "detail": "End of demo. This view is intentionally limited in the live demo.",
+                "demo_mode": True
+            }
+        )
+    return JSONResponse(
+        status_code=404,
+        content={"detail": "Not Found"}
+    )
+
+
+# Custom 500 handler for demo-safe errors
+@app.exception_handler(500)
+async def custom_500_handler(request: Request, exc):
+    """Return demo-friendly message for 500 errors in demo mode"""
+    if config.demo_mode_enabled:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": "End of demo. This view is intentionally limited in the live demo.",
+                "demo_mode": True
+            }
+        )
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error"}
+    )
 
 
 api_router.include_router(public_router, prefix="/public", tags=["public"])

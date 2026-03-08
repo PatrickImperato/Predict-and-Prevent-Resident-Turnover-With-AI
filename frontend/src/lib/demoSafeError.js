@@ -61,19 +61,30 @@ export function isDemoSafeError(error) {
   if (!error) return false;
   
   const message = error.message?.toLowerCase() || "";
+  const status = error.response?.status;
+  
+  // All 4xx and 5xx errors should be demo-safe in production demo
+  if (status && (status >= 400 && status < 600)) {
+    return true;
+  }
+  
   const demoSafePatterns = [
     "authentication",
     "unauthorized",
+    "forbidden",
     "fetch failed",
     "network error",
     "backend error",
     "not found",
     "missing record",
     "failed to load",
+    "timeout",
     "500",
     "404",
     "401",
     "403",
+    "502",
+    "503",
   ];
   
   return demoSafePatterns.some(pattern => message.includes(pattern));
