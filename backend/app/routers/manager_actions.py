@@ -113,7 +113,7 @@ async def list_manager_actions(
     db: AsyncIOMotorDatabase = Depends(get_database)
 ):
     """Get list of deployed manager actions."""
-    interventions = await db.interventions.find({}).sort("deployedAt", -1).limit(limit).to_list(None)
+    interventions = await db.interventions.find({}, {"_id": 0}).sort("deployedAt", -1).limit(limit).to_list(None)
     
     # Calculate summary
     total_deployed = len(interventions)
@@ -143,7 +143,7 @@ async def get_recent_interventions_for_resident(
 ):
     """Get recent interventions for a specific resident."""
     interventions = await db.interventions.find(
-        {"residentId": resident_id}
+        {"residentId": resident_id}, {"_id": 0}
     ).sort("deployedAt", -1).limit(10).to_list(None)
     
     return {"interventions": interventions}
