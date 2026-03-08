@@ -124,9 +124,23 @@ def _build_session_response(user: dict | None, config: AppConfig) -> dict:
             "is_super_admin": False,
             "default_property_id": None,
             "last_login_at": None,
+            "retention_credit": None,
             "app_env": config.app_env,
             "demo_mode_enabled": config.demo_mode_enabled,
             "admin_route_base": "/app/admin",
+        }
+
+    # Build retention credit data if user is a resident
+    retention_credit = None
+    if user.get("role") == "resident" and user.get("retentionCredit"):
+        credit_data = user.get("retentionCredit", {})
+        retention_credit = {
+            "amount": credit_data.get("amount", 0),
+            "original_amount": credit_data.get("originalAmount", 35),
+            "used_amount": credit_data.get("usedAmount", 0),
+            "reason": credit_data.get("reason", "Retention reward"),
+            "expires_at": credit_data.get("expiresAt"),
+            "offer_id": credit_data.get("offerId"),
         }
 
     return {
@@ -138,6 +152,7 @@ def _build_session_response(user: dict | None, config: AppConfig) -> dict:
         "is_super_admin": bool(user.get("isSuperAdmin", False)),
         "default_property_id": user.get("defaultPropertyId"),
         "last_login_at": user.get("lastLoginAt"),
+        "retention_credit": retention_credit,
         "app_env": config.app_env,
         "demo_mode_enabled": config.demo_mode_enabled,
         "admin_route_base": "/app/admin",

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Gift, MessageSquare, Calendar, Wrench, Sparkles, CheckCircle2, Coffee, UtensilsCrossed, Dog, Car, ShoppingBag, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -6,12 +7,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CountUp } from "@/components/ui/count-up";
 import { getAlexChenData, getAlexProperty, getAlexBookings, getAlexMaintenance, getAlexPropertyProviders } from "@/lib/canonicalData";
+import BookingDialog from "@/components/resident/BookingDialog";
 
 export default function ResidentDashboard() {
   const resident = getAlexChenData();
   const property = getAlexProperty();
   const bookings = getAlexBookings();
   const maintenance = getAlexMaintenance();
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
+  const handleBookNow = (service) => {
+    setSelectedService(service);
+    setBookingDialogOpen(true);
+  };
   
   const promotionalCredit = 35;
   const creditExpires = new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
@@ -168,7 +177,7 @@ export default function ResidentDashboard() {
                     <span className="text-2xl font-bold text-slate-900">${service.finalPrice}</span>
                   </div>
                 </div>
-                <Button size="sm" className="mt-3 w-full h-10 rounded-lg font-semibold">Book Now</Button>
+                <Button size="sm" className="mt-3 w-full h-10 rounded-lg font-semibold" onClick={() => handleBookNow(service)}>Book Now</Button>
               </div>
             </motion.div>
           ))}
@@ -265,6 +274,13 @@ export default function ResidentDashboard() {
           </div>
         </div>
       </section>
+      
+      {/* Booking Dialog */}
+      <BookingDialog 
+        service={selectedService}
+        open={bookingDialogOpen}
+        onOpenChange={setBookingDialogOpen}
+      />
     </motion.div>
   );
 }

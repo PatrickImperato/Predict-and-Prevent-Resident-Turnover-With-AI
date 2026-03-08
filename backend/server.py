@@ -8,6 +8,7 @@ from app.core.config import load_config
 from app.core.database import init_database
 from app.routers.analytics import router as analytics_router
 from app.routers.auth import router as auth_router
+from app.routers.bookings import router as bookings_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.diagnostics import router as diagnostics_router
 from app.routers.manager_actions import router as manager_actions_router
@@ -48,6 +49,7 @@ api_router.include_router(analytics_router, prefix="/admin/analytics", tags=["an
 api_router.include_router(tenants_router, prefix="/admin", tags=["tenants"])
 api_router.include_router(providers_router, tags=["providers"])
 api_router.include_router(residents_router, tags=["residents"])
+api_router.include_router(bookings_router, tags=["bookings"])
 api_router.include_router(manager_actions_router, tags=["manager-actions"])
 api_router.include_router(diagnostics_router, prefix="/diagnostics", tags=["diagnostics"])
 api_router.include_router(seed_admin_router, prefix="/admin/seeds", tags=["admin-seeds"])

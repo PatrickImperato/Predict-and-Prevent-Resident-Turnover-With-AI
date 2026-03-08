@@ -116,7 +116,7 @@ export default function ManagerDashboard() {
                       <div className="rounded-lg border border-teal-200 bg-white p-4">
                         <p className="text-sm font-semibold text-slate-900">3. Deploy Right Intervention Tier</p>
                         <p className="mt-1 text-sm text-slate-700">
-                          System recommends Light Touch ($200), Standard ($350), or High Priority ($500) based on risk threshold and friction patterns.
+                          System recommends intervention tiers based on risk threshold and friction patterns. Standard retention credit: $35.
                         </p>
                       </div>
                       

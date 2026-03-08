@@ -37,7 +37,7 @@ export default function ResidentMaintenance() {
       {maintenance.filter(m => m.issueType === 'HVAC').length > 0 && (
         <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
           <p className="text-sm font-medium text-slate-900">We noticed your recent HVAC issues</p>
-          <p className="mt-1 text-sm text-slate-700">You received a $500 credit to help make things right. Book an HVAC tune-up to prevent future problems.</p>
+          <p className="mt-1 text-sm text-slate-700">You received a $35 credit to help make things right. Book services to prevent future problems and make life easier.</p>
         </div>
       )}
 

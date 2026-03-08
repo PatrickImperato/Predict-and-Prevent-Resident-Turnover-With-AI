@@ -1,11 +1,20 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Dog, Wind, Coffee, UtensilsCrossed, Car, Package } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getAlexPropertyProviders } from "@/lib/canonicalData";
+import BookingDialog from "@/components/resident/BookingDialog";
 
 export default function ResidentServices() {
   const providers = getAlexPropertyProviders();
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
+
+  const handleBookNow = (service) => {
+    setSelectedService(service);
+    setBookingDialogOpen(true);
+  };
 
   // Credit info
   const creditAmount = 35;
@@ -105,7 +114,7 @@ export default function ResidentServices() {
                     <span className="text-sm font-bold text-slate-900">You pay</span>
                     <span className="text-lg font-bold text-slate-900">${service.finalPrice}</span>
                   </div>
-                  <Button size="sm" className="mt-3 w-full h-8 rounded-lg text-xs font-semibold" data-testid={`book-service-${service.id}`}>
+                  <Button size="sm" className="mt-3 w-full h-8 rounded-lg text-xs font-semibold" onClick={() => handleBookNow(service)} data-testid={`book-service-${service.id}`}>
                     Book Now
                   </Button>
                 </div>
@@ -137,6 +146,13 @@ export default function ResidentServices() {
           ))}
         </div>
       </section>
+      
+      {/* Booking Dialog */}
+      <BookingDialog 
+        service={selectedService}
+        open={bookingDialogOpen}
+        onOpenChange={setBookingDialogOpen}
+      />
     </motion.div>
   );
 }

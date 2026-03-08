@@ -1,13 +1,65 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getAlexBookings } from "@/lib/canonicalData";
 import { Link } from "react-router-dom";
+import { getResidentBookings } from "@/lib/api";
+import { useAuth } from "@/context/AuthContext";
+import { showDemoSafeError } from "@/lib/demoSafeError";
 
 export default function ResidentBookings() {
-  const bookings = getAlexBookings();
-  const creditRemaining = 500;
+  const { session } = useAuth();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  // Get credit from session
+  const retentionCredit = session?.retention_credit || {};
+  const creditRemaining = retentionCredit.amount || 0;
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      try {
+        const response = await getResidentBookings();
+        setBookings(response.data.bookings || []);
+      } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+        showDemoSafeError(error.message, "Loading bookings");
+        setBookings([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, []);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Date pending";
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', { 
+        weekday: 'long', 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  const formatShortDate = (dateString) => {
+    if (!dateString) return "Date pending";
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    } catch {
+      return dateString;
+    }
+  };
 
   return (
     <motion.div 
@@ -34,7 +86,11 @@ export default function ResidentBookings() {
         </div>
       </section>
 
-      {bookings.length > 0 ? (
+      {loading ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+          <p className="text-center text-sm text-slate-600">Loading bookings...</p>
+        </div>
+      ) : bookings.length > 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="space-y-3">
             {bookings.map((booking) => (
@@ -47,23 +103,17 @@ export default function ResidentBookings() {
                     </div>
                     <div className="mt-2 space-y-1">
                       <p className="text-sm text-slate-600">
-                        <span className="font-medium">Provider:</span> {booking.providerName}
+                        <span className="font-medium">Provider:</span> {booking.providerName || "HappyCo Services"}
                       </p>
                       <p className="text-sm text-slate-600">
-                        <span className="font-medium">Scheduled:</span>{' '}
-                        {booking.scheduledFor instanceof Date 
-                          ? booking.scheduledFor.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-                          : 'Date pending'}
+                        <span className="font-medium">Scheduled:</span> {formatDate(booking.bookingDate)}
                       </p>
                       <p className="text-sm text-slate-600">
-                        <span className="font-medium">Booked:</span>{' '}
-                        {booking.createdAt instanceof Date 
-                          ? booking.createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-                          : 'Date pending'}
+                        <span className="font-medium">Booked:</span> {formatShortDate(booking.createdAt)}
                       </p>
-                      {booking.creditApplied && (
+                      {booking.discountApplied && (
                         <p className="text-sm font-medium text-emerald-600">
-                          ✓ ${booking.creditApplied || 85} credit applied
+                          ✓ ${booking.discountApplied} credit applied
                         </p>
                       )}
                     </div>
@@ -72,11 +122,13 @@ export default function ResidentBookings() {
                     className={`${
                       booking.status === 'completed' 
                         ? 'border-emerald-200 bg-emerald-50 text-emerald-700' 
-                        : 'border-blue-200 bg-blue-50 text-blue-700'
+                        : booking.status === 'confirmed' || booking.status === 'scheduled'
+                        ? 'border-blue-200 bg-blue-50 text-blue-700'
+                        : 'border-slate-200 bg-slate-50 text-slate-700'
                     }`} 
                     variant="secondary"
                   >
-                    {booking.status === 'completed' ? 'Completed' : 'Scheduled'}
+                    {booking.status === 'completed' ? 'Completed' : booking.status === 'confirmed' ? 'Confirmed' : 'Scheduled'}
                   </Badge>
                 </div>
               </div>
@@ -90,7 +142,7 @@ export default function ResidentBookings() {
               <Calendar className="h-7 w-7" />
             </div>
             <h3 className="mt-4 text-base font-semibold text-slate-900">No bookings yet</h3>
-            <p className="mt-2 text-sm text-slate-600">You have $500 in credit to use on services.</p>
+            <p className="mt-2 text-sm text-slate-600">You have ${creditRemaining} in credit to use on services.</p>
             <Button asChild className="mt-4" data-testid="browse-services-button">
               <Link to="/app/resident/services">Browse Services</Link>
             </Button>
@@ -101,8 +153,8 @@ export default function ResidentBookings() {
       {/* Credit reminder */}
       {creditRemaining > 0 && bookings.length > 0 && (
         <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
-          <p className="text-sm font-medium text-slate-900">You still have ${creditRemaining - 85} in credit remaining</p>
-          <p className="mt-1 text-sm text-slate-700">Book more services before September 30, 2025</p>
+          <p className="text-sm font-medium text-slate-900">You still have ${creditRemaining} in credit remaining</p>
+          <p className="mt-1 text-sm text-slate-700">Book more services before it expires</p>
         </div>
       )}
     </motion.div>

@@ -92,10 +92,10 @@ export const ALEX_CHURN_HISTORY = [
     scoreChange: 0,
     eventType: 'intervention_recommended',
     milestone: 'High Priority Intervention Recommended',
-    description: 'AI recommends Tier 3 intervention: $500 credit for HVAC service + premium cleaning',
+    description: 'AI recommends Tier 3 intervention: $35 credit for happiness-focused services + premium cleaning',
     primaryDriver: 'Maintenance Frequency',
     interventionTier: 3,
-    creditAmount: 500,
+    creditAmount: 35,
     status: 'intervention-pending'
   },
   {
@@ -106,10 +106,10 @@ export const ALEX_CHURN_HISTORY = [
     scoreChange: 0,
     eventType: 'intervention_deployed',
     milestone: 'Intervention Deployed',
-    description: 'Manager approved $500 retention credit via SMS channel',
+    description: 'Manager approved $35 retention credit via SMS channel',
     primaryDriver: 'Maintenance Frequency',
     interventionTier: 3,
-    creditAmount: 500,
+    creditAmount: 35,
     deployedBy: 'Sarah Mitchell',
     communicationChannel: 'SMS',
     status: 'intervention-active'
@@ -122,7 +122,7 @@ export const ALEX_CHURN_HISTORY = [
     scoreChange: 0,
     eventType: 'communication_sent',
     milestone: 'Resident Notified',
-    description: 'SMS sent: "Hi Alex, we value you as a resident. To address recent maintenance concerns, we\'re providing a $500 service credit for HVAC maintenance and cleaning services. Use it anytime. - The Metropolitan Team"',
+    description: 'SMS sent: "Hi Alex, we value you as a resident. To address recent maintenance concerns, we\'re providing a $35 service credit for happiness and convenience services. Use it anytime. - The Metropolitan Team"',
     communicationChannel: 'SMS',
     status: 'awaiting-engagement'
   },

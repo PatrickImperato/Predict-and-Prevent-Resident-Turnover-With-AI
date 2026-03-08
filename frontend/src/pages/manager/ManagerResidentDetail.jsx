@@ -339,7 +339,7 @@ export default function ManagerResidentDetail() {
                   <p className="text-xs text-muted-foreground">Feb 21, 2026</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">AI Recommended Service Credit</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    System suggested $500 retention credit based on maintenance frequency pattern
+                    System suggested $35 retention credit based on maintenance frequency pattern
                   </p>
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function ManagerResidentDetail() {
                 </div>
                 <div className="rounded-lg border border-slate-200 bg-white p-4">
                   <p className="text-xs text-muted-foreground">Feb 21, 2026</p>
-                  <p className="mt-1 text-sm font-semibold text-foreground">Property Manager Approved $500 Credit</p>
+                  <p className="mt-1 text-sm font-semibold text-foreground">Property Manager Approved $35 Credit</p>
                   <p className="mt-1 text-sm text-muted-foreground">
                     Approved by Sarah Mitchell • Reason: Maintenance frequency risk mitigation
                   </p>
@@ -367,7 +367,7 @@ export default function ManagerResidentDetail() {
                   <p className="text-xs text-muted-foreground">Feb 22, 2026</p>
                   <p className="mt-1 text-sm font-semibold text-foreground">AI Concierge Notified Resident</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Message sent via {resident.communicationChannel}: "Hey Alex, we added a $500 credit you can use for services."
+                    Message sent via {resident.communicationChannel}: "Hey Alex, we added a $35 credit you can use for happiness and convenience services."
                   </p>
                 </div>
               </div>
@@ -433,7 +433,7 @@ export default function ManagerResidentDetail() {
                 <p className="text-xs font-medium text-muted-foreground">Credit Issued</p>
                 <p className="mt-1 text-sm font-semibold text-foreground">Feb 21, 2026</p>
                 <p className="mt-1 text-xs text-muted-foreground">Reason: Maintenance frequency risk</p>
-                <p className="mt-2 text-2xl font-semibold text-foreground">$500</p>
+                <p className="mt-2 text-2xl font-semibold text-foreground">$35</p>
               </div>
               
               <div className="rounded-lg border border-slate-200 bg-white p-4">
@@ -441,24 +441,18 @@ export default function ManagerResidentDetail() {
                 <div className="mt-2 space-y-2">
                   {bookings.filter(b => b.status === "completed").length > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Mar 5 - HVAC Tune-up</span>
-                      <span className="font-medium text-foreground">-$85</span>
-                    </div>
-                  )}
-                  {bookings.filter(b => b.status === "completed").length > 1 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Mar 6 - Deep Cleaning</span>
-                      <span className="font-medium text-foreground">-$120</span>
+                      <span className="text-muted-foreground">Mar 5 - Service Used</span>
+                      <span className="font-medium text-foreground">-$35</span>
                     </div>
                   )}
                   <div className="flex justify-between border-t border-slate-200 pt-2 text-sm">
                     <span className="font-medium text-foreground">Remaining</span>
                     <span className="font-semibold text-foreground">
-                      ${bookings.filter(b => b.status === "completed").length > 0 ? '295' : '500'}
+                      ${bookings.filter(b => b.status === "completed").length > 0 ? '0' : '35'}
                     </span>
                   </div>
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">Expires: Sep 29, 2025</p>
+                <p className="mt-2 text-xs text-muted-foreground">Expires: 4 days from issue</p>
               </div>
             </div>
           </div>
@@ -477,7 +471,7 @@ export default function ManagerResidentDetail() {
                     </div>
                     <p className="mt-1 text-sm font-medium text-foreground">Credit notification sent</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      "Hey Alex, we added a $500 credit you can use for services."
+                      "Hey Alex, we added a $35 credit you can use for happiness and convenience services."
                     </p>
                   </div>
                 </div>
@@ -493,7 +487,7 @@ export default function ManagerResidentDetail() {
                     </div>
                     <p className="mt-1 text-sm font-medium text-foreground">Credit reminder sent</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      "You still have $500 in credits available. Want help using them?"
+                      "You still have $35 in credits available. Want help using them?"
                     </p>
                   </div>
                 </div>
