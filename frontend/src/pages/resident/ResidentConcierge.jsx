@@ -12,17 +12,13 @@ const alex = getAlexChenData();
 
 const RESPONSES = {
   greeting: `Hey ${alex.fullName.split(' ')[0]}! 👋 You have a $35 retention credit available for the next 4 days. This is to help make things easier after recent frustrations. Want me to help you use it on services you'll actually enjoy?`,
-  bookCleaning: (credit) => `Perfect! Premium cleaning is $120 and with your $35 credit, you'd pay $85. Great way to refresh after all those maintenance issues. Want me to book it?`,
-  scheduleMaintenance: "Got it. What's going on? I can help with HVAC, plumbing, or general repairs.",
-  checkCredits: (credit) => `You've got $35 available for the next 4 days. That gives you a nice discount on services like cleaning ($120 → $85), grocery delivery ($75 → $40), pet grooming ($95 → $60), and more. What sounds good?`,
-  availableServices: "Here's what I recommend to make life easier:\n\n• Premium Cleaning ($120, you pay $85) - Great reset after frustrations\n• Grocery Delivery ($75, you pay $40) - Save time & stay comfortable\n• Pet Grooming for Bailey ($95, you pay $60) - Pamper your pup\n\nWhat interests you?",
-  fallback: "I'm here to help you use your $35 credit on things that make staying here better!\n\nI can:\n• Show happiness & convenience services\n• Book cleaning or pet care\n• Arrange grocery or laundry delivery\n• Help with maintenance\n\nWhat would help most?",
-  bookingConfirmed: (service, price, creditApplied) => `Awesome! ${service} is booked. Applied $${creditApplied} from your credit. ${price - creditApplied > 0 ? `You'll owe $${price - creditApplied}.` : 'Fully covered!'} Check your email for confirmation.`,
-  maintenanceSubmitted: (issue) => `Done. Your ${issue} request is submitted. Maintenance will contact you within 2 hours. You'll get updates via ${alex.communicationChannel}.`,
-  happinessRecommendation: "Based on your profile (works from home, has Bailey), here's what'll make life easier: Grocery delivery to save time ($75 → $40), premium cleaning for a fresh start ($120 → $85), and pet grooming for Bailey ($95 → $60). All get the $35 discount!",
-  coffeeCredit: "Love it! We can apply your $35 credit to a coffee or meal service. Want me to show you options?",
-  groceryDelivery: "Smart choice! Grocery delivery is $75, and with your $35 credit you'd pay $40. Delivers same-day. Sound good?"
-};
+  recommendedServices: `I'd love to help you use that $35 credit on something that makes life better! Here are my top picks:\n\n• Premium Cleaning ($120, you pay $85) - Fresh start after all those issues\n• Starbucks Coffee Credit ($50, you pay $15) - Fuel for your work from home days\n• Grocery Delivery ($75, you pay $40) - Save time, stay comfortable\n• Pet Grooming for Bailey ($95, you pay $60) - Your pup deserves a spa day!\n\nWhat sounds good?`,
+  checkBalance: `You've got $35 available to use within the next 4 days. That gives you a nice discount on happiness services:\n\n✓ Coffee credit - $15 out of pocket\n✓ Grocery delivery - $40 out of pocket\n✓ Pet grooming - $60 out of pocket  \n✓ Premium cleaning - $85 out of pocket\n\nAll way better than maintenance frustrations! What interests you?`,
+  requestMaintenance: "I can help you submit a maintenance request. What's the issue?\n\n• HVAC/Heating/Cooling\n• Plumbing/Water\n• Electrical\n• Appliance\n• Other\n\nJust tell me what's going on.",
+  maintenanceSubmitted: (issue) => `Done! Your ${issue} request is submitted. Maintenance will reach out within 2 hours via ${alex.communicationChannel}. You'll get updates as they work on it.`,
+  fallback: "I'm here to help you use your $35 credit on things that make staying here better!\n\nI can:\n• Show happiness & convenience services\n• Help you check your credit balance\n• Submit maintenance requests\n\nWhat would help most?",
+  bookingConfirmed: (service, creditApplied, finalPrice) => `Awesome! ${service} is scheduled. I applied your $35 credit${finalPrice > 0 ? `, so you'll pay $${finalPrice}` : " and it's fully covered"}. Check your email for confirmation!`,
+}
 
 const SERVICES = {
   premiumCleaning: { name: "Premium Cleaning", basePrice: 120 },
@@ -74,49 +70,69 @@ export default function ResidentConcierge() {
   const generateResponse = (input) => {
     if (input.includes("clean") || input.includes("cleaning")) {
       return {
-        text: RESPONSES.bookCleaning(creditAvailable),
+        text: `Perfect! Premium cleaning is $120 and with your $35 credit, you'd pay $85. Great way to refresh after all those issues. Want me to book it?`,
         actions: [
-          { label: `Book Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
-          { label: "See Other Services", handler: () => handleQuickAction("browse") }
+          { label: "Yes, book cleaning", handler: () => handleServiceBooking("Premium Cleaning", 120) },
+          { label: "Show other services", handler: () => handleQuickAction("services") }
         ]
       };
     }
     
-    if (input.includes("hvac") || input.includes("ac") || input.includes("air")) {
+    if (input.includes("coffee") || input.includes("starbucks")) {
       return {
-        text: RESPONSES.hvacRecommendation,
+        text: `Love it! Starbucks coffee credit is $50. With your $35 credit, you'd pay just $15. Perfect for work-from-home days!`,
         actions: [
-          { label: `Book HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) }
+          { label: "Book coffee credit", handler: () => handleServiceBooking("Starbucks Coffee Credit", 50) }
         ]
       };
     }
     
-    if (input.includes("maintenance") || input.includes("repair") || input.includes("fix")) {
+    if (input.includes("grocery") || input.includes("groceries") || input.includes("delivery")) {
       return {
-        text: RESPONSES.scheduleMaintenance,
+        text: `Smart choice! Grocery delivery is $75, and with your $35 credit you'd pay $40. Same-day delivery available. Sound good?`,
         actions: [
-          { label: "Report HVAC Issue", handler: () => handleQuickAction("HVAC maintenance") },
-          { label: "Report Plumbing Issue", handler: () => handleQuickAction("Plumbing maintenance") }
+          { label: "Book grocery delivery", handler: () => handleServiceBooking("Grocery Delivery", 75) }
         ]
       };
     }
     
-    if (input.includes("credit") || input.includes("balance")) {
+    if (input.includes("pet") || input.includes("dog") || input.includes("bailey") || input.includes("groom")) {
       return {
-        text: RESPONSES.checkCredits(creditAvailable),
+        text: `Bailey would love that! Pet grooming is $95, and with your $35 credit you'd pay $60. Includes bath, trim, and nail care. Want to book it?`,
         actions: [
-          { label: "Show Recommended Services", handler: () => handleQuickAction("services") }
+          { label: "Book pet grooming", handler: () => handleServiceBooking("Pet Grooming for Bailey", 95) }
         ]
       };
     }
     
-    if (input.includes("service") || input.includes("available") || input.includes("recommend")) {
+    if (input.includes("maintenance") || input.includes("repair") || input.includes("fix") || input.includes("broken")) {
       return {
-        text: RESPONSES.availableServices,
+        text: RESPONSES.requestMaintenance,
         actions: [
-          { label: `HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) },
-          { label: `Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) },
-          { label: `Vent Inspection ($${SERVICES.ventInspection.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Air Vent Inspection", SERVICES.ventInspection.basePrice) }
+          { label: "HVAC Issue", handler: () => handleMaintenanceRequest("HVAC") },
+          { label: "Plumbing Issue", handler: () => handleMaintenanceRequest("Plumbing") },
+          { label: "Other Issue", handler: () => handleMaintenanceRequest("General Maintenance") }
+        ]
+      };
+    }
+    
+    if (input.includes("credit") || input.includes("balance") || input.includes("how much")) {
+      return {
+        text: RESPONSES.checkBalance,
+        actions: [
+          { label: "Show recommended services", handler: () => handleQuickAction("services") }
+        ]
+      };
+    }
+    
+    if (input.includes("service") || input.includes("available") || input.includes("recommend") || input.includes("what can")) {
+      return {
+        text: RESPONSES.recommendedServices,
+        actions: [
+          { label: "Premium Cleaning ($85)", handler: () => handleServiceBooking("Premium Cleaning", 120) },
+          { label: "Coffee Credit ($15)", handler: () => handleServiceBooking("Starbucks Coffee Credit", 50) },
+          { label: "Grocery Delivery ($40)", handler: () => handleServiceBooking("Grocery Delivery", 75) },
+          { label: "Pet Grooming ($60)", handler: () => handleServiceBooking("Pet Grooming for Bailey", 95) }
         ]
       };
     }
@@ -126,74 +142,89 @@ export default function ResidentConcierge() {
       actions: [
         { label: "Show Recommended Services", handler: () => handleQuickAction("services") },
         { label: "Request Maintenance", handler: () => handleQuickAction("maintenance") },
-        { label: "Check Credit Balance", handler: () => handleQuickAction("credits") }
+        { label: "Check Balance", handler: () => handleQuickAction("balance") }
       ]
     };
   };
 
-  const handleQuickAction = (action, price) => {
-    if (action === "browse" || action === "services") {
-      const msg = {
-        id: messages.length + 1,
+  const handleQuickAction = (action) => {
+    // Add user message to show the action was clicked
+    const userMsg = {
+      id: messages.length + 1,
+      type: "user",
+      text: action === "services" ? "Show me recommended services" 
+           : action === "maintenance" ? "I need to request maintenance"
+           : "What's my credit balance?",
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages(prev => [...prev, userMsg]);
+
+    // Generate appropriate response after short delay
+    setTimeout(() => {
+      let responseText = "";
+      let responseActions = [];
+
+      if (action === "services") {
+        responseText = RESPONSES.recommendedServices;
+        responseActions = [
+          { label: "Premium Cleaning ($85)", handler: () => handleServiceBooking("Premium Cleaning", 120) },
+          { label: "Coffee Credit ($15)", handler: () => handleServiceBooking("Starbucks Coffee Credit", 50) },
+          { label: "Grocery Delivery ($40)", handler: () => handleServiceBooking("Grocery Delivery", 75) },
+          { label: "Pet Grooming ($60)", handler: () => handleServiceBooking("Pet Grooming for Bailey", 95) }
+        ];
+      } else if (action === "maintenance") {
+        responseText = RESPONSES.requestMaintenance;
+        responseActions = [
+          { label: "HVAC Issue", handler: () => handleMaintenanceRequest("HVAC") },
+          { label: "Plumbing Issue", handler: () => handleMaintenanceRequest("Plumbing") },
+          { label: "Other Issue", handler: () => handleMaintenanceRequest("General Maintenance") }
+        ];
+      } else if (action === "balance") {
+        responseText = RESPONSES.checkBalance;
+        responseActions = [
+          { label: "Show recommended services", handler: () => handleQuickAction("services") }
+        ];
+      }
+
+      const assistantMsg = {
+        id: messages.length + 2,
         type: "assistant",
-        text: RESPONSES.availableServices,
+        text: responseText,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actions: [
-          { label: `HVAC Tune-up ($${SERVICES.acTuneup.basePrice} - Fully Covered)`, handler: () => handleQuickAction("HVAC Tune-up", SERVICES.acTuneup.basePrice) },
-          { label: `Deep Cleaning ($${SERVICES.deepCleaning.basePrice} - Fully Covered)`, handler: () => handleQuickAction("Deep Cleaning", SERVICES.deepCleaning.basePrice) }
-        ]
+        actions: responseActions
       };
-      setMessages(prev => [...prev, msg]);
-      return;
-    }
+      setMessages(prev => [...prev, assistantMsg]);
+    }, 600);
+  };
+
+  const handleServiceBooking = (serviceName, basePrice) => {
+    const creditApplied = Math.min(basePrice, creditAvailable);
+    const finalPrice = basePrice - creditApplied;
     
-    if (action === "credits") {
-      const msg = {
-        id: messages.length + 1,
-        type: "assistant",
-        text: RESPONSES.checkCredits(creditAvailable),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, msg]);
-      return;
-    }
-    
-    if (action === "maintenance") {
-      const msg = {
-        id: messages.length + 1,
-        type: "assistant",
-        text: RESPONSES.scheduleMaintenance,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, msg]);
-      return;
-    }
-    
-    if (action.includes("maintenance")) {
-      toast.success("Maintenance request submitted", {
-        description: `${action} request received. We'll contact you within 2 hours.`,
-        className: "border-teal-200 bg-teal-50 text-teal-900"
-      });
-      const msg = {
-        id: messages.length + 1,
-        type: "assistant",
-        text: RESPONSES.maintenanceSubmitted(action.replace(" maintenance", "")),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessages(prev => [...prev, msg]);
-      return;
-    }
-    
-    const creditApplied = Math.min(price, creditAvailable);
-    const fullyCovered = creditApplied === price;
     toast.success("Booking confirmed!", {
-      description: `${action} scheduled • ${fullyCovered ? 'Fully covered by your credit' : `$${creditApplied} credit applied`}`,
+      description: `${serviceName} scheduled • $${creditApplied} credit applied`,
       className: "border-teal-200 bg-teal-50 text-teal-900"
     });
+    
     const msg = {
       id: messages.length + 1,
       type: "assistant",
-      text: RESPONSES.bookingConfirmed(action, price, creditApplied),
+      text: RESPONSES.bookingConfirmed(serviceName, creditApplied, finalPrice),
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages(prev => [...prev, msg]);
+  };
+
+  const handleMaintenanceRequest = (issueType) => {
+    toast.success("Maintenance request submitted", {
+      description: `${issueType} request received. We'll contact you within 2 hours.`,
+      className: "border-teal-200 bg-teal-50 text-teal-900"
+    });
+    
+    const msg = {
+      id: messages.length + 1,
+      type: "assistant",
+      text: RESPONSES.maintenanceSubmitted(issueType),
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setMessages(prev => [...prev, msg]);
@@ -298,7 +329,7 @@ export default function ResidentConcierge() {
               </button>
               
               <button
-                onClick={() => handleQuickAction("HVAC maintenance")}
+                onClick={() => handleQuickAction("maintenance")}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-left transition-all hover:border-amber-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-request-maintenance"
               >
@@ -314,7 +345,7 @@ export default function ResidentConcierge() {
               </button>
               
               <button
-                onClick={() => handleQuickAction("credits")}
+                onClick={() => handleQuickAction("balance")}
                 className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-left transition-all hover:border-emerald-200 hover:bg-white hover:shadow-sm"
                 data-testid="quick-action-check-credits"
               >
@@ -334,8 +365,8 @@ export default function ResidentConcierge() {
           <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
             <h4 className="text-sm font-semibold text-slate-900">Your Credit</h4>
             <p className="mt-1.5 text-2xl font-semibold text-slate-900">${creditAvailable}</p>
-            <p className="mt-1 text-xs text-slate-700">Expires Sep 30, 2025</p>
-            <p className="mt-2 text-xs font-medium text-slate-600">Reason: Recent HVAC issues</p>
+            <p className="mt-1 text-xs text-slate-700">Use within 4 days</p>
+            <p className="mt-2 text-xs font-medium text-slate-600">Reason: Making things right after recent issues</p>
           </div>
         </div>
       </div>
