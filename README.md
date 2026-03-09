@@ -15,44 +15,20 @@ This repository is built to show product management ability, not just code.
 
 Short demo showing the retention intelligence workflow and product thinking behind the system.
 
-[![Watch the product walkthrough](assets/product-walkthrough-thumb.jpg)](https://youtu.be/lPwLeqQauww)
+<a href="https://youtu.be/lPwLeqQauww" target="_blank">
+  <img src="assets/product-walkthrough-thumb.jpg" alt="AI Resident Retention Platform Walkthrough" width="800">
+</a>
 
 ### What the demo covers
 
-1. How residents are prioritized by churn risk
-2. How operational drivers explain the risk signal
-3. How the system recommends intervention actions
-4. How projected savings and ROI guide decisions
+1. How residents are prioritized by churn risk  
+2. How operational drivers explain the risk signal  
+3. How the system recommends intervention actions  
+4. How projected savings and ROI guide decisions  
 
-Direct video link
+Direct video link (opens in new tab)
 
-https://youtu.be/lPwLeqQauww
-
-## Product Walkthrough
-
-Short demo showing the retention intelligence workflow and product thinking behind the system.
-
-This case study explores how AI signals, operational workflows, and financial impact modeling can help property teams identify churn risk earlier and intervene before resident turnover happens.
-
-### Key concepts shown in the demo
-
-1. Early churn risk detection from operational signals
-2. Explainable risk drivers for property teams
-3. Intervention workflows connecting risk to action
-4. Financial modeling showing ROI before intervention deployment
-
-### Watch the walkthrough
-
-https://www.loom.com/share/28ee1d0c8a4a492aa621011849b28ac3
-
-### What the demo covers
-
-1. How residents are prioritized by churn risk
-2. How operational drivers explain the risk signal
-3. How the system recommends intervention actions
-4. How projected savings and ROI guide decisions
-
-This repository contains the product case study including workflow design, UI concepts, and system thinking behind the platform.
+<a href="https://youtu.be/lPwLeqQauww" target="_blank">Watch the walkthrough</a>
 
 ## Product Screens
 
