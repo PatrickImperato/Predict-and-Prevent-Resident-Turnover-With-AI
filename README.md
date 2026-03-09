@@ -11,6 +11,32 @@ The product is designed to help teams spot resident risk earlier, coordinate int
 
 This repository is built to show product management ability, not just code.
 
+## Product Walkthrough
+
+Short demo showing the retention intelligence workflow and product thinking behind the system.
+
+This case study explores how AI signals, operational workflows, and financial impact modeling can help property teams identify churn risk earlier and intervene before resident turnover happens.
+
+### Key concepts shown in the demo
+
+1. Early churn risk detection from operational signals
+2. Explainable risk drivers for property teams
+3. Intervention workflows connecting risk to action
+4. Financial modeling showing ROI before intervention deployment
+
+### Watch the walkthrough
+
+https://www.loom.com/share/28ee1d0c8a4a492aa621011849b28ac3
+
+### What the demo covers
+
+1. How residents are prioritized by churn risk
+2. How operational drivers explain the risk signal
+3. How the system recommends intervention actions
+4. How projected savings and ROI guide decisions
+
+This repository contains the product case study including workflow design, UI concepts, and system thinking behind the platform.
+
 ## Product Screens
 
 ### Manager Dashboard
