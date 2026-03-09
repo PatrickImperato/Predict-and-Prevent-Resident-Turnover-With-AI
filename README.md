@@ -11,6 +11,26 @@ The product is designed to help teams spot resident risk earlier, coordinate int
 
 This repository is built to show product management ability, not just code.
 
+## Product Screens
+
+### Manager Dashboard
+
+Shows at risk residents, recommended retention actions, and projected financial impact.
+
+![Manager Dashboard](assets/manager-dashboard.png)
+
+### Resident Concierge Experience
+
+Resident facing interface where interventions are delivered through service support and retention credits.
+
+![Resident Concierge](assets/resident-concierge.png)
+
+### Service Booking Experience
+
+Residents can apply retention credits toward services that improve their experience.
+
+![Service Booking](assets/service-booking.png)
+
 ## The problem
 
 Property teams often realize a resident is at risk too late.
