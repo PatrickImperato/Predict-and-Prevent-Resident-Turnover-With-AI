@@ -31,6 +31,28 @@ Residents can apply retention credits toward services that improve their experie
 
 ![Service Booking](assets/service-booking.png)
 
+## System Architecture
+
+The resident retention platform combines resident risk scoring, friction driver analysis, intervention workflows, and financial impact modeling.
+
+Core flow
+
+Resident Data → Risk Signals → Friction Drivers → Intervention Engine → Retention ROI Tracking
+
+### Main Components
+
+**Resident Risk Signals**  
+Identifies residents showing patterns associated with dissatisfaction or increased churn risk.
+
+**Friction Driver Analysis**  
+Highlights the main operational or service issues contributing to retention risk.
+
+**Intervention Engine**  
+Maps residents into recommended action tiers such as outreach, concierge support, or retention credits.
+
+**Retention ROI Tracking**  
+Estimates projected savings, credit cost, and net return from intervention decisions.
+
 ## The problem
 
 Property teams often realize a resident is at risk too late.
