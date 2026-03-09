@@ -15,6 +15,23 @@ This repository is built to show product management ability, not just code.
 
 Short demo showing the retention intelligence workflow and product thinking behind the system.
 
+[![Watch the product walkthrough](assets/product-walkthrough-thumb.jpg)](https://youtu.be/lPwLeqQauww)
+
+### What the demo covers
+
+1. How residents are prioritized by churn risk
+2. How operational drivers explain the risk signal
+3. How the system recommends intervention actions
+4. How projected savings and ROI guide decisions
+
+Direct video link
+
+https://youtu.be/lPwLeqQauww
+
+## Product Walkthrough
+
+Short demo showing the retention intelligence workflow and product thinking behind the system.
+
 This case study explores how AI signals, operational workflows, and financial impact modeling can help property teams identify churn risk earlier and intervene before resident turnover happens.
 
 ### Key concepts shown in the demo
