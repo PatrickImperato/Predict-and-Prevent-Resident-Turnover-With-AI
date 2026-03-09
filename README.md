@@ -122,3 +122,13 @@ Future iterations would focus on:
 3. clearer retention analytics
 4. deeper property system integrations
 5. improved manager reporting
+   
+
+
+## Connect
+
+LinkedIn
+https://www.linkedin.com/in/patrickimperato/
+
+GitHub
+https://github.com/PatrickImperato
