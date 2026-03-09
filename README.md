@@ -135,6 +135,19 @@ A large share of my highest value product work cannot be shared publicly.
 
 This repository is designed as a public case study to show how I think through a product problem, define the workflow, work across technical systems, and structure a product for delivery.
 
+## Product Design Goals
+
+The platform is designed around three product principles.
+
+Early Risk Detection  
+Surface churn signals before dissatisfaction becomes irreversible.
+
+Operational Explainability  
+Show the drivers behind each risk score so property teams understand why residents are flagged.
+
+Actionable Workflows  
+Prediction alone is not enough. The product integrates intervention decisions and financial impact modeling directly into the workflow.
+
 ## Next product iterations
 
 Future iterations would focus on:
